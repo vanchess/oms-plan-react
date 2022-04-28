@@ -30,14 +30,10 @@ class App extends React.Component {
 const mapStateToProps = function(store) {
   return {
       isAuth: selectIsAuth(store), 
-
     };
 }
 const mapDispatchToProps = dispatch => {
   return {
-    //setTitle: (t) => {
-    //    dispatch(setTitle(t));
-    //},
   }
 }
 

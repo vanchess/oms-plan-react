@@ -1,62 +1,59 @@
-import React from 'react';
-import { withRouter } from "react-router-dom";
+import React, { useEffect, useLayoutEffect } from 'react';
 
 import InitialData  from  './InitialData.js'
 
-import { connect } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { setTitle } from '../../store/curPage/curPageStore'
-import { indicatorsUsedForNodeIdFetch, dataForNodeIdFetch, dataForNodeUpdated, nodeIdSelected } from '../../store/nodeData/nodeDataStore';
+import { indicatorsUsedForNodeIdFetch, nodeIdSelected, hospitalBedProfilesUsedForNodeIdFetch, careProfilesUsedForNodeIdFetch } from '../../store/nodeData/nodeDataStore';
 
-import { selectedNodeIdSelector } from '../../store/nodeData/nodeDataSelectors';
+import { careProfilesIdsForNodeIdSelector, hospitalBedProfilesIdsForNodeIdSelector, indicatorIdsForNodeIdSelector, selectedNodeIdSelector, selectedYearSelector } from '../../store/nodeData/nodeDataSelectors';
+import { useParams } from 'react-router-dom';
+import { dataForNodeIdFetch } from '../../store/initialData/initialDataStore.js';
+import { LinearProgress } from '@material-ui/core';
 
 const title = 'Данные на начало года';
 
-class InitialDataIndex extends React.Component {
+export default function InitialDataIndex(props) {
+    const dispatch = useDispatch();
+    let { nodeId } = useParams();
+    nodeId = Number(nodeId);
+    const selectedNodeId = useSelector(selectedNodeIdSelector);
+    const indicatorIds = useSelector(store => indicatorIdsForNodeIdSelector(store, nodeId));
+    const hospitalBedProfilesIds = useSelector(store => hospitalBedProfilesIdsForNodeIdSelector(store, nodeId));
+    const careProfileIds = useSelector(store => careProfilesIdsForNodeIdSelector(store, nodeId));
+    const year = useSelector(selectedYearSelector);
 
-    constructor(props){
-        super(props);
+    useEffect(() => {
+        dispatch(setTitle({title}));
+    })
 
-    }
-    
-    componentDidMount(){
-        this.props.setTitle({title: title});
-        
-        let nodeId = this.props.match.params.nodeId;
-        if (this.props.selectedNodeId != nodeId) {
-            this.props.selectNode(nodeId);
+    useLayoutEffect(() => {
+        if(selectedNodeId !== nodeId) {
+            dispatch(nodeIdSelected({nodeId}))
         }
-    }
+    }, [nodeId]);
 
-    componentDidUpdate(prevProps, prevState) {
-        this.props.setTitle({title: title});
-        
-        const nodeId = this.props.match.params.nodeId;
-        if (nodeId !== prevProps.match.params.nodeId) {
-            this.props.selectNode(nodeId);
+    useLayoutEffect(() => {
+        dispatch(dataForNodeIdFetch({nodeId, year}));
+    }, [nodeId, year]);
+
+    useLayoutEffect(() => {
+        if (!indicatorIds) {
+            dispatch(indicatorsUsedForNodeIdFetch({nodeId}));
         }
-    }
-    
-    render() {
-      return (
-          <InitialData />
-      );
-    }
-}
+        if (!hospitalBedProfilesIds) {
+            dispatch(hospitalBedProfilesUsedForNodeIdFetch({nodeId}));
+        }
+        if (!careProfileIds) {
+            dispatch(careProfilesUsedForNodeIdFetch({nodeId}))
+        }
+    }, [nodeId]);
 
-const mapStateToProps = function(store, ownProps) {
-  return {
-      selectedNodeId: selectedNodeIdSelector(store),
-    };
-}
-const mapDispatchToProps = dispatch => {
-  return {
-    setTitle: (t) => {
-        dispatch(setTitle(t));
-    },
-    selectNode: (nodeId) => {
-        dispatch(nodeIdSelected({nodeId}));
+    if(selectedNodeId !== nodeId) {
+        return (<div><LinearProgress /></div>);
     }
-  }
-}
 
-export default connect(mapStateToProps,mapDispatchToProps)(withRouter(InitialDataIndex));
+    return (
+        <InitialData />
+    )
+}

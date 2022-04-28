@@ -1,22 +1,18 @@
 import React from 'react';
-import { withRouter } from "react-router-dom";
 //import clsx from 'clsx';
 import { withStyles } from '@material-ui/core/styles';
-import { green } from '@material-ui/core/colors';
 
 import Container from '@material-ui/core/Container';
 import Grid from '@material-ui/core/Grid';
 import Paper from '@material-ui/core/Paper';
-import TablePagination from '@material-ui/core/TablePagination';
 
 import MainTable from './MainTable';
+import FapMainTable  from  './fap/MainTable.js'
+import MoList  from  './fap/MoList.js'
 
-import { connect } from 'react-redux';
-import { setTitle } from '../../store/curPage/curPageStore'
-import { indicatorsUsedForNodeIdFetch, medicalAssistanceTypesUsedForNodeId, medicalServicesUsedForNodeId } from '../../store/nodeData/nodeDataStore';
-import { dataForNodeIdFetch } from '../../store/initialData/initialDataStore';
-
-import { selectedNodeIdSelector } from '../../store/nodeData/nodeDataSelectors';
+import { Route } from 'react-router-dom';
+import { Switch } from 'react-router-dom';
+import { useRouteMatch } from 'react-router-dom';
 
 const styles = theme => ({
   container: {
@@ -33,94 +29,35 @@ const styles = theme => ({
 
 const title = 'Данные на начало года';
 
-class InitialData extends React.Component {
+function InitialData(props) {
+  const { classes } = props;
+  const match = useRouteMatch();
+  const path = match.path;
 
-    constructor(props){
-        super(props);
-    }
-    
-    componentDidMount(){
-        const { selectedNodeId: nodeId, year } = this.props;
-        
-        if (nodeId) {
-            if (!this.props.indicatorIds) {
-                this.props.indicatorsForNodeIdFetch(nodeId);
-            }
-            if (!this.props.medicalAssistanceTypesIds) {
-                this.props.medicalAssistanceTypesUsedForNodeIdFetch(nodeId);
-            }
-            if (!this.props.medicalServiceIds) {
-                this.props.medicalServicesUsedForNodeIdFetch(nodeId);
-            }
-
-            this.props.initDataForNodeIdFetch(nodeId, year);
-        }
-    }
-
-    
-    componentDidUpdate(prevProps, prevState) {
-        const { selectedNodeId: nodeId, year } = this.props;
-        
-        if (nodeId) {
-            if (nodeId !== prevProps.selectedNodeId) {
-                if (!this.props.indicatorIds) {
-                    this.props.indicatorsForNodeIdFetch(nodeId);
-                }
-                if (!this.props.medicalAssistanceTypesIds) {
-                    this.props.medicalAssistanceTypesUsedForNodeIdFetch(nodeId);
-                }
-                if (!this.props.medicalServiceIds) {
-                    this.props.medicalServicesUsedForNodeIdFetch(nodeId);
-                }
-            }
-                
-            if (nodeId !== prevProps.selectedNodeId || year !== prevProps.year) {
-                this.props.initDataForNodeIdFetch(nodeId, year);
-            }
-        }
-    }
-    
-    render() {
-      const { classes, selectedNodeId: nodeId, year } = this.props;
-
-      return (
-          <div>
-            <Container maxWidth="lg" className={classes.container}>
-              <Grid container spacing={3}>
-                {/* Recent Orders */}
-                <Grid item xs={12}>
-                  <Paper className={classes.paper}>
-                    <MainTable />
-                  </Paper>
-                </Grid>
-              </Grid>
-            </Container>
-          </div>
-      );
-    }
+  return (
+    <div>
+      <Container maxWidth="lg" className={classes.container}>
+        <Grid container spacing={3}>
+          {/* Recent Orders */}
+          <Grid item xs={12}>
+            <Paper className={classes.paper}>
+              <Switch>
+                <Route exact path={`${path}`}>
+                  <MainTable />
+                </Route>
+                <Route path={`${path}/fap/:moId`} >
+                  <FapMainTable />
+                </Route>
+                <Route path={`${path}/fap`} >
+                  <MoList />
+                </Route>
+              </Switch>
+            </Paper>
+          </Grid>
+        </Grid>
+      </Container>
+    </div>
+  );
 }
 
-const mapStateToProps = function(store, ownProps) {
-  return {
-      selectedNodeId: selectedNodeIdSelector(store),
-      year: store.nodeData.selectedYear,
-    };
-}
-const mapDispatchToProps = dispatch => {
-  return {
-    indicatorsForNodeIdFetch: (nodeId) => {
-        dispatch(indicatorsUsedForNodeIdFetch({nodeId}));
-    },
-    medicalAssistanceTypesUsedForNodeIdFetch: (nodeId) => {
-        dispatch(medicalAssistanceTypesUsedForNodeId({nodeId}));
-    },
-    medicalServicesUsedForNodeIdFetch: (nodeId) => {
-        dispatch(medicalServicesUsedForNodeId({nodeId}));
-    },
-    initDataForNodeIdFetch: (nodeId, year) => {
-        dispatch(dataForNodeIdFetch({nodeId, year}));
-    },
-  }
-}
-
-export default connect(mapStateToProps,mapDispatchToProps)(withStyles(styles)(InitialData));
+export default withStyles(styles)(InitialData);

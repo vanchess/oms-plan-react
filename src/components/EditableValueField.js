@@ -17,7 +17,7 @@ const styles = theme => ({
         whiteSpace: 'nowrap'
     },
     numInput: {
-        minWidth:'100%',
+        //minWidth:'100%',
         width: '100%',
         padding: 0,
         margin: 0,
@@ -72,26 +72,33 @@ class EditableValueField extends React.Component {
 
     render() {
         const { value, status, onChange, classes } = this.props; 
+        const twoDecimal = new Intl.NumberFormat('ru', { style: 'decimal', minimumFractionDigits: 0, maximumFractionDigits: 2, useGrouping: true });
+        const twoDecimalNoGrouping = new Intl.NumberFormat('en', { style: 'decimal', minimumFractionDigits: 0, maximumFractionDigits: 2, useGrouping: false });
 
-        return this.state.editing ?
+        let v = null;
+        if (value) {
+            v = twoDecimalNoGrouping.format(value);
+        }
+
+        return (this.state.editing /*|| Math.round(Math.random())*/ ) ?
             (<React.Fragment>
               <div className = {classes.hideArrows}>
                 <input type='number' 
                     ref={this.inputRef} 
-                    defaultValue={value} 
-                    onBlur={() => this.onBlur(value, onChange)} 
+                    defaultValue={v} 
+                    onBlur={() => this.onBlur(v, onChange)} 
                     className={ classes.numInput } 
-                    onKeyDown={(e) => this.handleKeyDown(e, value)}
+                    onKeyDown={(e) => this.handleKeyDown(e, v)}
                  />
               </div>
             </React.Fragment>): 
-            <div className={ classes[status] } onClick={(e) => this.onFocus(e)} >{value}</div>
+            <div className={ classes[status] } onClick={(e) => this.onFocus(e)} >{value ? twoDecimal.format(value) : '-'}</div>
     }
 
     onFocus(e) {
-        const w = e.target.clientWidth;
+        //const w = e.target.clientWidth;
         this.setState({ editing: true }, () => {
-            this.inputRef.current.style.width = w + 'px';
+            //this.inputRef.current.style.width = w + 'px';
             this.inputRef.current.focus();
             this.inputRef.current.select();
         });

@@ -1,71 +1,220 @@
-export const selectedNodeIdSelector = (store) => store.nodeData.selectedId;
+import { ContactSupport } from "@material-ui/icons";
+import { createSelector } from "@reduxjs/toolkit";
+import { careProfilesSelector } from "../careProfiles/careProfilesSelectors";
+import { hospitalBedProfilesSelector } from "../hospitalBedProfiles/hospitalBedProfilesSelectors";
+import { indicatorsSelector } from "../indicator/indicatorSelectors";
+import { medicalAssistanceTypesSelector } from "../medicalAssistanceType/medicalAssistenceTypeSelectors";
+import { medicalServicesSelector } from "../medicalServices/medicalServicesSelectors";
 
-export const indicatorsForNodeIdSelector = (store, nodeId) => {
-    const indicators = store.indicator.entities;
+export const selectedNodeIdSelector = (store) => store.nodeData.selectedId;
+// export const selectedMoIdSelector = (store) => store.nodeData.selectedMo;
+export const selectedYearSelector = (store) => store.nodeData.selectedYear;
+
+/**
+ * Данные для узла
+ */
+export const dataForNodeIdSelector = (store, nodeId) => {
     if (!store.nodeData.entities[nodeId]) {
-        return [];
+        return null;
     }
-    const indicatorIds = store.nodeData.entities[nodeId].indicatorIds;
-    if (!indicatorIds) {
-        return [];
-    }
-    return indicatorIds.map(id => indicators[id]);
+    return store.nodeData.entities[nodeId];
 }
-//store.nodeData.selectedId
+
+/// indicators
+export const indicatorIdsForNodeIdSelector = (store, nodeId) => {
+    const dataForNodeId = dataForNodeIdSelector(store, nodeId);
+    if (!dataForNodeId) {
+        return null;
+    }
+    const indicatorIds = dataForNodeId.indicatorIds;
+    if (!indicatorIds) {
+        return null;
+    }
+    return indicatorIds;
+}
+
+export const indicatorForNodeIsLoadingSelector = (store, nodeId) => {
+    const data = dataForNodeIdSelector(store, nodeId);
+    if(!data) {
+        return false;
+    }
+    return data.indicatorIdsLoading;
+}
+
+export const indicatorsArrForNodeIdSelector = createSelector(
+    [indicatorIdsForNodeIdSelector, indicatorsSelector],
+    (indicatorIds, indicators) => {
+        if (
+            !indicators 
+            || !indicatorIds
+            || Object.keys(indicators).length === 0
+        ) {
+            return null;
+        }
+        return indicatorIds.map(id => { return indicators[id] || {id} });
+    }
+)
 
 export const indicatorsForSelectedNodeSelector = (store) => {
-    return indicatorsForNodeIdSelector(store, selectedNodeIdSelector(store));
+    return indicatorsArrForNodeIdSelector(store, selectedNodeIdSelector(store));
+}
+/// hospitalBedProfiles
+export const hospitalBedProfilesIdsForNodeIdSelector = (store, nodeId) => {
+    const dataForNodeId = dataForNodeIdSelector(store, nodeId);
+    if (!dataForNodeId) {
+        return null;
+    }
+    const hospitalBedProfilesIds = dataForNodeId.hospitalBedProfilesIds;
+    if (!hospitalBedProfilesIds) {
+        return null;
+    }
+    return hospitalBedProfilesIds;
 }
 
-export const hospitalBedProfilesForNodeIdSelector = (store, nodeId) => {
-    const hospitalBedProfiles = store.hospitalBedProfiles.entities;
-    if (!store.nodeData.entities[nodeId]) {
-        return [];
+export const hospitalBedProfilesForNodeIsLoadingSelector = (store, nodeId) => {
+    const data = dataForNodeIdSelector(store, nodeId);
+    if(!data) {
+        return false;
     }
-    const hospitalBedProfilesIds = store.nodeData.entities[nodeId].hospitalBedProfilesIds;
-    if (!hospitalBedProfilesIds) {
-        return [];
-    }
-    return hospitalBedProfilesIds.map(id => hospitalBedProfiles[id]);
+    return data.hospitalBedProfilesIdsLoading;
 }
-//store.nodeData.selectedId
+
+export const hospitalBedProfilesArrForNodeIdSelector = createSelector(
+    [hospitalBedProfilesIdsForNodeIdSelector,hospitalBedProfilesSelector],
+    (hospitalBedProfilesIds, hospitalBedProfiles) => {
+        if (
+            !hospitalBedProfiles 
+            || !hospitalBedProfilesIds
+            || Object.keys(hospitalBedProfiles).length === 0
+        ) {
+            return null;
+        }
+        return hospitalBedProfilesIds.map(id => { return hospitalBedProfiles[id] });
+    }
+)
 
 export const hospitalBedProfilesForSelectedNodeSelector = (store) => {
-    return hospitalBedProfilesForNodeIdSelector(store, selectedNodeIdSelector(store));
+    return hospitalBedProfilesArrForNodeIdSelector(store, selectedNodeIdSelector(store));
+}
+
+/// careProfiles
+export const careProfilesIdsForNodeIdSelector = (store, nodeId) => {
+    const dataForNodeId = dataForNodeIdSelector(store, nodeId);
+    if (!dataForNodeId) {
+        return null;
+    }
+    const careProfilesIds = dataForNodeId.careProfilesIds;
+    if (!careProfilesIds) {
+        return null;
+    }
+    return careProfilesIds;
+}
+
+const careProfilesArrByIds = (careProfiles, ids) => {
+    if (
+        !careProfiles 
+        || !ids
+        || Object.keys(careProfiles).length === 0
+    ) {
+        return null;
+    }
+    return ids.map(id => { return careProfiles[id] || {id} });
+}
+
+export const careProfilesArrByIdsSelector = createSelector(
+    [careProfilesSelector, (store, ids) => ids],
+    careProfilesArrByIds
+)
+
+export const careProfilesForNodeIsLoadingSelector = (store, nodeId) => {
+    const data = dataForNodeIdSelector(store, nodeId);
+    if(!data) {
+        return false;
+    }
+    return data.careProfilesIdsLoading;
+}
+
+export const careProfilesArrForNodeIdSelector = createSelector(
+    [careProfilesSelector, careProfilesIdsForNodeIdSelector],
+    careProfilesArrByIds
+)
+
+export const careProfilesArrForSelectedNodeSelector = (store) => {
+    return careProfilesArrForNodeIdSelector(store, selectedNodeIdSelector(store));
 }
 
 
-export const medicalAssistanceTypesForNodeIdSelector = (store, nodeId) => {
-    const medicalAssistanceTypes = store.medicalAssistanceTypes.entities;
-    if (!store.nodeData.entities[nodeId]) {
-        return [];
+/// medicalAssistanceTypes
+export const medicalAssistanceTypesIdsForNodeIdSelector = (store, nodeId) => {
+    const dataForNodeId = dataForNodeIdSelector(store, nodeId);
+    if (!dataForNodeId) {
+        return null;
     }
-    const medicalAssistanceTypesIds = store.nodeData.entities[nodeId].medicalAssistanceTypesIds;
+    const medicalAssistanceTypesIds = dataForNodeId.medicalAssistanceTypesIds;
     if (!medicalAssistanceTypesIds) {
-        return [];
+        return null;
     }
-    return medicalAssistanceTypesIds.map(id => medicalAssistanceTypes[id]);
-}
-//store.nodeData.selectedId
-
-export const medicalAssistanceTypesForSelectedNodeSelector = (store) => {
-    return medicalAssistanceTypesForNodeIdSelector(store, selectedNodeIdSelector(store));
+    return medicalAssistanceTypesIds;
 }
 
-
-export const medicalServicesForNodeIdSelector = (store, nodeId) => {
-    const medicalServices = store.medicalServices.entities;
-    if (!store.nodeData.entities[nodeId]) {
-        return [];
+export const medicalAssistanceTypesForNodeIsLoadingSelector = (store, nodeId) => {
+    const data = dataForNodeIdSelector(store, nodeId);
+    if(!data) {
+        return false;
     }
-    const medicalServicesIds = store.nodeData.entities[nodeId].medicalServicesIds;
+    return data.medicalAssistanceTypesIdsLoading;
+}
+
+export const medicalAssistanceTypesArrForNodeIdSelector = createSelector(
+    [medicalAssistanceTypesSelector, medicalAssistanceTypesIdsForNodeIdSelector],
+    (medicalAssistanceTypes, medicalAssistanceTypesIds) => {
+        if (
+            !medicalAssistanceTypes 
+            || !medicalAssistanceTypesIds
+            || Object.keys(medicalAssistanceTypes).length === 0
+        ) {
+            return null;
+        }
+        return medicalAssistanceTypesIds.map(id => medicalAssistanceTypes[id]);
+    }
+)
+
+export const medicalAssistanceTypesArrForSelectedNodeSelector = (store) => {
+    return medicalAssistanceTypesArrForNodeIdSelector(store, selectedNodeIdSelector(store));
+}
+
+
+/// medicalServices
+export const medicalServicesIdsForNodeIdSelector = (store, nodeId) => {
+    const dataForNodeId = dataForNodeIdSelector(store, nodeId);
+    if (!dataForNodeId) {
+        return null;
+    }
+    const medicalServicesIds = dataForNodeId.medicalServicesIds;
     if (!medicalServicesIds) {
-        return [];
+        return null;
     }
-    return medicalServicesIds.map(id => medicalServices[id]);
+    return medicalServicesIds;
 }
-//store.nodeData.selectedId
 
-export const medicalServicesForSelectedNodeSelector = (store) => {
-    return medicalServicesForNodeIdSelector(store, selectedNodeIdSelector(store));
+export const medicalServicesForNodeIsLoadingSelector = (store, nodeId) => {
+    const data = dataForNodeIdSelector(store, nodeId);
+    if(!data) {
+        return false;
+    }
+    return data.medicalServicesIdsLoading;
+}
+
+export const medicalServicesArrForNodeIdSelector = createSelector(
+    [medicalServicesSelector, medicalServicesIdsForNodeIdSelector],
+    (medicalServices, medicalServicesIds) => {
+        if (!medicalServices || !medicalServicesIds || Object.keys(medicalServices).length === 0) {
+            return null;
+        }
+        return medicalServicesIds.map(id => medicalServices[id]);
+    }
+)
+
+export const medicalServicesArrForSelectedNodeSelector = (store) => {
+    return medicalServicesArrForNodeIdSelector(store, selectedNodeIdSelector(store));
 }

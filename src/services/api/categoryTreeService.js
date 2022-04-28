@@ -27,6 +27,14 @@ export class categoryTreeService extends apiService {
             return data;
         });
     }
+
+    static getCareProfilesUsedForNodeId(nodeId) {
+        const path = 'user-care-profiles';
+
+        return this.get(path, {params: {'node':nodeId}}).then((data) => {
+            return data;
+        });
+    }
     
     static getMedicalAssistanceTypesUsedForNodeId(nodeId) {
         const path = 'used-medical-assistance-types';
@@ -53,10 +61,10 @@ export class categoryTreeService extends apiService {
         });
     }
     
-    static setInitDataPlannedIndicator({year, moId, plannedIndicatorId, value}) {
+    static setInitDataPlannedIndicator({year, moId, moDepartmentId, plannedIndicatorId, value}) {
         const path = 'node-init-data';
         
-        return this.post(path, {year, moId, plannedIndicatorId, value}, {headers: {'Content-Type': 'application/json;charset=utf-8'}}).then((data) => {
+        return this.post(path, {year, moId, moDepartmentId, plannedIndicatorId, value}, {headers: {'Content-Type': 'application/json;charset=utf-8'}}).then((data) => {
             return data;
         });
     }

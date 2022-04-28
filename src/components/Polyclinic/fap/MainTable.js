@@ -9,20 +9,32 @@ import {
   TableHead,
   TableRow,
   Table,
-  withStyles
+  withStyles,
+  LinearProgress
 } from "@material-ui/core";
 
 import FormControlLabel from '@material-ui/core/FormControlLabel';
 import Checkbox from '@material-ui/core/Checkbox';
 import FullscreenIcon from '@material-ui/icons/Fullscreen';
-import FullscreenExitIcon from '@material-ui/icons/FullscreenExit';
+// import FullscreenExitIcon from '@material-ui/icons/FullscreenExit';
 import Tooltip from '@material-ui/core/Tooltip';
 import Typography from '@material-ui/core/Typography';
 
 import ValueField from '../../Hospital/ValueField';
 import TotalValueField from '../../Hospital/TotalValueField';
 
-import { indicatorsForSelectedNodeSelector, medicalAssistanceTypesForSelectedNodeSelector, medicalServicesForSelectedNodeSelector } from '../../../store/nodeData/nodeDataSelectors';
+import { 
+  indicatorForNodeIsLoadingSelector,
+  indicatorsForSelectedNodeSelector, 
+  medicalAssistanceTypesArrForSelectedNodeSelector,
+  medicalServicesArrForSelectedNodeSelector,
+  selectedNodeIdSelector,  
+} from '../../../store/nodeData/nodeDataSelectors';
+import { initialDataIsLoadingSelector } from "../../../store/initialData/initialDataSelectors";
+import { medicalServicesIsLoadingSelector } from "../../../store/medicalServices/medicalServicesSelectors";
+import { medicalAssistanceTypesIsLoadingSelector } from "../../../store/medicalAssistanceType/medicalAssistenceTypeSelectors";
+import { useParams } from "react-router-dom";
+import { moDepartmentsArrByMoIdSelector } from "../../../store/moDepartment/moDepartmentSelectors";
 
 const firstHeadHeight = 25;
 const leftColWidth = 20;
@@ -53,6 +65,8 @@ const useStyles = makeStyles((theme) => ({
   stickyTop: {
     border: 0,
     top: 0,
+    paddingLeft: 10,
+    paddingRight: 10,
     height: `${firstHeadHeight}px`,
     minHeight: `${firstHeadHeight}px`,
     position: "sticky",
@@ -115,6 +129,8 @@ const useStyles = makeStyles((theme) => ({
     zIndex: theme.zIndex.appBar + 2
   },
   stickyLeftTopZIndex: {
+    paddingLeft: 2,
+    paddingRight: 2,
     backgroundColor: "#d3d3d3",
     zIndex: theme.zIndex.appBar + 3
   },
@@ -138,29 +154,36 @@ const StyledTableRow = withStyles((theme) => ({
 }))(TableRow);
 
 const MainTable = (props) => {
+  let { moId } = useParams();
+  moId = Number(moId);
 
   const [fixedTotal, setFixedTotal] = useState(true);
   const [fullScreen, setFullScreen] = useState(false);
   const classes = useStyles();
 
-  const mo = useSelector(store => store.mo.ids.map(id => store.mo.entities[id]));
-  const moIds = useSelector(store => store.mo.ids);
-  const assistanceTypes = useSelector(medicalAssistanceTypesForSelectedNodeSelector);
-  const medicalServices = useSelector(medicalServicesForSelectedNodeSelector);
+  const nodeId = useSelector(selectedNodeIdSelector);
+  const moDepartments = useSelector((state) => moDepartmentsArrByMoIdSelector(state,moId));
+  const moDepartmentsIds = moDepartments ? moDepartments.map(depatment => depatment.id) : null;
+  const assistanceTypes = useSelector(medicalAssistanceTypesArrForSelectedNodeSelector);
+  const medicalServices = useSelector(medicalServicesArrForSelectedNodeSelector);
   const indicators = useSelector(indicatorsForSelectedNodeSelector);
-  //const selectedNodeId = useSelector(selectedNodeIdSelector);
-  //const year = useSelector(store => store.nodeData.selectedYear);
 
-  const indicatorLength = indicators.length;
+  const isLoading = useSelector((store) => {
+    return (
+      initialDataIsLoadingSelector(store) 
+      || medicalAssistanceTypesIsLoadingSelector(store, nodeId)
+      || medicalServicesIsLoadingSelector(store, nodeId)
+      || indicatorForNodeIsLoadingSelector(store, nodeId)
+    )
+  });
 
-  if (indicatorLength === 0
-        || mo.length === 0
-        || (assistanceTypes.length === 0 && medicalServices.length === 0)
-  ) {
-      return (<div></div>);
+  console.log('Polycl Int Fap 0');
+  if (isLoading || !indicators || !moDepartments || (!assistanceTypes && !medicalServices)) {
+      return (<div><LinearProgress /></div>);
   }
+  console.log('Polycl Int Fap 1');
     
-  
+  const indicatorLength = indicators.length;
     
   return (
     <div>
@@ -193,9 +216,7 @@ const MainTable = (props) => {
                   </TableCell>
                   );
                 })}
-              <TableCell className={clsx(classes.head, classes.stickyTop, classes.stickyLeftTopZIndex, {[classes['stickyRight'+indicatorLength]]:fixedTotal})} >
-              </TableCell>
-              <TableCell colSpan={indicatorLength-1} className={clsx(classes.head, classes.stickyTop, classes.stickyLeftTopZIndex, {[classes.stickyRight]:fixedTotal})} >
+              <TableCell align="center" colSpan={indicatorLength} className={clsx(classes.head, classes.stickyTop, classes.stickyLeftTopZIndex, {[classes.stickyRight]:fixedTotal})} >
                 Итого 
                 <FormControlLabel
                     control={
@@ -213,7 +234,7 @@ const MainTable = (props) => {
               <TableCell className={`${classes.head} ${classes.stickyTopSecond} ${classes.stickyLeft} ${classes.stickyLeftTopZIndex}`} >
               </TableCell>
               <TableCell className={`${classes.head} ${classes.stickyTopSecond} ${classes.stickyLeftSecond} ${classes.stickyLeftTopZIndex}`} >
-                Медицинская организация
+                ФАП
               </TableCell>
               {assistanceTypes.map((profile) => {
                 return (
@@ -253,16 +274,16 @@ const MainTable = (props) => {
             </TableRow>
           </TableHead>
           <TableBody>
-            {mo.map((medOrg) => {
+            {moDepartments.map((department) => {
               return (
-                <StyledTableRow key={medOrg.id}>
+                <StyledTableRow key={department.id}>
                   <TableCell align="left" className={`${classes.cell} ${classes.stickyLeft}`} >
-                      {medOrg.order}
+                      {department.order}
                   </TableCell>
                   <TableCell align="left" className={`${classes.cell} ${classes.stickyLeftSecond}`} >
-                    <Tooltip title={medOrg.name}>
+                    <Tooltip title={department.name}>
                       <Typography>
-                        {medOrg.short_name}
+                        {department.name.replace('Фельдшерско-акушерский пункт','ФАП').replace('Фельдшерский пункт','ФП')}
                       </Typography>
                     </Tooltip>
                   </TableCell>
@@ -273,7 +294,8 @@ const MainTable = (props) => {
                             return (
                               <TableCell key={indicator.id} align="center" className={classes.cell}>
                                 <ValueField 
-                                    moId={medOrg.id}
+                                    moId={moId}
+                                    moDepartmentId={department.id}
                                     assistanceTypeId={profile.id}
                                     indicatorId={indicator.id}
                                 />
@@ -291,7 +313,8 @@ const MainTable = (props) => {
                             return (
                               <TableCell key={indicator.id} align="center" className={classes.cell}>
                                 <ValueField 
-                                    moId={medOrg.id}
+                                    moId={moId}
+                                    moDepartmentId={department.id}
                                     serviceId={profile.id}
                                     indicatorId={indicator.id}
                                 />
@@ -307,7 +330,8 @@ const MainTable = (props) => {
                         return (
                           <TableCell key={indicator.id} align="center" className={clsx(classes.cell, {[classes['stickyRight'+(indicatorLength-index)]]:fixedTotal})} >
                             <TotalValueField 
-                                moIds={[medOrg.id]}
+                                moIds={[moId]}
+                                moDepartmentIds={[department.id]}
                                 indicatorId={indicator.id}
                             />
                           </TableCell>
@@ -330,7 +354,8 @@ const MainTable = (props) => {
                             return (
                               <TableCell key={indicator.id} align="center" className={classes.cell}>
                                 <TotalValueField 
-                                    moIds={moIds}
+                                    moIds={[moId]}
+                                    moDepartmentIds={moDepartmentsIds}
                                     assistanceTypeId={profile.id}
                                     indicatorId={indicator.id}
                                 />
@@ -347,7 +372,8 @@ const MainTable = (props) => {
                             return (
                               <TableCell key={indicator.id} align="center" className={classes.cell}>
                                 <TotalValueField 
-                                    moIds={moIds}
+                                    moIds={[moId]}
+                                    moDepartmentIds={moDepartmentsIds}
                                     serviceId={profile.id}
                                     indicatorId={indicator.id}
                                 />
@@ -362,7 +388,8 @@ const MainTable = (props) => {
                         return (
                           <TableCell key={indicator.id} align="center" className={clsx(classes.cell, {[classes['stickyRight'+(indicatorLength-index)]]:fixedTotal})} >
                             <TotalValueField
-                                moIds={moIds}
+                                moIds={[moId]}
+                                moDepartmentIds={moDepartmentsIds}
                                 indicatorId={indicator.id}
                             />
                           </TableCell>
@@ -377,4 +404,4 @@ const MainTable = (props) => {
   );
 };
 
-export default MainTable;
+export default React.memo(MainTable);

@@ -9,7 +9,8 @@ import {
   TableHead,
   TableRow,
   Table,
-  withStyles
+  withStyles,
+  LinearProgress
 } from "@material-ui/core";
 
 import FormControlLabel from '@material-ui/core/FormControlLabel';
@@ -22,7 +23,17 @@ import Typography from '@material-ui/core/Typography';
 import ValueField from '../Hospital/ValueField';
 import TotalValueField from '../Hospital/TotalValueField';
 
-import { indicatorsForSelectedNodeSelector, medicalAssistanceTypesForSelectedNodeSelector, medicalServicesForSelectedNodeSelector } from '../../store/nodeData/nodeDataSelectors';
+import { 
+  indicatorForNodeIsLoadingSelector,
+  indicatorsForSelectedNodeSelector, 
+  medicalAssistanceTypesArrForSelectedNodeSelector,
+  medicalServicesArrForSelectedNodeSelector,
+  selectedNodeIdSelector,
+} from '../../store/nodeData/nodeDataSelectors';
+import { moArrSelector, moIdsSelector } from "../../store/mo/moSelectors";
+import { initialDataIsLoadingSelector } from "../../store/initialData/initialDataSelectors";
+import { medicalServicesIsLoadingSelector } from "../../store/medicalServices/medicalServicesSelectors";
+import { medicalAssistanceTypesIsLoadingSelector } from "../../store/medicalAssistanceType/medicalAssistenceTypeSelectors";
 
 const firstHeadHeight = 25;
 const leftColWidth = 20;
@@ -53,6 +64,8 @@ const useStyles = makeStyles((theme) => ({
   stickyTop: {
     border: 0,
     top: 0,
+    paddingLeft: 10,
+    paddingRight: 10,
     height: `${firstHeadHeight}px`,
     minHeight: `${firstHeadHeight}px`,
     position: "sticky",
@@ -115,6 +128,8 @@ const useStyles = makeStyles((theme) => ({
     zIndex: theme.zIndex.appBar + 2
   },
   stickyLeftTopZIndex: {
+    paddingLeft: 2,
+    paddingRight: 2,
     backgroundColor: "#d3d3d3",
     zIndex: theme.zIndex.appBar + 3
   },
@@ -143,25 +158,30 @@ const MainTable = (props) => {
   const [fullScreen, setFullScreen] = useState(false);
   const classes = useStyles();
 
-  const mo = useSelector(store => store.mo.ids.map(id => store.mo.entities[id]));
-  const moIds = useSelector(store => store.mo.ids);
-  const assistanceTypes = useSelector(medicalAssistanceTypesForSelectedNodeSelector);
-  const medicalServices = useSelector(medicalServicesForSelectedNodeSelector);
+  const nodeId = useSelector(selectedNodeIdSelector);
+  const mo = useSelector(moArrSelector);
+  const moIds = useSelector(moIdsSelector);
+  const assistanceTypes = useSelector(medicalAssistanceTypesArrForSelectedNodeSelector);
+  const medicalServices = useSelector(medicalServicesArrForSelectedNodeSelector);
   const indicators = useSelector(indicatorsForSelectedNodeSelector);
-  //const selectedNodeId = useSelector(selectedNodeIdSelector);
-  //const year = useSelector(store => store.nodeData.selectedYear);
+
+  const isLoading = useSelector((store) => {
+    return (
+      initialDataIsLoadingSelector(store) 
+      || medicalAssistanceTypesIsLoadingSelector(store, nodeId)
+      || medicalServicesIsLoadingSelector(store, nodeId)
+      || indicatorForNodeIsLoadingSelector(store, nodeId)
+    )
+  });
+
+  console.log('Polycl Int Main 0');
+  if (isLoading || !indicators || mo.length === 0 || (!assistanceTypes && !medicalServices)) {
+      return (<div><LinearProgress /></div>);
+  }
+  console.log('Polycl Int Main 1');
 
   const indicatorLength = indicators.length;
 
-  if (indicatorLength === 0
-        || mo.length === 0
-        || (assistanceTypes.length === 0 && medicalServices.length === 0)
-  ) {
-      return (<div></div>);
-  }
-    
-  
-    
   return (
     <div>
       <TableContainer className={fullScreen ? classes.fullScreenTableContainer : classes.tableContainer}>
@@ -179,14 +199,14 @@ const MainTable = (props) => {
                         onChange={(e) => setFullScreen(e.target.checked)}
                       />
               </TableCell>
-              {assistanceTypes.map((profile) => {
+              {assistanceTypes && assistanceTypes.map((profile) => {
                 return (
                   <TableCell align="center" colSpan={indicatorLength} className={`${classes.head} ${classes.stickyTop}`} key={profile.id}>
                       <span style={ {whiteSpace: 'nowrap', overflow: 'hidden'} }>{profile.name}</span>
                   </TableCell>
                   );
                 })}
-              {medicalServices.map((profile) => {
+              {medicalServices && medicalServices.map((profile) => {
                 return (
                   <TableCell align="center" colSpan={indicatorLength} className={`${classes.head} ${classes.stickyTop}`} key={profile.id}>
                       <span style={ {whiteSpace: 'nowrap', overflow: 'hidden'} }>{profile.name}</span>
@@ -215,7 +235,7 @@ const MainTable = (props) => {
               <TableCell className={`${classes.head} ${classes.stickyTopSecond} ${classes.stickyLeftSecond} ${classes.stickyLeftTopZIndex}`} >
                 Медицинская организация
               </TableCell>
-              {assistanceTypes.map((profile) => {
+              {assistanceTypes && assistanceTypes.map((profile) => {
                 return (
                     <React.Fragment key={profile.id}>
                       {indicators.map((indicator) => {
@@ -228,7 +248,7 @@ const MainTable = (props) => {
                     </React.Fragment>
                 );
               })}
-              {medicalServices.map((profile) => {
+              {medicalServices && medicalServices.map((profile) => {
                 return (
                     <React.Fragment key={profile.id}>
                       {indicators.map((indicator) => {
@@ -266,7 +286,7 @@ const MainTable = (props) => {
                       </Typography>
                     </Tooltip>
                   </TableCell>
-                  {assistanceTypes.map((profile) => {
+                  {assistanceTypes && assistanceTypes.map((profile) => {
                     return (
                       <React.Fragment key={profile.id}>
                       {indicators.map((indicator) => {
@@ -284,7 +304,7 @@ const MainTable = (props) => {
                       </React.Fragment>
                     );
                   })}
-                  {medicalServices.map((profile) => {
+                  {medicalServices && medicalServices.map((profile) => {
                     return (
                       <React.Fragment key={profile.id}>
                       {indicators.map((indicator) => {
@@ -323,7 +343,7 @@ const MainTable = (props) => {
                   <TableCell align="left" className={`${classes.cell} ${classes.stickyLeftSecond}`} >
                       <Typography>ИТОГО:</Typography>
                   </TableCell>
-                  {assistanceTypes.map((profile) => {
+                  {assistanceTypes && assistanceTypes.map((profile) => {
                     return (
                       <React.Fragment key={profile.id}>
                       {indicators.map((indicator) => {
@@ -340,7 +360,7 @@ const MainTable = (props) => {
                       </React.Fragment>
                     );
                   })}
-                  {medicalServices.map((profile) => {
+                  {medicalServices && medicalServices.map((profile) => {
                     return (
                       <React.Fragment key={profile.id}>
                       {indicators.map((indicator) => {
@@ -377,4 +397,4 @@ const MainTable = (props) => {
   );
 };
 
-export default MainTable;
+export default React.memo(MainTable);

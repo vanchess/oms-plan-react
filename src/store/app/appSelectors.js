@@ -1,0 +1,1 @@
+export const appInitBeginSelector = store => store.app.appInitBegin;

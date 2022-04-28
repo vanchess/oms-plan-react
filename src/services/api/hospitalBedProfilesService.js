@@ -6,7 +6,7 @@ export class hospitalBedProfilesService extends apiService {
         const path = 'hospital-bed-profiles';
         
         return this.get(path).then((data) => {
-            return {entities: data.data}
+            return {entities: data.data};
         });
     }
 }

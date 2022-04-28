@@ -8,4 +8,5 @@ export * from './api/indicatorService';
 export * from './api/plannedIndicatorService';
 export * from './api/medicalServicesService';
 export * from './api/medicalAssistanceTypeService';
-export * from './api/moDepartmentService'
+export * from './api/moDepartmentService';
+export * from './api/plannedIndiatorChangeService';

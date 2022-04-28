@@ -1,61 +1,74 @@
-import React from 'react';
-import { Route, Switch } from 'react-router-dom';
+import React, { useLayoutEffect } from 'react';
 
 import RootPrivateRoutes from './routes/RootPrivateRoutes'
 
-import { connect } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { moFetch } from './store/mo/moAction'
 import { hospitalBedProfilesFetch } from './store/hospitalBedProfiles/hospitalBedProfilesStore'
+import { careProfilesFetch } from './store/careProfiles/careProfilesStore'
 import { medicalServicesFetch } from './store/medicalServices/medicalServicesStore'
 import { medicalAssistanceTypeFetch } from './store/medicalAssistanceType/medicalAssistanceTypeStore'
 import { indicatorsFetch } from './store/indicator/indicatorStore'
 import { plannedIndicatorsFetch } from './store/plannedIndicator/plannedIndicatorStore'
+import { vmpGroupsFetch } from './store/vmpGroups/vmpGroupsStore';
+import { vmpTypesFetch } from './store/vmpTypes/vmpTypesStore';
+import { periodFetch } from './store/period/periodStore';
+import { appInitBegin } from './store/app/appStore';
+import { appInitBeginSelector } from './store/app/appSelectors';
+import { moIsLoadingSelector } from './store/mo/moSelectors';
+import { hospitalBedProfilesIsLoadingSelector } from './store/hospitalBedProfiles/hospitalBedProfilesSelectors';
+import { indicatorsIsLoadingSelector } from './store/indicator/indicatorSelectors';
+import { plannedIndicatorsIsLoadingSelector } from './store/plannedIndicator/plannedIndicatorSelectors';
+import { medicalServicesIsLoadingSelector } from './store/medicalServices/medicalServicesSelectors';
+import { medicalAssistanceTypesIsLoadingSelector } from './store/medicalAssistanceType/medicalAssistenceTypeSelectors';
+import { careProfilesForNodeIsLoadingSelector } from './store/nodeData/nodeDataSelectors';
+import { vmpGroupsSelectorIsLoadingSelector } from './store/vmpGroups/vmpGroupsSelectors';
+import { vmpTypesIsLoadingSelector } from './store/vmpTypes/vmpTypesSelectors';
+import { periodIsLoadingSelector } from './store/period/periodSelectors';
+import { LinearProgress } from '@material-ui/core';
 
-class AppRoot extends React.Component {
+export default function AppRoot() {
+  const dispatch = useDispatch();
 
-    componentDidMount() {
-        this.props.fetchMO();
-        this.props.fetchProfiles();
-        this.props.fetchIndicators();
-        this.props.fetchPlannedIndicators();
-        this.props.fetchMedicalServices();
-        this.props.fetchMedicalAssistanceType();
-    }
+  const initBegin = useSelector(appInitBeginSelector);
+  
+  const loading = useSelector((store) => {
+    return (
+      moIsLoadingSelector(store)
+      || hospitalBedProfilesIsLoadingSelector(store)
+      || indicatorsIsLoadingSelector(store)
+      || plannedIndicatorsIsLoadingSelector(store)
+      || medicalServicesIsLoadingSelector(store)
+      || medicalAssistanceTypesIsLoadingSelector(store)
+      || careProfilesForNodeIsLoadingSelector(store)
+      || vmpGroupsSelectorIsLoadingSelector(store)
+      || vmpTypesIsLoadingSelector(store)
+      || periodIsLoadingSelector(store)
+    )
+  });
+ 
+  useLayoutEffect(() => {
+    dispatch(moFetch(0, -1));
+    dispatch(hospitalBedProfilesFetch());
+    dispatch(indicatorsFetch());
+    dispatch(plannedIndicatorsFetch());
+    dispatch(medicalServicesFetch());
+    dispatch(medicalAssistanceTypeFetch());
+    dispatch(careProfilesFetch());
+    dispatch(vmpGroupsFetch());
+    dispatch(vmpTypesFetch());
+    dispatch(periodFetch());
 
-    render(){
-      //let path = this.props.match.path;
-      return (
-        <RootPrivateRoutes />
-      );
-    }
-}
+    dispatch(appInitBegin());
+  }, [dispatch])
 
-const mapStateToProps = function(store) {
-  return {
-        
-    };
-}
-const mapDispatchToProps = dispatch => {
-  return {
-    fetchMO: () => {
-        dispatch(moFetch(0, -1));
-    },
-    fetchProfiles: () => {
-        dispatch(hospitalBedProfilesFetch());
-    },
-    fetchIndicators: () => {
-        dispatch(indicatorsFetch());
-    },
-    fetchPlannedIndicators: () => {
-        dispatch(plannedIndicatorsFetch());
-    },
-    fetchMedicalServices: () => {
-        dispatch(medicalServicesFetch());
-    },
-    fetchMedicalAssistanceType: () => {
-        dispatch(medicalAssistanceTypeFetch());
-    }
+  if (!initBegin || loading) {
+    return (
+      <LinearProgress />
+    );
   }
-}
 
-export default connect(mapStateToProps,mapDispatchToProps)(AppRoot);
+  return (
+    <RootPrivateRoutes />
+  );
+}

@@ -4,9 +4,13 @@ export const initialDataSelector = (store) => {
     return store.initialData.entities;
 }
 
+export const initialDataIsLoadingSelector = (store) => {
+    return store.initialData.loading;
+}
+
 export const sortedInitialDataArraySelector = createSelector(
     [initialDataSelector],
-    (items) => {       
+    (items) => {      
         return Object.values(items).sort((a, b) => {
 
             if (a.status === 'saving' || b.status === 'saving') {
@@ -23,16 +27,24 @@ export const sortedInitialDataArraySelector = createSelector(
         })
     }
 );
-/*
+
 export const distinctInitialDataArraySelector = createSelector(
-    [sortedInitialDataArray],
+    [sortedInitialDataArraySelector],
     (array) => {
-        return 
+        return array.filter(item => {
+            const firstItem = array.find(i => {
+                return item.mo_id===i.mo_id 
+                    && item.planned_indicator_id===i.planned_indicator_id 
+                    && item.year===i.year
+                    && item.mo_department_id===i.mo_department_id;
+            });
+            return item.id === firstItem.id;
+        })
     }
 );
-*/
-export const initialDataItemSelector = (store, {moId, year, plannedIndicatorId}) => {
-    const dataArray = sortedInitialDataArraySelector(store);
+
+export const initialDataItemSelector = (store, {moId, year, plannedIndicatorId, moDepartmentId = null}) => {
+    const dataArray = distinctInitialDataArraySelector(store);
     
     if(dataArray.length === 0) {
         return null;
@@ -41,13 +53,14 @@ export const initialDataItemSelector = (store, {moId, year, plannedIndicatorId})
     return dataArray.find(item => {
         return item.mo_id===moId 
             && item.planned_indicator_id===plannedIndicatorId 
-            && item.year===year;
+            && item.year===year
+            && item.mo_department_id===moDepartmentId;
     });
 }
 
 
-export const valueSelector = (store, {moId, year, plannedIndicatorId}) => {
-    const item = initialDataItemSelector(store, {moId, year, plannedIndicatorId});
+export const valueSelector = (store, {moId, year, plannedIndicatorId, moDepartmentId}) => {
+    const item = initialDataItemSelector(store, {moId, year, plannedIndicatorId, moDepartmentId});
     
     if(!item) {
         return null;
@@ -56,8 +69,8 @@ export const valueSelector = (store, {moId, year, plannedIndicatorId}) => {
     return item.value;
 }
 
-export const statusSelector = (store, {moId, year, plannedIndicatorId}) => {
-    const item = initialDataItemSelector(store, {moId, year, plannedIndicatorId});
+export const statusSelector = (store, {moId, year, plannedIndicatorId, moDepartmentId}) => {
+    const item = initialDataItemSelector(store, {moId, year, plannedIndicatorId, moDepartmentId});
 
     if(!item) {
         return null;
@@ -66,26 +79,30 @@ export const statusSelector = (store, {moId, year, plannedIndicatorId}) => {
     return item.status;
 }
 
-export const totalValueSelector = (store, {plannedIndicatorIds, year, moIds}) => {
-    const dataArray = sortedInitialDataArraySelector(store);
-    
+export const totalValueSelector = (store, {plannedIndicatorIds, year, moIds, moDepartmentIds=null}) => {
+    const dataArray = distinctInitialDataArraySelector(store);
     if(dataArray.length === 0) {
         return null;
     }
     
     let total = 0;
     if(moIds && plannedIndicatorIds) {
-        moIds.forEach( (moId) => {
-            plannedIndicatorIds.forEach( (plannedIndicatorId) => {
-                let item = dataArray.find(item => {
-                    return item.mo_id===moId 
-                        && item.planned_indicator_id===plannedIndicatorId 
-                        && item.year===year;
-                });
-                if (item)
-                total = total + Number(item.value);
-            });
+        let items = dataArray.filter(item => {
+            let departmentNotUse = true;
+            if(moDepartmentIds) {
+                departmentNotUse = false;
+            } 
+
+            return item.year===year
+                && moIds.includes(item.mo_id)
+                && (departmentNotUse || moDepartmentIds.includes(item.mo_department_id))
+                && plannedIndicatorIds.includes(item.planned_indicator_id);
         });
+        if (items) {
+            total = items.reduce((total,item) => {
+                return total + Number(item.value);
+            }, total);
+        }
     }
     
     return total;

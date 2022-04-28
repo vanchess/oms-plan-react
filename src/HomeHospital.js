@@ -38,12 +38,22 @@ class HomeHospital extends React.Component {
             ]},
             {'key':3, 'title':'Круглосуточный',   'to':`#`, 'icon': <MailIcon />, 'childList':[
                 {'key':6, 'title':'Обычный',   'to':`${path}initial/6`, 'tooltip':'Ввод данных на начало года', 'icon': <MailIcon />},
-                {'key':7, 'title':'ВМП',   'to':`${path}initial/7`, 'tooltip':'Ввод данных на начало года', 'icon': <MailIcon />},
+                {'key':7, 'title':'ВМП',   'to':`${path}initial/7/care-profile`, 'tooltip':'Ввод данных на начало года', 'icon': <MailIcon />},
                 /*{'key':8, 'title':'Мед.реабилитация',   'to':`${path}initial/8`, 'tooltip':'Ввод данных на начало года', 'icon': <MailIcon />},*/
             ]}
         ]},
-        {'key':2, 'title':'Изменения', 'to':`${path}changes`, 'tooltip':'Внесение изменений', 'icon': <LabelImportantIcon />},
-        {'key':3, 'title':'Параметры', 'to':`${path}settings`, 'tooltip':'', 'icon': <LabelImportantIcon />},
+        {'key':2, 'title':'Корректировки', 'to':`#`, 'icon': <LabelImportantIcon />, 'childList':[
+            {'key':2, 'title':'Дневной',   'to':`#`, 'icon': <MailIcon />, 'childList':[
+                {'key':4, 'title':'при поликлинике',   'to':`${path}changes/4`, 'tooltip':'Перераспределение объемов медицинской помощи', 'icon': <MailIcon />},
+                {'key':5, 'title':'при стационаре',   'to':`${path}changes/5`, 'tooltip':'Перераспределение объемов медицинской помощи', 'icon': <MailIcon />},
+            ]},
+            {'key':3, 'title':'Круглосуточный',   'to':`#`, 'icon': <MailIcon />, 'childList':[
+                {'key':6, 'title':'Обычный',   'to':`${path}changes/6`, 'tooltip':'Перераспределение объемов медицинской помощи', 'icon': <MailIcon />},
+                {'key':7, 'title':'ВМП',   'to':`${path}changes/7/care-profile`, 'tooltip':'Перераспределение объемов медицинской помощи', 'icon': <MailIcon />},
+            ]}
+        ]},
+        {'key':3, 'title':'Прикрепление', 'icon': <LabelImportantIcon />, 'to':`${path}attached-persons/35`, 'tooltip':'Количество прикрепившихся лиц'},
+        {'key':4, 'title':'Параметры', 'to':`${path}settings`, 'tooltip':'', 'icon': <LabelImportantIcon />},
     ];
     
     return (  

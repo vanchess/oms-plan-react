@@ -1,62 +1,74 @@
-import React from 'react';
-import { withRouter } from "react-router-dom";
+import React, { useEffect, useLayoutEffect } from 'react';
 
 import InitialData  from  './InitialData.js'
 
-import { connect } from 'react-redux';
 import { setTitle } from '../../store/curPage/curPageStore'
-import { indicatorsUsedForNodeIdFetch, dataForNodeIdFetch, dataForNodeUpdated, nodeIdSelected } from '../../store/nodeData/nodeDataStore';
 
-import { selectedNodeIdSelector } from '../../store/nodeData/nodeDataSelectors';
+import { 
+    indicatorIdsForNodeIdSelector,
+    medicalAssistanceTypesIdsForNodeIdSelector,
+    medicalServicesIdsForNodeIdSelector,
+    selectedNodeIdSelector,
+    selectedYearSelector 
+} from '../../store/nodeData/nodeDataSelectors';
+import { dataForNodeIdFetch } from '../../store/initialData/initialDataStore.js';
+import { indicatorsUsedForNodeIdFetch, medicalAssistanceTypesUsedForNodeIdFetch, medicalServicesUsedForNodeIdFetch, nodeIdSelected } from '../../store/nodeData/nodeDataStore.js';
+import { useDispatch, useSelector } from 'react-redux';
+import { useParams } from 'react-router-dom';
+import { LinearProgress } from '@material-ui/core';
+import { moDepartmentFetch } from '../../store/moDepartment/moDepartmentStore.js';
 
 const title = 'Данные на начало года';
 
-class InitialDataIndex extends React.Component {
+export default function InitialDataIndex(props) {
+    const dispatch = useDispatch();
+    let { nodeId } = useParams();
+    nodeId = Number(nodeId);
+    const selectedNodeId = useSelector(selectedNodeIdSelector);
+    const indicatorIds = useSelector(store => indicatorIdsForNodeIdSelector(store, nodeId));
+    const medicalAssistanceTypesIds = useSelector(store => medicalAssistanceTypesIdsForNodeIdSelector(store, nodeId));
+    const medicalServicesIds = useSelector(store => medicalServicesIdsForNodeIdSelector(store, nodeId));
+    const year = useSelector(selectedYearSelector);
 
-    constructor(props){
-        super(props);
+    useEffect(() => {
+        dispatch(setTitle({title}));
+    })
 
-    }
-    
-    componentDidMount(){
-        this.props.setTitle({title: title});
-        
-        let nodeId = this.props.match.params.nodeId;
-        if (this.props.selectedNodeId != nodeId) {
-            this.props.selectNode(nodeId);
+    useEffect(() => {
+        dispatch(moDepartmentFetch([49,50]));
+    }, [dispatch])
+
+    useLayoutEffect(() => {
+        if(selectedNodeId !== nodeId) {
+            dispatch(nodeIdSelected({nodeId}))
         }
-    }
+    }, [nodeId]);
 
-    componentDidUpdate(prevProps, prevState) {
-        this.props.setTitle({title: title});
-        
-        const nodeId = this.props.match.params.nodeId;
-        if (nodeId !== prevProps.match.params.nodeId) {
-            this.props.selectNode(nodeId);
+    useLayoutEffect(() => {
+        dispatch(dataForNodeIdFetch({nodeId, year}));
+    }, [nodeId, year, dispatch]);
+
+    useLayoutEffect(() => {
+        if (!indicatorIds) {
+            dispatch(indicatorsUsedForNodeIdFetch({nodeId}));
         }
-    }
-    
-    render() {
-      return (
-          <InitialData />
-      );
-    }
-}
+    }, [nodeId, dispatch]);
 
-const mapStateToProps = function(store, ownProps) {
-  return {
-      selectedNodeId: selectedNodeIdSelector(store),
-    };
-}
-const mapDispatchToProps = dispatch => {
-  return {
-    setTitle: (t) => {
-        dispatch(setTitle(t));
-    },
-    selectNode: (nodeId) => {
-        dispatch(nodeIdSelected({nodeId}));
-    }
-  }
-}
 
-export default connect(mapStateToProps,mapDispatchToProps)(withRouter(InitialDataIndex));
+    useLayoutEffect(() => {
+        if (!medicalAssistanceTypesIds) {
+            dispatch(medicalAssistanceTypesUsedForNodeIdFetch({nodeId}));
+        }
+        if (!medicalServicesIds) {
+            dispatch(medicalServicesUsedForNodeIdFetch({nodeId}))
+        }
+    }, [nodeId, dispatch]);
+
+    if(selectedNodeId !== nodeId) {
+        return (<div><LinearProgress /></div>);
+    }
+
+    return (
+        <InitialData />
+    )
+}

@@ -9,7 +9,8 @@ import {
   TableHead,
   TableRow,
   Table,
-  withStyles
+  withStyles,
+  LinearProgress
 } from "@material-ui/core";
 
 import FormControlLabel from '@material-ui/core/FormControlLabel';
@@ -22,7 +23,15 @@ import Typography from '@material-ui/core/Typography';
 import ValueField from '../Hospital/ValueField';
 import TotalValueField from '../Hospital/TotalValueField';
 
-import { indicatorsForSelectedNodeSelector, medicalAssistanceTypesForSelectedNodeSelector } from '../../store/nodeData/nodeDataSelectors';
+import { 
+  indicatorForNodeIsLoadingSelector,
+  indicatorsForSelectedNodeSelector, 
+  medicalAssistanceTypesArrForSelectedNodeSelector, 
+  medicalAssistanceTypesForNodeIsLoadingSelector, 
+  selectedNodeIdSelector 
+} from '../../store/nodeData/nodeDataSelectors';
+import { moArrSelector, moIdsSelector } from "../../store/mo/moSelectors";
+import { initialDataIsLoadingSelector } from "../../store/initialData/initialDataSelectors";
 
 const firstHeadHeight = 25;
 const leftColWidth = 20;
@@ -143,21 +152,27 @@ const MainTable = (props) => {
   const [fullScreen, setFullScreen] = useState(false);
   const classes = useStyles();
 
-  const mo = useSelector(store => store.mo.ids.map(id => store.mo.entities[id]));
-  const moIds = useSelector(store => store.mo.ids);
-  const assistanceTypes = useSelector(medicalAssistanceTypesForSelectedNodeSelector);
+  const nodeId = useSelector(selectedNodeIdSelector);
+  const mo = useSelector(moArrSelector);
+  const moIds = useSelector(moIdsSelector);
+  const assistanceTypes = useSelector(medicalAssistanceTypesArrForSelectedNodeSelector);
   const indicators = useSelector(indicatorsForSelectedNodeSelector);
-  //const selectedNodeId = useSelector(selectedNodeIdSelector);
-  //const year = useSelector(store => store.nodeData.selectedYear);
 
-  const indicatorLength = indicators.length;
+  const isLoading = useSelector((store) => {
+    return (
+      initialDataIsLoadingSelector(store) 
+      || medicalAssistanceTypesForNodeIsLoadingSelector(store, nodeId)
+      || indicatorForNodeIsLoadingSelector(store, nodeId)
+    )
+  });
+
   
-  if (indicatorLength === 0
-        || mo.length === 0
-        || assistanceTypes.length === 0
-  ) {
-      return (<div></div>);
+  console.log('Amb MainT 0');
+  if (isLoading || !indicators || mo.length === 0 || !assistanceTypes) {
+      return (<div><LinearProgress /></div>);
   }
+  console.log('Amb MainT 1');
+  const indicatorLength = indicators.length;
 
   return (
     <div>
@@ -320,4 +335,4 @@ const MainTable = (props) => {
   );
 };
 
-export default MainTable;
+export default React.memo(MainTable);

@@ -47,8 +47,26 @@ class HomeHospital extends React.Component {
                 /*{'key':8, 'title':'Мед.реабилитация',   'to':`${path}initial/8`, 'tooltip':'Ввод данных на начало года', 'icon': <MailIcon />},*/
             ]}
         ]},
-        {'key':2, 'title':'Изменения', 'to':`${path}changes`, 'tooltip':'Внесение изменений', 'icon': <LabelImportantIcon />},
-        {'key':3, 'title':'Параметры', 'to':`${path}settings`, 'tooltip':'', 'icon': <LabelImportantIcon />},
+        {'key':2, 'title':'Корректировки', 'to':`#`, 'icon': <LabelImportantIcon />, 'childList':[
+          {'key':2, 'title':'Подушевой',   'to':`#`, 'icon': <MailIcon />, 'childList':[
+              {'key':4, 'title':'Посещения',   'to':`${path}changes/28`, 'tooltip':'Перераспределение объемов медицинской помощи', 'icon': <MailIcon />},
+              {'key':5, 'title':'Услуги',   'to':`${path}changes/32`, 'tooltip':'Диагностические услуги. Перераспределение объемов медицинской помощи', 'icon': <MailIcon />},
+          ]},
+          {'key':3, 'title':'По тарифу',   'to':`#`, 'icon': <MailIcon />, 'childList':[
+              {'key':6, 'title':'Посещения',   'to':`${path}changes/30`, 'tooltip':'Перераспределение объемов медицинской помощи', 'icon': <MailIcon />},
+              {'key':7, 'title':'Услуги',   'to':`${path}changes/31`, 'tooltip':'Диагностические услуги. Перераспределение объемов медицинской помощи', 'icon': <MailIcon />},
+          ]},
+          {'key':8, 'title':'По ФАП',   'to':`#`, 'icon': <MailIcon />, 'childList':[
+              {'key':9, 'title':'Посещения',   'to':`${path}changes/29/fap`, 'tooltip':'Перераспределение объемов медицинской помощи', 'icon': <MailIcon />},
+              {'key':10, 'title':'Услуги',   'to':`${path}changes/33/fap`, 'tooltip':'Диагностические услуги. Перераспределение объемов медицинской помощи', 'icon': <MailIcon />},
+          ]}
+        ]},
+        {'key':3, 'title':'Прикрепление', 'to':`#`, 'icon': <LabelImportantIcon />, 'childList':[
+          {'key':3, 'title':'МО(без ФАП)', 'to':`${path}attached-persons/39`, 'icon': <LabelImportantIcon />, 'tooltip':'Количество прикрепившихся лиц'},
+          {'key':3, 'title':'ФАП', 'to':`${path}attached-persons/38/fap`, 'icon': <LabelImportantIcon />, 'tooltip':'Количество прикрепившихся лиц'},
+        ]},
+        
+        {'key':4, 'title':'Параметры', 'to':`${path}settings`, 'tooltip':'', 'icon': <LabelImportantIcon />},
     ];
     
     return (  

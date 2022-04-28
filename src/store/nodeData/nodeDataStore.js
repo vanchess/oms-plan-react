@@ -9,6 +9,10 @@ export const hospitalBedProfilesUsedForNodeIdGetRequest = createAction('HOSPITAL
 export const hospitalBedProfilesUsedForNodeIdGetSuccess = createAction('HOSPITAL_BED_PROFILES_USED_NODE_GET_SUCCESS');
 export const hospitalBedProfilesUsedForNodeIdGetFailure = createAction('HOSPITAL_BED_PROFILES_USED_NODE_GET_FAILURE');
 
+export const careProfilesUsedForNodeIdGetRequest = createAction('CARE_PROFILES_USED_NODE_GET_REQUEST');
+export const careProfilesUsedForNodeIdGetSuccess = createAction('CARE_PROFILES_USED_NODE_GET_SUCCESS');
+export const careProfilesUsedForNodeIdGetFailure = createAction('CARE_PROFILES_USED_NODE_GET_FAILURE');
+
 export const medicalAssistanceTypesUsedForNodeIdGetRequest = createAction('MEDICAL_ASSISTANCE_TYPES_USED_NODE_GET_REQUEST');
 export const medicalAssistanceTypesUsedForNodeIdGetSuccess = createAction('MEDICAL_ASSISTANCE_TYPES_USED_NODE_GET_SUCCESS');
 export const medicalAssistanceTypesUsedForNodeIdGetFailure = createAction('MEDICAL_ASSISTANCE_TYPES_USED_NODE_GET_FAILURE');
@@ -19,8 +23,8 @@ export const medicalServicesUsedForNodeIdGetFailure = createAction('MEDICAL_SERV
 
 export const nodeIdSelected = createAction('NODE_ID_SELECTED');
 export const yearSelected = createAction('YEAR_SELECTED');
-export const moSelected = createAction('MO_SELECTED');
-export const moNotSelected = createAction('MO_NOT_SELECTED');
+// export const moSelected = createAction('MO_SELECTED');
+// export const moNotSelected = createAction('MO_NOT_SELECTED');
 
 export const indicatorsUsedForNodeIdFetch = ({nodeId}) => {
   return (dispatch) => {
@@ -35,7 +39,7 @@ export const indicatorsUsedForNodeIdFetch = ({nodeId}) => {
   }
 }
 
-export const hospitalBedProfilesUsedForNodeId = ({nodeId}) => {
+export const hospitalBedProfilesUsedForNodeIdFetch = ({nodeId}) => {
   return (dispatch) => {
     dispatch(hospitalBedProfilesUsedForNodeIdGetRequest({nodeId}));
     
@@ -48,7 +52,20 @@ export const hospitalBedProfilesUsedForNodeId = ({nodeId}) => {
   }
 }
 
-export const medicalAssistanceTypesUsedForNodeId = ({nodeId}) => {
+export const careProfilesUsedForNodeIdFetch = ({nodeId}) => {
+  return (dispatch) => {
+    dispatch(careProfilesUsedForNodeIdGetRequest({nodeId}));
+    
+    categoryTreeService.getCareProfilesUsedForNodeId(nodeId).then(
+        value => dispatch(careProfilesUsedForNodeIdGetSuccess({nodeId, value})),
+        error => {
+            dispatch(careProfilesUsedForNodeIdGetFailure({nodeId, ...error}));
+        }
+      );
+  }
+}
+
+export const medicalAssistanceTypesUsedForNodeIdFetch = ({nodeId}) => {
   return (dispatch) => {
     dispatch(medicalAssistanceTypesUsedForNodeIdGetRequest({nodeId}));
     
@@ -61,7 +78,7 @@ export const medicalAssistanceTypesUsedForNodeId = ({nodeId}) => {
   }
 }
 
-export const medicalServicesUsedForNodeId = ({nodeId}) => {
+export const medicalServicesUsedForNodeIdFetch = ({nodeId}) => {
   return (dispatch) => {
     dispatch(medicalServicesUsedForNodeIdGetRequest({nodeId}));
     
@@ -78,7 +95,7 @@ export const medicalServicesUsedForNodeId = ({nodeId}) => {
 const initialState = {
   entities: {},
   selectedId: null,
-  selectedYear: 2021,
+  selectedYear: 2022,
   selectedMo: null,
   //loading: false,
   //error: false,
@@ -140,11 +157,38 @@ export function nodeDataReducer(state = initialState, action) {
             }
         }
       };
+    case careProfilesUsedForNodeIdGetRequest.type:  
+      return { ...state,
+        entities: { ...state.entities,
+            [action.payload.nodeId]: { ...state.entities[action.payload.nodeId],
+                careProfilesIdsLoading: true
+            }
+        }
+      };
+    case careProfilesUsedForNodeIdGetSuccess.type:
+      return { ...state,
+        entities: { ...state.entities,
+            [action.payload.nodeId]: { ...state.entities[action.payload.nodeId],
+                careProfilesIds: action.payload.value,
+                error: false,
+                careProfilesIdsLoading: false
+            }
+        }
+      };
+    case careProfilesUsedForNodeIdGetFailure.type:
+      return { ...state,
+        entities: { ...state.entities,
+            [action.payload.nodeId]: { ...state.entities[action.payload.nodeId],
+                error: action.payload.error,
+                careProfilesIdsLoading: false
+            }
+        }
+      };
     case medicalAssistanceTypesUsedForNodeIdGetRequest.type:  
       return { ...state,
         entities: { ...state.entities,
             [action.payload.nodeId]: { ...state.entities[action.payload.nodeId],
-                medicalAssistanceIdsLoading: true
+                medicalAssistanceTypesIdsLoading: true
             }
         }
       };
@@ -154,7 +198,7 @@ export function nodeDataReducer(state = initialState, action) {
             [action.payload.nodeId]: { ...state.entities[action.payload.nodeId],
                 medicalAssistanceTypesIds: action.payload.value,
                 error: false,
-                medicalAssistanceIdsLoading: false
+                medicalAssistanceTypesIdsLoading: false
             }
         }
       };
@@ -163,7 +207,7 @@ export function nodeDataReducer(state = initialState, action) {
         entities: { ...state.entities,
             [action.payload.nodeId]: { ...state.entities[action.payload.nodeId],
                 error: action.payload.error,
-                medicalAssistanceIdsLoading: false
+                medicalAssistanceTypesIdsLoading: false
             }
         }
       };
@@ -201,14 +245,16 @@ export function nodeDataReducer(state = initialState, action) {
         return { ...state,
             selectedYear: action.payload.year
         }
+        /*
     case moSelected.type:
         return { ...state,
             selectedMo: Number(action.payload.moId)
         }
+        
     case moNotSelected.type:
         return { ...state,
             selectedMo: null
-        }
+        }*/
     case nodeIdSelected.type:
         return { ...state,
             selectedId: Number(action.payload.nodeId)

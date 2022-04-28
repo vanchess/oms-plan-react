@@ -9,20 +9,28 @@ import {
   TableHead,
   TableRow,
   Table,
-  withStyles
+  withStyles,
+  LinearProgress
 } from "@material-ui/core";
 
 import FormControlLabel from '@material-ui/core/FormControlLabel';
 import Checkbox from '@material-ui/core/Checkbox';
 import FullscreenIcon from '@material-ui/icons/Fullscreen';
-import FullscreenExitIcon from '@material-ui/icons/FullscreenExit';
 import Tooltip from '@material-ui/core/Tooltip';
 import Typography from '@material-ui/core/Typography';
 
 import ValueField from './ValueField';
 import TotalValueField from './TotalValueField';
 
-import { indicatorsForSelectedNodeSelector, hospitalBedProfilesForSelectedNodeSelector } from '../../store/nodeData/nodeDataSelectors';
+import { 
+  indicatorsForSelectedNodeSelector, 
+  hospitalBedProfilesForSelectedNodeSelector, 
+  selectedNodeIdSelector, 
+  indicatorForNodeIsLoadingSelector, 
+  hospitalBedProfilesForNodeIsLoadingSelector 
+} from '../../store/nodeData/nodeDataSelectors';
+import { moArrSelector, moIdsSelector } from "../../store/mo/moSelectors";
+import { initialDataIsLoadingSelector } from "../../store/initialData/initialDataSelectors";
 
 const firstHeadHeight = 25;
 const leftColWidth = 20;
@@ -143,21 +151,28 @@ const MainTable = (props) => {
   const [fullScreen, setFullScreen] = useState(false);
   const classes = useStyles();
 
-  const mo = useSelector(store => store.mo.ids.map(id => store.mo.entities[id]));
-  const moIds = useSelector(store => store.mo.ids);
-  const profiles = useSelector(hospitalBedProfilesForSelectedNodeSelector);//store.hospitalBedProfiles.entities
+  const nodeId = useSelector(selectedNodeIdSelector);
+  const mo = useSelector(moArrSelector);
+  const moIds = useSelector(moIdsSelector);
+  const profiles = useSelector(hospitalBedProfilesForSelectedNodeSelector);
   const indicators = useSelector(indicatorsForSelectedNodeSelector);
-  //const selectedNodeId = useSelector(selectedNodeIdSelector);
-  //const year = useSelector(store => store.nodeData.selectedYear);
+
+  const isLoading = useSelector((store) => {
+    return (
+      initialDataIsLoadingSelector(store) 
+      || hospitalBedProfilesForNodeIsLoadingSelector(store, nodeId)
+      || indicatorForNodeIsLoadingSelector(store, nodeId)
+    )
+  });
+
+  console.log('M0');
+
+  if (isLoading || !indicators || mo.length === 0 || !profiles) {
+      return (<div><LinearProgress /></div>);
+  }
+  console.log('MИ3');
 
   const indicatorLength = indicators.length;
-  
-  if (indicatorLength === 0
-        || mo.length === 0
-        || profiles.length === 0
-  ) {
-      return (<div></div>);
-  }
 
   return (
     <div>
@@ -320,4 +335,4 @@ const MainTable = (props) => {
   );
 };
 
-export default MainTable;
+export default React.memo(MainTable);

@@ -32,8 +32,9 @@ class HomeHospital extends React.Component {
     let actions = [];//[{'key':1, 'title':'Новое сообщение','tooltip':'Создать новое сообщение','to':`${path}msg/new`}];
     let sidebarMainListItems = [
         {'key':1, 'title':'Начальные данные', 'to':`${path}initial/17`, 'tooltip':'Ввод данных на начало года', 'icon': <MailIcon />, },
-        {'key':2, 'title':'Изменения', 'to':`${path}changes`, 'tooltip':'Внесение изменений', 'icon': <LabelImportantIcon />},
-        {'key':3, 'title':'Параметры', 'to':`${path}settings`, 'tooltip':'', 'icon': <LabelImportantIcon />},
+        {'key':2, 'title':'Корректировки', 'to':`${path}changes/17`, 'tooltip':'Перераспределение объемов медицинской помощи', 'icon': <LabelImportantIcon />},
+        {'key':3, 'title':'Прикрепление', 'to':`${path}attached-persons/37`, 'icon': <LabelImportantIcon />, 'tooltip':'Количество прикрепившихся лиц'},
+        {'key':4, 'title':'Параметры', 'to':`${path}settings`, 'tooltip':'', 'icon': <LabelImportantIcon />},
     ];
     
     return (  

@@ -26,19 +26,19 @@ export const dataForNodeIdFetch = ({nodeId, year}) => {
   }
 }
 
-export const dataForNodeUpdate = ({year, moId, plannedIndicatorId, value}) => {
+export const dataForNodeUpdate = ({year, moId, moDepartmentId, plannedIndicatorId, value}) => {
     return (dispatch) => {
         const uId = uniqueId('initdata');
-        dispatch(dataForNodeUpdateRequest({id:uId, year, moId, plannedIndicatorId, value}));
+        dispatch(dataForNodeUpdateRequest({id:uId, year, moId, moDepartmentId, plannedIndicatorId, value}));
         
-        categoryTreeService.setInitDataPlannedIndicator({year, moId, plannedIndicatorId, value}).then(
+        categoryTreeService.setInitDataPlannedIndicator({year, moId, moDepartmentId, plannedIndicatorId, value}).then(
             data => {
                 // console.log(data.data.id);
-                dispatch(dataForNodeUpdateSuccess({lastId:uId, id:data.data.id, year, moId, plannedIndicatorId, value}));
+                dispatch(dataForNodeUpdateSuccess({lastId:uId, id:data.data.id, year, moId, moDepartmentId, plannedIndicatorId, value}));
             },
             data => {
                 // console.log('error',data);
-                dispatch(dataForNodeUpdateFailure({lastId:uId, id:uId, year, moId, plannedIndicatorId, value, error:data.error }));
+                dispatch(dataForNodeUpdateFailure({lastId:uId, id:uId, year, moId, moDepartmentId, plannedIndicatorId, value, error:data.error }));
             }
         );
     }
@@ -81,12 +81,12 @@ export function initialDataReducer(state = initialState, action) {
   }
 }
 
-const nodeUpdate = (state, {id, lastId, year, moId, plannedIndicatorId, value}, status) => {
+const nodeUpdate = (state, {id, lastId, year, moId, moDepartmentId=null, plannedIndicatorId, value}, status) => {
     const newState = {...state,
         entities: { ...state.entities }
     }
     if (id) {
-        newState.entities[id] = {id, year, mo_id:moId, planned_indicator_id:plannedIndicatorId, value, status};
+        newState.entities[id] = {id, year, mo_id:moId, planned_indicator_id:plannedIndicatorId, mo_department_id:moDepartmentId, value, status};
     }
     if (lastId && lastId !== id) {
         delete newState.entities[lastId];

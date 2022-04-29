@@ -62,8 +62,8 @@ class HomeHospital extends React.Component {
           ]}
         ]},
         {'key':3, 'title':'Прикрепление', 'to':`#`, 'icon': <LabelImportantIcon />, 'childList':[
-          {'key':3, 'title':'МО(без ФАП)', 'to':`${path}attached-persons/39`, 'icon': <LabelImportantIcon />, 'tooltip':'Количество прикрепившихся лиц'},
-          {'key':3, 'title':'ФАП', 'to':`${path}attached-persons/38/fap`, 'icon': <LabelImportantIcon />, 'tooltip':'Количество прикрепившихся лиц'},
+          {'key':4, 'title':'МО(без ФАП)', 'to':`${path}attached-persons/39`, 'icon': <LabelImportantIcon />, 'tooltip':'Количество прикрепившихся лиц'},
+          {'key':5, 'title':'ФАП', 'to':`${path}attached-persons/38/fap`, 'icon': <LabelImportantIcon />, 'tooltip':'Количество прикрепившихся лиц'},
         ]},
         
         {'key':4, 'title':'Параметры', 'to':`${path}settings`, 'tooltip':'', 'icon': <LabelImportantIcon />},

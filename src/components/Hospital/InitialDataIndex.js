@@ -9,7 +9,7 @@ import { indicatorsUsedForNodeIdFetch, nodeIdSelected, hospitalBedProfilesUsedFo
 import { careProfilesIdsForNodeIdSelector, hospitalBedProfilesIdsForNodeIdSelector, indicatorIdsForNodeIdSelector, selectedNodeIdSelector, selectedYearSelector } from '../../store/nodeData/nodeDataSelectors';
 import { useParams } from 'react-router-dom';
 import { dataForNodeIdFetch } from '../../store/initialData/initialDataStore.js';
-import { LinearProgress } from '@material-ui/core';
+import { LinearProgress } from '@mui/material';
 
 const title = 'Данные на начало года';
 

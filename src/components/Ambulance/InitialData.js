@@ -1,10 +1,12 @@
 import React from 'react';
 //import clsx from 'clsx';
-import { withStyles } from '@material-ui/core/styles';
+import withStyles from '@mui/styles/withStyles';
 
-import Container from '@material-ui/core/Container';
-import Grid from '@material-ui/core/Grid';
-import Paper from '@material-ui/core/Paper';
+import { 
+  Container, 
+  Grid,
+  Paper
+} from '@mui/material';
 
 import MainTable from './MainTable';
 

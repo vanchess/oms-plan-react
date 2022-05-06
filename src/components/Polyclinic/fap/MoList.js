@@ -5,13 +5,13 @@ import { moIdsHavingDepartmentsFetch } from '../../../store/mo/moStore';
 import { moHavingDepartmentsSelector } from '../../../store/mo/moSelectors';
 import { useSelector, useDispatch  } from 'react-redux'
 
-import { makeStyles } from '@material-ui/core/styles';
-import Container from '@material-ui/core/Container';
-import Grid from '@material-ui/core/Grid';
-import Paper from '@material-ui/core/Paper';
-import List from '@material-ui/core/List';
-import ListItem from '@material-ui/core/ListItem';
-import ListItemText from '@material-ui/core/ListItemText';
+import makeStyles from '@mui/styles/makeStyles';
+import Container from '@mui/material/Container';
+import Grid from '@mui/material/Grid';
+import Paper from '@mui/material/Paper';
+import List from '@mui/material/List';
+import ListItem from '@mui/material/ListItem';
+import ListItemText from '@mui/material/ListItemText';
 
 import { Link } from 'react-router-dom';
 

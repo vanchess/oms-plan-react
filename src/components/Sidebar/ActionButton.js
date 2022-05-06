@@ -1,10 +1,10 @@
 import React from 'react';
 
-import { makeStyles } from '@material-ui/core/styles';
+import makeStyles from '@mui/styles/makeStyles';
 
-import Tooltip from '@material-ui/core/Tooltip';
-import Fab from '@material-ui/core/Fab';
-import AddIcon from '@material-ui/icons/Add';
+import Tooltip from '@mui/material/Tooltip';
+import Fab from '@mui/material/Fab';
+import AddIcon from '@mui/icons-material/Add';
 
 import { Link } from 'react-router-dom';
 
@@ -21,7 +21,7 @@ export default function ActionButton(props) {
   const classes = useStyles();
   
   return (
-    <Tooltip title={ props.tooltip }>
+    <Tooltip title={ props.tooltip } disableInteractive>
         <Fab component={Link} to={ props.to }
             variant={props.open?'extended':'round'}
             color="secondary"

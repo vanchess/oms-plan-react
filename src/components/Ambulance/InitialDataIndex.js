@@ -9,7 +9,7 @@ import { indicatorIdsForNodeIdSelector, medicalAssistanceTypesIdsForNodeIdSelect
 import { useDispatch, useSelector } from 'react-redux';
 import { useParams } from 'react-router-dom';
 import { dataForNodeIdFetch } from '../../store/initialData/initialDataStore.js';
-import { LinearProgress } from '@material-ui/core';
+import { LinearProgress } from '@mui/material';
 
 const title = 'Данные на начало года';
 

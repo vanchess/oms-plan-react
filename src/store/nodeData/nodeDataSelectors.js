@@ -1,4 +1,4 @@
-import { ContactSupport } from "@material-ui/icons";
+import { ContactSupport } from "@mui/icons-material";
 import { createSelector } from "@reduxjs/toolkit";
 import { careProfilesSelector } from "../careProfiles/careProfilesSelectors";
 import { hospitalBedProfilesSelector } from "../hospitalBedProfiles/hospitalBedProfilesSelectors";

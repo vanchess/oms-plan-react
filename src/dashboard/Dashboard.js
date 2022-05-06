@@ -1,15 +1,16 @@
 import React from 'react';
 import clsx from 'clsx';
 
-import Container from '@material-ui/core/Container';
-import Grid from '@material-ui/core/Grid';
-import Paper from '@material-ui/core/Paper';
+import { 
+  Container,
+  Grid
+} from '@mui/material';
 
 import Chart from './Chart';
 import Deposits from './Deposits';
 import Orders from './Orders';
 
-import { withStyles } from '@material-ui/core/styles';
+import withStyles from '@mui/styles/withStyles';
 
 const styles = theme => ({
   appBarSpacer: theme.mixins.toolbar,

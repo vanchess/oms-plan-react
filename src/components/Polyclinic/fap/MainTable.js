@@ -2,23 +2,24 @@ import React, { useState } from "react";
 import { useSelector } from 'react-redux'
 import clsx from 'clsx';
 import {
-  makeStyles,
   TableContainer,
   TableBody,
   TableCell,
   TableHead,
   TableRow,
   Table,
-  withStyles,
-  LinearProgress
-} from "@material-ui/core";
+  LinearProgress,
+} from "@mui/material";
 
-import FormControlLabel from '@material-ui/core/FormControlLabel';
-import Checkbox from '@material-ui/core/Checkbox';
-import FullscreenIcon from '@material-ui/icons/Fullscreen';
-// import FullscreenExitIcon from '@material-ui/icons/FullscreenExit';
-import Tooltip from '@material-ui/core/Tooltip';
-import Typography from '@material-ui/core/Typography';
+import makeStyles from '@mui/styles/makeStyles';
+import withStyles from '@mui/styles/withStyles';
+
+import FormControlLabel from '@mui/material/FormControlLabel';
+import Checkbox from '@mui/material/Checkbox';
+import FullscreenIcon from '@mui/icons-material/Fullscreen';
+// import FullscreenExitIcon from '@mui/icons-material/FullscreenExit';
+import Tooltip from '@mui/material/Tooltip';
+import Typography from '@mui/material/Typography';
 
 import ValueField from '../../Hospital/ValueField';
 import TotalValueField from '../../Hospital/TotalValueField';
@@ -281,7 +282,7 @@ const MainTable = (props) => {
                       {department.order}
                   </TableCell>
                   <TableCell align="left" className={`${classes.cell} ${classes.stickyLeftSecond}`} >
-                    <Tooltip title={department.name}>
+                    <Tooltip title={department.name} disableInteractive>
                       <Typography>
                         {department.name.replace('Фельдшерско-акушерский пункт','ФАП').replace('Фельдшерский пункт','ФП')}
                       </Typography>

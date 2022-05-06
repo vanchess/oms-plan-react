@@ -1,28 +1,28 @@
 import React from 'react';
-import Avatar from '@material-ui/core/Avatar';
-import Button from '@material-ui/core/Button';
-import CssBaseline from '@material-ui/core/CssBaseline';
-import TextField from '@material-ui/core/TextField';
-import FormControlLabel from '@material-ui/core/FormControlLabel';
-import Checkbox from '@material-ui/core/Checkbox';
-import Link from '@material-ui/core/Link';
-import Grid from '@material-ui/core/Grid';
-import Box from '@material-ui/core/Box';
-import LockOutlinedIcon from '@material-ui/icons/LockOutlined';
-import Typography from '@material-ui/core/Typography';
-// import { makeStyles } from '@material-ui/core/styles';
-import Container from '@material-ui/core/Container';
+import { 
+  Avatar,
+  Button,
+  CssBaseline,
+  TextField,
+  FormControl,
+  FormControlLabel,
+  Checkbox,
+  Link,
+  Grid,
+  Box,
+  Typography,
+  Container,
+  InputLabel,
+  OutlinedInput,
+  InputAdornment,
+  IconButton
+} from '@mui/material';
 
-import FormControl from '@material-ui/core/FormControl';
-import InputLabel from '@material-ui/core/InputLabel';
-import OutlinedInput from '@material-ui/core/OutlinedInput';
-import InputAdornment from '@material-ui/core/InputAdornment';
-import IconButton from '@material-ui/core/IconButton';
-import Visibility from '@material-ui/icons/Visibility';
-import VisibilityOff from '@material-ui/icons/VisibilityOff';
+import Visibility from '@mui/icons-material/Visibility';
+import VisibilityOff from '@mui/icons-material/VisibilityOff';
 
 import PropTypes from 'prop-types';
-import { withStyles } from '@material-ui/core/styles';
+import withStyles from '@mui/styles/withStyles';
 
 import { withRouter } from "react-router-dom";
 import { connect } from 'react-redux';
@@ -129,7 +129,7 @@ class SignIn extends React.Component {
                 <InputLabel htmlFor="outlined-adornment-password">Пароль</InputLabel>
                   <OutlinedInput
                     required
-                    
+                    label={"Пароль"}
                     name="password"
                     type={this.state.showPassword ? 'text' : 'password'}
                     id="password"
@@ -146,7 +146,7 @@ class SignIn extends React.Component {
                         </IconButton>
                       </InputAdornment>
                     }
-                    labelWidth={60}
+
                   />
               </FormControl>
               {/*

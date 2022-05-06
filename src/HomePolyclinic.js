@@ -1,8 +1,6 @@
 import React from 'react';
-import Snackbar from '@material-ui/core/Snackbar';
-import Alert from '@material-ui/lab/Alert';
-import MailIcon from '@material-ui/icons/Mail';
-import LabelImportantIcon from '@material-ui/icons/LabelImportant';
+import MailIcon from '@mui/icons-material/Mail';
+import LabelImportantIcon from '@mui/icons-material/LabelImportant';
 
 import PolyclinicRoutes  from './routes/PolyclinicRoutes';
 import Home from './Home';
@@ -62,8 +60,8 @@ class HomeHospital extends React.Component {
           ]}
         ]},
         {'key':3, 'title':'Прикрепление', 'to':`#`, 'icon': <LabelImportantIcon />, 'childList':[
-          {'key':4, 'title':'МО(без ФАП)', 'to':`${path}attached-persons/39`, 'icon': <LabelImportantIcon />, 'tooltip':'Количество прикрепившихся лиц'},
-          {'key':5, 'title':'ФАП', 'to':`${path}attached-persons/38/fap`, 'icon': <LabelImportantIcon />, 'tooltip':'Количество прикрепившихся лиц'},
+          {'key':4, 'title':'МО(без ФАП)', 'to':`${path}attached-persons/38`, 'icon': <LabelImportantIcon />, 'tooltip':'Количество прикрепившихся лиц'},
+          {'key':5, 'title':'ФАП', 'to':`${path}attached-persons/37/fap`, 'icon': <LabelImportantIcon />, 'tooltip':'Количество прикрепившихся лиц'},
         ]},
         
         {'key':4, 'title':'Параметры', 'to':`${path}settings`, 'tooltip':'', 'icon': <LabelImportantIcon />},

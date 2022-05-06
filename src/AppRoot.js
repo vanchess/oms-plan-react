@@ -25,7 +25,7 @@ import { careProfilesForNodeIsLoadingSelector } from './store/nodeData/nodeDataS
 import { vmpGroupsSelectorIsLoadingSelector } from './store/vmpGroups/vmpGroupsSelectors';
 import { vmpTypesIsLoadingSelector } from './store/vmpTypes/vmpTypesSelectors';
 import { periodIsLoadingSelector } from './store/period/periodSelectors';
-import { LinearProgress } from '@material-ui/core';
+import { LinearProgress } from '@mui/material';
 
 export default function AppRoot() {
   const dispatch = useDispatch();

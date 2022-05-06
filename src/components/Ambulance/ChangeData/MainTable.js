@@ -2,23 +2,24 @@ import React, { useState } from "react";
 import { useSelector } from 'react-redux'
 import clsx from 'clsx';
 import {
-  makeStyles,
   TableContainer,
   TableBody,
   TableCell,
   TableHead,
   TableRow,
   Table,
-  withStyles,
-  LinearProgress
-} from "@material-ui/core";
+  LinearProgress,
+} from "@mui/material";
 
-import FormControlLabel from '@material-ui/core/FormControlLabel';
-import Checkbox from '@material-ui/core/Checkbox';
-import FullscreenIcon from '@material-ui/icons/Fullscreen';
-import FullscreenExitIcon from '@material-ui/icons/FullscreenExit';
-import Tooltip from '@material-ui/core/Tooltip';
-import Typography from '@material-ui/core/Typography';
+import makeStyles from '@mui/styles/makeStyles';
+import withStyles from '@mui/styles/withStyles';
+
+import FormControlLabel from '@mui/material/FormControlLabel';
+import Checkbox from '@mui/material/Checkbox';
+import FullscreenIcon from '@mui/icons-material/Fullscreen';
+import FullscreenExitIcon from '@mui/icons-material/FullscreenExit';
+import Tooltip from '@mui/material/Tooltip';
+import Typography from '@mui/material/Typography';
 
 import TotalValueField from '../../Hospital/ChangeData/TotalValueField';
 
@@ -32,7 +33,7 @@ import {
 } from '../../../store/nodeData/nodeDataSelectors';
 import { periodIdsByYearSelector } from "../../../store/period/periodSelectors";
 
-import Link from '@material-ui/core/Link';
+import Link from '@mui/material/Link';
 
 import { Link as RouterLink } from 'react-router-dom';
 import { moArrSelector, moIdsSelector } from "../../../store/mo/moSelectors";
@@ -261,7 +262,7 @@ const MainTable = (props) => {
                       {medOrg.order}
                   </TableCell>
                   <TableCell align="left" className={`${classes.cell} ${classes.stickyLeftSecond}`} >
-                    <Tooltip title={medOrg.name}>
+                    <Tooltip title={medOrg.name} disableInteractive>
                       <Typography>
                         {medOrg.short_name}
                       </Typography>

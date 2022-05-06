@@ -15,7 +15,7 @@ import { dataForNodeIdFetch } from '../../store/initialData/initialDataStore.js'
 import { indicatorsUsedForNodeIdFetch, medicalAssistanceTypesUsedForNodeIdFetch, medicalServicesUsedForNodeIdFetch, nodeIdSelected } from '../../store/nodeData/nodeDataStore.js';
 import { useDispatch, useSelector } from 'react-redux';
 import { useParams } from 'react-router-dom';
-import { LinearProgress } from '@material-ui/core';
+import { LinearProgress } from '@mui/material';
 import { moDepartmentFetch } from '../../store/moDepartment/moDepartmentStore.js';
 
 const title = 'Данные на начало года';

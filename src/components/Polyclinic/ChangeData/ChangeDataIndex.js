@@ -17,7 +17,7 @@ import {
     selectedYearSelector 
 } from '../../../store/nodeData/nodeDataSelectors';
 import { indicatorChangeForNodeIdFetch } from '../../../store/plannedIndicatorChange/plannedIndicatorChangeStore.js';
-import { LinearProgress } from '@material-ui/core';
+import { LinearProgress } from '@mui/material';
 import { useDispatch, useSelector } from 'react-redux';
 import { useParams } from 'react-router-dom';
 import { moDepartmentFetch } from '../../../store/moDepartment/moDepartmentStore.js';

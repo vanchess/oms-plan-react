@@ -1,8 +1,6 @@
 import React from 'react';
-import Snackbar from '@material-ui/core/Snackbar';
-import Alert from '@material-ui/lab/Alert';
-import MailIcon from '@material-ui/icons/Mail';
-import LabelImportantIcon from '@material-ui/icons/LabelImportant';
+import MailIcon from '@mui/icons-material/Mail';
+import LabelImportantIcon from '@mui/icons-material/LabelImportant';
 
 import HospitalRoutes  from './routes/HospitalRoutes';
 import Home from './Home';

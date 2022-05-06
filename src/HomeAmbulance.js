@@ -1,8 +1,6 @@
 import React from 'react';
-import Snackbar from '@material-ui/core/Snackbar';
-import Alert from '@material-ui/lab/Alert';
-import MailIcon from '@material-ui/icons/Mail';
-import LabelImportantIcon from '@material-ui/icons/LabelImportant';
+import MailIcon from '@mui/icons-material/Mail';
+import LabelImportantIcon from '@mui/icons-material/LabelImportant';
 
 import AmbulanceRoutes  from './routes/AmbulanceRoutes';
 import Home from './Home';
@@ -33,7 +31,7 @@ class HomeHospital extends React.Component {
     let sidebarMainListItems = [
         {'key':1, 'title':'Начальные данные', 'to':`${path}initial/17`, 'tooltip':'Ввод данных на начало года', 'icon': <MailIcon />, },
         {'key':2, 'title':'Корректировки', 'to':`${path}changes/17`, 'tooltip':'Перераспределение объемов медицинской помощи', 'icon': <LabelImportantIcon />},
-        {'key':3, 'title':'Прикрепление', 'to':`${path}attached-persons/37`, 'icon': <LabelImportantIcon />, 'tooltip':'Количество прикрепившихся лиц'},
+        {'key':3, 'title':'Прикрепление', 'to':`${path}attached-persons/39`, 'icon': <LabelImportantIcon />, 'tooltip':'Количество прикрепившихся лиц'},
         {'key':4, 'title':'Параметры', 'to':`${path}settings`, 'tooltip':'', 'icon': <LabelImportantIcon />},
     ];
     

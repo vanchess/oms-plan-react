@@ -2,23 +2,24 @@ import React, { useState } from "react";
 import { useSelector } from 'react-redux'
 import clsx from 'clsx';
 import {
-  makeStyles,
   TableContainer,
   TableBody,
   TableCell,
   TableHead,
   TableRow,
   Table,
-  withStyles,
-  LinearProgress
-} from "@material-ui/core";
+  LinearProgress,
+} from "@mui/material";
 
-import FormControlLabel from '@material-ui/core/FormControlLabel';
-import Checkbox from '@material-ui/core/Checkbox';
-import FullscreenIcon from '@material-ui/icons/Fullscreen';
-import Tooltip from '@material-ui/core/Tooltip';
-import Typography from '@material-ui/core/Typography';
-import Link from '@material-ui/core/Link';
+import makeStyles from '@mui/styles/makeStyles';
+import withStyles from '@mui/styles/withStyles';
+
+import FormControlLabel from '@mui/material/FormControlLabel';
+import Checkbox from '@mui/material/Checkbox';
+import FullscreenIcon from '@mui/icons-material/Fullscreen';
+import Tooltip from '@mui/material/Tooltip';
+import Typography from '@mui/material/Typography';
+import Link from '@mui/material/Link';
 
 import CareProfileDialog from './CareProfileDialog';
 import ValueField from '../ValueField';
@@ -258,7 +259,7 @@ const MainTable = (props) => {
                 return (
                   <TableCell align="center" colSpan={indicatorLength} className={`${classes.head} ${classes.stickyTop}`} key={pi.id}>
                       <div className={classes.stickyTopDiv} >
-                        <Tooltip title={vmpTypes[pi.vmp_type_id].name}>
+                        <Tooltip title={vmpTypes[pi.vmp_type_id].name} disableInteractive>
                           <p className={`${classes.lineClamp} ${classes.noMargin}`} >
                             { vmpTypes[pi.vmp_type_id].name }
                           </p>
@@ -323,7 +324,7 @@ const MainTable = (props) => {
                       {medOrg.order}
                   </TableCell>
                   <TableCell align="left" className={`${classes.cell} ${classes.stickyLeftSecond}`} >
-                    <Tooltip title={medOrg.name}>
+                    <Tooltip title={medOrg.name} disableInteractive>
                       <Typography>
                         {medOrg.short_name}
                       </Typography>

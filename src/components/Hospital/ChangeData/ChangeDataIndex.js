@@ -7,7 +7,7 @@ import { careProfilesUsedForNodeIdFetch, hospitalBedProfilesUsedForNodeIdFetch, 
 
 import { careProfilesIdsForNodeIdSelector, hospitalBedProfilesIdsForNodeIdSelector, indicatorIdsForNodeIdSelector, selectedNodeIdSelector, selectedYearSelector } from '../../../store/nodeData/nodeDataSelectors';
 import { useParams } from 'react-router-dom';
-import { LinearProgress } from '@material-ui/core';
+import { LinearProgress } from '@mui/material';
 import { indicatorChangeForNodeIdFetch } from '../../../store/plannedIndicatorChange/plannedIndicatorChangeStore.js';
 
 const title = 'Корректировки';

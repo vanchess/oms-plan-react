@@ -4,7 +4,7 @@ import { Router } from 'react-router-dom';
 import { createStore, applyMiddleware, compose } from 'redux';
 import { Provider } from 'react-redux';
 import thunk from 'redux-thunk';
-import { ThemeProvider } from '@mui/styles';
+import { ThemeProvider } from '@mui/material/styles';
 import { createTheme, adaptV4Theme } from '@mui/material/styles';
 import { ruRU } from '@material-ui/data-grid';
 import './index.css';
@@ -42,13 +42,15 @@ const theme = createTheme(adaptV4Theme(
 );
 
 ReactDOM.render((
-      <Provider store={store}>
-        <Router history={history}>
-            <ThemeProvider theme={theme}>
-                <App />
-            </ThemeProvider>
-        </Router>
-      </Provider>
+      <React.StrictMode>
+          <Provider store={store}>
+            <Router history={history}>
+                <ThemeProvider theme={theme}>
+                    <App />
+                </ThemeProvider>
+            </Router>
+          </Provider>
+      </React.StrictMode>
     ), document.getElementById('root'));
 
 // If you want your app to work offline and load faster, you can change

@@ -32,7 +32,9 @@ class HomeHospital extends React.Component {
         {'key':1, 'title':'Начальные данные', 'to':`${path}initial/17`, 'tooltip':'Ввод данных на начало года', 'icon': <MailIcon />, },
         {'key':2, 'title':'Корректировки', 'to':`${path}changes/17`, 'tooltip':'Перераспределение объемов медицинской помощи', 'icon': <LabelImportantIcon />},
         {'key':3, 'title':'Прикрепление', 'to':`${path}attached-persons/39`, 'icon': <LabelImportantIcon />, 'tooltip':'Количество прикрепившихся лиц'},
+        /*
         {'key':4, 'title':'Параметры', 'to':`${path}settings`, 'tooltip':'', 'icon': <LabelImportantIcon />},
+        */
     ];
     
     return (  

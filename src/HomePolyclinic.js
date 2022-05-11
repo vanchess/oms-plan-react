@@ -59,12 +59,14 @@ class HomeHospital extends React.Component {
               {'key':10, 'title':'Услуги',   'to':`${path}changes/33/fap`, 'tooltip':'Диагностические услуги. Перераспределение объемов медицинской помощи', 'icon': <MailIcon />},
           ]}
         ]},
+        /*
         {'key':3, 'title':'Прикрепление', 'to':`#`, 'icon': <LabelImportantIcon />, 'childList':[
           {'key':4, 'title':'МО(без ФАП)', 'to':`${path}attached-persons/38`, 'icon': <LabelImportantIcon />, 'tooltip':'Количество прикрепившихся лиц'},
           {'key':5, 'title':'ФАП', 'to':`${path}attached-persons/37/fap`, 'icon': <LabelImportantIcon />, 'tooltip':'Количество прикрепившихся лиц'},
         ]},
         
         {'key':4, 'title':'Параметры', 'to':`${path}settings`, 'tooltip':'', 'icon': <LabelImportantIcon />},
+        */
     ];
     
     return (  

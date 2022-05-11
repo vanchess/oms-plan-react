@@ -51,7 +51,9 @@ class HomeHospital extends React.Component {
             ]}
         ]},
         {'key':3, 'title':'Прикрепление', 'icon': <LabelImportantIcon />, 'to':`${path}attached-persons/35`, 'tooltip':'Количество прикрепившихся лиц'},
+        /*
         {'key':4, 'title':'Параметры', 'to':`${path}settings`, 'tooltip':'', 'icon': <LabelImportantIcon />},
+        */
     ];
     
     return (  

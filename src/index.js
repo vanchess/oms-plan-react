@@ -35,7 +35,7 @@ const initialState = () => {
 };
 const store = createStore(rootReducer, initialState(), composeEnhancers(applyMiddleware(thunk, persistentStorageMiddleware)));
 
-const theme = createTheme(adaptV4Theme(
+const theme = createTheme((
     {
     }),
     ruRU

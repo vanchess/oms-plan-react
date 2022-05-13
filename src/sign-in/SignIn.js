@@ -21,48 +21,49 @@ import {
 import Visibility from '@mui/icons-material/Visibility';
 import VisibilityOff from '@mui/icons-material/VisibilityOff';
 
-import PropTypes from 'prop-types';
-import withStyles from '@mui/styles/withStyles';
+import styled from '@emotion/styled'
 
 import { withRouter } from "react-router-dom";
 import { connect } from 'react-redux';
 import { login as signin } from '../store/auth/authAction.js'
 
-// import $ from 'jquery';
-import axios from 'axios';
-
-import { authService } from '../services';
-
 const defaultFormButtonText = 'Войти';
 const disabledFormButtonText = 'Загрузка...';
 
-const styles = theme => ({
-  '@global': {
-    body: {
-      backgroundColor: theme.palette.common.white,
-    },
-  },
-  paper: {
-    marginTop: theme.spacing(8),
-    display: 'flex',
-    flexDirection: 'column',
-    alignItems: 'center',
-  },
-  avatar: {
-    margin: theme.spacing(1),
-    width: theme.spacing(7),
-    height: theme.spacing(7),
-    // backgroundColor: theme.palette.secondary.main,
-  },
-  form: {
-    width: '100%', // Fix IE 11 issue.
-    marginTop: theme.spacing(1),
-  },
-  submit: {
-    margin: theme.spacing(3, 0, 2),
-  },
-});
+const AvatarStyled = styled(Avatar)`
+  margin: ${({theme}) => theme.spacing(1)};
+  width: ${({theme}) => theme.spacing(7)};
+  height: ${({theme}) => theme.spacing(7)};
+`
 
+const Form = styled.form`
+  width: 100%;
+  margin-top: ${({theme}) => theme.spacing(1)};
+`
+const Peper = styled.div`
+  margin-top: ${({theme}) => theme.spacing(8)};
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+`
+
+const SubmitButton = ({className, disabled, text, disabledText}) => {
+  return (
+    <Button
+      type="submit"
+      fullWidth
+      variant="contained"
+      color="primary"
+      className={className}
+      disabled={disabled}
+    >
+      {disabled ? disabledText : text}
+    </Button>
+  )
+}
+const SubmitButtonStyled = styled(SubmitButton)`
+  margin: ${({theme}) => theme.spacing(3, 0, 2)};
+`
 
 class SignIn extends React.Component {
   
@@ -100,17 +101,17 @@ class SignIn extends React.Component {
   };
   
   render() {
-      const { classes, disabled } = this.props;
+      const { disabled } = this.props;
       
       return (
         <Container component="main" maxWidth="xs">
           <CssBaseline />
-          <div className={classes.paper}>
-            <Avatar className={classes.avatar} src="/tfoms.png" />
+          <Peper>
+            <AvatarStyled src="/tfoms.png" />
             <Typography component="h1" variant="h5">
               Войти в систему
             </Typography>
-            <form className={classes.form} onSubmit={this.handleSubmit}>
+            <Form onSubmit={this.handleSubmit}>
               <TextField
                 variant="outlined"
                 margin="normal"
@@ -155,16 +156,11 @@ class SignIn extends React.Component {
                 label="Remember me"
                />
                */}
-              <Button
-                type="submit"
-                fullWidth
-                variant="contained"
-                color="primary"
-                className={classes.submit}
+              <SubmitButtonStyled 
                 disabled={disabled}
-              >
-                {disabled ? disabledFormButtonText : defaultFormButtonText}
-              </Button>
+                text={defaultFormButtonText}
+                disabledText={disabledFormButtonText}
+              />
               <Grid container>
                 {/*
                 <Grid item xs>
@@ -179,8 +175,8 @@ class SignIn extends React.Component {
                 </Grid>
                 */}
               </Grid>
-            </form>
-          </div>
+            </Form>
+          </Peper>
           <Box mt={5}>
             
           </Box>
@@ -188,10 +184,6 @@ class SignIn extends React.Component {
       );
   }
 }
-
-SignIn.propTypes = {
-  classes: PropTypes.object.isRequired,
-};
 
 const mapStateToProps = function(store) {
   return {
@@ -206,4 +198,4 @@ const mapDispatchToProps = dispatch => {
   }
 }
 
-export default connect(mapStateToProps,mapDispatchToProps)(withRouter(withStyles(styles)(SignIn)));
+export default connect(mapStateToProps,mapDispatchToProps)(withRouter(SignIn));

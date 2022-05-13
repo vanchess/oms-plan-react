@@ -1,5 +1,6 @@
+/** @jsxImportSource @emotion/react */
 import React from 'react';
-import withStyles from '@mui/styles/withStyles';
+import { styled } from '@emotion/styled';
 
 import Container from '@mui/material/Container';
 import Grid from '@mui/material/Grid';
@@ -13,31 +14,31 @@ import { Switch } from 'react-router-dom';
 import { Route } from 'react-router-dom';
 import { useRouteMatch } from 'react-router-dom';
 
-const styles = theme => ({
-  container: {
-    paddingTop: theme.spacing(4),
-    paddingBottom: theme.spacing(4),
-  },
-  paper: {
+const paper = theme => ({
     padding: theme.spacing(2),
     display: 'flex',
     overflow: 'auto',
     flexDirection: 'column',
-  },
+  });
+
+const container = theme => ({
+    paddingTop: theme.spacing(4),
+    paddingBottom: theme.spacing(4),
 })
 
+
+
 function InitialData(props) {
-  const { classes } = props;
   const match = useRouteMatch();
   const path = match.path;
 
   return (
     <div>
-      <Container maxWidth="lg" className={classes.container}>
+      <Container maxWidth="lg" css={container}>
         <Grid container spacing={3}>
           {/* Recent Orders */}
           <Grid item xs={12}>
-            <Paper className={classes.paper}>
+            <Paper css={paper}>
               <Switch>
                 <Route exact path={`${path}`}>
                   <MainTable />
@@ -57,4 +58,4 @@ function InitialData(props) {
   );
 }
 
-export default withStyles(styles)(InitialData);
+export default InitialData;

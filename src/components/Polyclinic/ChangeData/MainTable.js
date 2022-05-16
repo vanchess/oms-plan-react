@@ -286,8 +286,8 @@ const MainTable = (props) => {
                       {medOrg.order}
                   </TableCell>
                   <TableCell align="left" className={`${classes.cell} ${classes.stickyLeftSecond}`} >
-                    <Tooltip title={medOrg.name}>
-                      <Typography disableInteractive>
+                    <Tooltip title={medOrg.name} disableInteractive>
+                      <Typography>
                         {medOrg.short_name}
                       </Typography>
                     </Tooltip>

@@ -34,7 +34,7 @@ function InitialData(props) {
 
   return (
     <div>
-      <Container maxWidth="lg" css={container}>
+      <Container maxWidth={false} css={container}>
         <Grid container spacing={3}>
           {/* Recent Orders */}
           <Grid item xs={12}>

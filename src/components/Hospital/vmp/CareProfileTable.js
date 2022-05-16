@@ -35,17 +35,12 @@ import { vmpTypesSelector } from "../../../store/vmpTypes/vmpTypesSelectors";
 import { useLocation, useHistory } from "react-router-dom";
 import { careProfileById } from "../../../store/careProfiles/careProfilesSelectors";
 import { moArrSelector, moIdsSelector } from "../../../store/mo/moSelectors";
-import { plannedIndicatorChangeItemsIsLoadingSelector } from "../../../store/plannedIndicatorChange/plannedIndicatorChangeSelectors";
 import { initialDataIsLoadingSelector } from "../../../store/initialData/initialDataSelectors";
 
 const firstHeadHeight = 125;
 const leftColWidth = 20;
 const rightColWidth = 120;
 const useStyles = makeStyles((theme) => ({
-  root: {
-    width: "100%",
-    marginTop: theme.spacing(3)
-  },
   head: {
     backgroundColor: "#e9e9e9",
     minWidth: "50px",

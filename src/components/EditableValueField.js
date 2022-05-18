@@ -51,7 +51,6 @@ const styles = theme => ({
 
 class EditableValueField extends React.Component {
     
-    
     constructor(props) {
         super(props);
         this.state = { 
@@ -89,6 +88,7 @@ class EditableValueField extends React.Component {
                     onBlur={() => this.onBlur(v, onChange)} 
                     className={ classes.numInput } 
                     onKeyDown={(e) => this.handleKeyDown(e, v)}
+                    onWheel={(e) => e.target.blur()}
                  />
               </div>
             </React.Fragment>): 

@@ -10,8 +10,6 @@ import {
 } from "@mui/material";
 
 import styled from "@emotion/styled";
-import { css } from "@emotion/react";
-import isPropValid from "@emotion/is-prop-valid";
 
 import Checkbox from '@mui/material/Checkbox';
 import FullscreenIcon from '@mui/icons-material/Fullscreen';
@@ -22,7 +20,6 @@ import Typography from '@mui/material/Typography';
 import ValueField from './ValueField';
 import TotalValueField from './TotalValueField';
 import OmsPlanTable from "../OmsPlanTable";
-import OmsPlanTableContainer from "../OmsPlanTableContainer";
 
 import { 
   indicatorsForSelectedNodeSelector, 
@@ -38,37 +35,16 @@ const firstHeadHeight = 25;
 const leftColWidth = 20;
 const rightColWidth = 120;
 
-const styledOptions = { 
-  shouldForwardProp :  prop  => 
-    isPropValid ( prop ) && prop !== 'minHeight' && prop !== 'noBorder'
-}  
-
-const StickyTopTableRow = styled(TableRow, styledOptions)(props => css`
-  & th {
-    border: ${props.noBorder && '0'};
-    top: ${props.skip ? (props.skip +'px') : '0'};
-    height: ${props.minHeight && (props.minHeight +'px')};
-    min-height: ${props.minHeight && (props.minHeight +'px')};
-    position: sticky;
-    z-index: ${props.theme.zIndex.appBar + 2};
-  }
-`)
-
-const StickyBottomTableRow = styled(TableRow, styledOptions)(props => css`
-  & th, & td {
-    background-color: #e9e9e9;
-    border: 0;
-    bottom: ${props.skip ? (props.skip +'px') : '0'};
-    height: ${props.minHeight && (props.minHeight +'px')};
-    min-height: ${props.minHeight && (props.minHeight +'px')};
-    position: sticky;
-    z-index: ${props.theme.zIndex.appBar + 2};
-  }
-`)
-
 const TableRowStyled = styled(TableRow)`
   &:nth-of-type(odd) {
-      background-color: ${({theme}) => theme.palette.action.hover};
+    background-color: ${({theme}) => theme.palette.action.hover};
+  }
+  &:hover td.MuiTableCell-root {
+    background-color: ${({theme}) => theme.palette.grey[400]};
+  }
+  &.active td.MuiTableCell-root {
+    background-color: ${({theme}) => theme.palette.primary.light};
+    /* font-weight: 500; */
   }
 `
 
@@ -76,6 +52,16 @@ const MainTable = (props) => {
 
   const [fixedTotal, setFixedTotal] = useState(true);
   const [fullScreen, setFullScreen] = useState(false);
+  
+  const setActiveRow = (e) => {
+    const row = e.target.closest('tr');
+    const rowCollection = row.parentElement.children;
+    for(let i = 0; i < rowCollection.length; i++)
+    {
+      rowCollection[i].classList.remove("active");
+    }
+    row.classList.add("active");
+  }
 
   const nodeId = useSelector(selectedNodeIdSelector);
   const mo = useSelector(moArrSelector);
@@ -102,10 +88,9 @@ const MainTable = (props) => {
 
   return (
     <div>
-      <OmsPlanTableContainer className={clsx({'FullScreen':fullScreen})}>
-        <OmsPlanTable aria-label="sticky table" leftColWidth={leftColWidth} rightColWidth={rightColWidth}>
+        <OmsPlanTable aria-label="sticky table" className={clsx({'FullScreen':fullScreen})} leftColWidth={leftColWidth} rightColWidth={rightColWidth} topRowHeight={firstHeadHeight}>
           <TableHead>
-            <StickyTopTableRow minHeight={firstHeadHeight} noBorder={true}>
+            <TableRow>
               <TableCell />
               <TableCell>
                   <Checkbox
@@ -136,8 +121,8 @@ const MainTable = (props) => {
                 </Tooltip>    
                 Итого
               </TableCell>
-            </StickyTopTableRow>
-            <StickyTopTableRow skip={firstHeadHeight} >
+            </TableRow>
+            <TableRow>
               <TableCell />
               <TableCell>
                 Медицинская организация
@@ -164,12 +149,12 @@ const MainTable = (props) => {
                         )
                   })}
               </React.Fragment>
-            </StickyTopTableRow>
+            </TableRow>
           </TableHead>
           <TableBody>
             {mo.map((medOrg) => {
               return (
-                <TableRowStyled key={medOrg.id}>
+                <TableRowStyled key={medOrg.id} onClick={setActiveRow}>
                   <TableCell align="left">
                       {medOrg.order}
                   </TableCell>
@@ -214,7 +199,7 @@ const MainTable = (props) => {
               );
             })}
             {/* ИТОГО */}
-            <StickyBottomTableRow>
+            <TableRow>
                   <TableCell align="left" />
                   <TableCell align="left">
                       <Typography>ИТОГО:</Typography>
@@ -248,10 +233,9 @@ const MainTable = (props) => {
                         )
                   })}
                   </React.Fragment>
-            </StickyBottomTableRow>
+            </TableRow>
           </TableBody>
         </OmsPlanTable>
-      </OmsPlanTableContainer>
     </div>
   );
 };

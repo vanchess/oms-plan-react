@@ -1,116 +1,113 @@
-import React from 'react';
-import withStyles from '@mui/styles/withStyles';
+import React, { useState, useEffect } from 'react';
+import styled from '@emotion/styled';
+import { css, keyframes }  from '@emotion/react';
 
-const styles = theme => ({
-    
-    hideArrows: {
-      "& input::-webkit-outer-spin-button, input::-webkit-inner-spin-button": {
-        "WebkitAppearance": "none",
-        "margin": 0
-      },
-      "& input[type=number]": {
-        "MozAppearance": "textfield"
-      }
-    },
-    hiddenDiv: {
-        visibility: 'hidden',
-        whiteSpace: 'nowrap'
-    },
-    numInput: {
-        //minWidth:'100%',
-        width: '100%',
-        padding: 0,
-        margin: 0,
-        textAlign: 'center'
-    },
-    loaded: {
-        //backgroundColor: 'green',
-    },
-    saving: {
-        backgroundColor: 'orange',
-    },
-    saved: {
-        animationName: '$savedAnimation',
-        animationDuration: '2s'
-    },
-    error: {
-        backgroundColor: 'red',
-    },
-    "@keyframes savedAnimation": {
-        "0%": {
-          backgroundColor: "orange"
-        },
-        "50%": {
-          backgroundColor: "green"
-        },
-        "100%": {
-          backgroundColor: "inherit"
-        }
-    },
-})
+const NumberInput = React.forwardRef(({...props}, ref) => (
+    <input type='number' 
+        ref={ref}
+        {...props}
+    />
+));
 
-class EditableValueField extends React.Component {
-    
-    constructor(props) {
-        super(props);
-        this.state = { 
-            editing: false,
-        };
-        this.inputRef = React.createRef();
+const hideArrows = css`
+    &::-webkit-outer-spin-button,
+    &::-webkit-inner-spin-button {
+        -webkit-appearance: none;
+        margin: 0;
     }
-
-    handleKeyDown = (e, prevValue) => {
-        if (e.key === 'Enter') {
-            e.target.blur();
-        }
-        if (e.key === "Escape") {
-            e.target.value = prevValue;
-            e.target.blur();
-        }
+    &[type=number] {
+        -moz-appearance: textfield;
     }
+`
 
-    render() {
-        const { value, status, onChange, classes } = this.props; 
-        const twoDecimal = new Intl.NumberFormat('ru', { style: 'decimal', minimumFractionDigits: 0, maximumFractionDigits: 2, useGrouping: true });
-        const twoDecimalNoGrouping = new Intl.NumberFormat('en', { style: 'decimal', minimumFractionDigits: 0, maximumFractionDigits: 2, useGrouping: false });
+const NumderInputStyled = styled(NumberInput)`
+    ${hideArrows}
+    width: 100%;
+    padding: 0;
+    margin: 0;
+    text-align: center;
+`
+const savedAnimation = keyframes`
+    0% {
+        background-color: orange;
+    }
+    50% {
+        background-color: green;
+    },
+    100% {
+        background-color: inherit;
+    }
+`
+
+const Div = styled.div`
+    &.loaded {
+        
+    },
+    &.saving {
+        background-color: orange;
+    },
+    &.saved {
+        animation-name: ${savedAnimation};
+        animation-duration: 2s;
+    },
+    &.error {
+        background-color: 'red',
+    },
+`
+
+const twoDecimal = new Intl.NumberFormat('ru', { style: 'decimal', minimumFractionDigits: 0, maximumFractionDigits: 2, useGrouping: true });
+const twoDecimalNoGrouping = new Intl.NumberFormat('en', { style: 'decimal', minimumFractionDigits: 0, maximumFractionDigits: 2, useGrouping: false });
+
+const handleKeyDown = (e, prevValue) => {
+    if (e.key === 'Enter') {
+        e.target.blur();
+    }
+    if (e.key === "Escape") {
+        e.target.value = prevValue;
+        e.target.blur();
+    }
+}
+
+const EditableValueField = (props) => {
+    const { value, status, onChange } = props;
+    const [editing, setEditing] = useState(false);
+    const inputRef = React.createRef();
+
+    useEffect(() => {
+        if (editing === true) {
+            inputRef.current.focus();
+            inputRef.current.select();
+        }
+    }, [editing])
+
+    if (editing === true) {
+        const onBlur = (prevValue, onChange) => {
+            setEditing(false);
+            const newVal = inputRef.current.value;
+            if ((newVal != '') && (newVal != prevValue)) {
+                onChange(Number.parseFloat(newVal));
+            }
+        }
 
         let v = null;
         if (value) {
             v = twoDecimalNoGrouping.format(value);
         }
-
-        return (this.state.editing /*|| Math.round(Math.random())*/ ) ?
-            (<React.Fragment>
-              <div className = {classes.hideArrows}>
-                <input type='number' 
-                    ref={this.inputRef} 
-                    defaultValue={v} 
-                    onBlur={() => this.onBlur(v, onChange)} 
-                    className={ classes.numInput } 
-                    onKeyDown={(e) => this.handleKeyDown(e, v)}
-                    onWheel={(e) => e.target.blur()}
-                 />
-              </div>
-            </React.Fragment>): 
-            <div className={ classes[status] } onClick={(e) => this.onFocus(e)} >{value ? twoDecimal.format(value) : '-'}</div>
+        return (
+            <NumderInputStyled
+                ref={inputRef}
+                defaultValue={v} 
+                onBlur={() => onBlur(v, onChange)} 
+                onKeyDown={(e) => handleKeyDown(e, v)}
+                onWheel={(e) => e.target.blur()}
+            />
+        );
+    } else {
+        return (
+            <Div className={ status } onClick={() => setEditing(true)} >{value ? twoDecimal.format(value) : '-'}</Div>
+        );
     }
-
-    onFocus(e) {
-        //const w = e.target.clientWidth;
-        this.setState({ editing: true }, () => {
-            //this.inputRef.current.style.width = w + 'px';
-            this.inputRef.current.focus();
-            this.inputRef.current.select();
-        });
-    }
-
-    onBlur(prevValue, onChange) {
-        this.setState({ editing: false });
-        const newVal = this.inputRef.current.value;
-        if ((newVal != '') && (newVal != prevValue)) {
-            onChange(Number.parseFloat(newVal));
-        }
-    }
+    
 }
 
-export default withStyles(styles)(EditableValueField);
+export default EditableValueField;

@@ -9,8 +9,6 @@ import {
   LinearProgress,
 } from "@mui/material";
 
-import styled from "@emotion/styled";
-
 import Checkbox from '@mui/material/Checkbox';
 import FullscreenIcon from '@mui/icons-material/Fullscreen';
 import PushPinIcon from '@mui/icons-material/PushPin';
@@ -20,6 +18,7 @@ import Typography from '@mui/material/Typography';
 import ValueField from './ValueField';
 import TotalValueField from './TotalValueField';
 import OmsPlanTable from "../OmsPlanTable";
+import OmsPlanTableRow from "../OmsPlanTableRow";
 
 import { 
   indicatorsForSelectedNodeSelector, 
@@ -35,33 +34,11 @@ const firstHeadHeight = 25;
 const leftColWidth = 20;
 const rightColWidth = 120;
 
-const TableRowStyled = styled(TableRow)`
-  &:nth-of-type(odd) {
-    background-color: ${({theme}) => theme.palette.action.hover};
-  }
-  &:hover td.MuiTableCell-root {
-    background-color: ${({theme}) => theme.palette.grey[400]};
-  }
-  &.active td.MuiTableCell-root {
-    background-color: ${({theme}) => theme.palette.primary.light};
-    /* font-weight: 500; */
-  }
-`
-
 const MainTable = (props) => {
 
   const [fixedTotal, setFixedTotal] = useState(true);
   const [fullScreen, setFullScreen] = useState(false);
   
-  const setActiveRow = (e) => {
-    const row = e.target.closest('tr');
-    const rowCollection = row.parentElement.children;
-    for(let i = 0; i < rowCollection.length; i++)
-    {
-      rowCollection[i].classList.remove("active");
-    }
-    row.classList.add("active");
-  }
 
   const nodeId = useSelector(selectedNodeIdSelector);
   const mo = useSelector(moArrSelector);
@@ -154,7 +131,7 @@ const MainTable = (props) => {
           <TableBody>
             {mo.map((medOrg) => {
               return (
-                <TableRowStyled key={medOrg.id} onClick={setActiveRow}>
+                <OmsPlanTableRow key={medOrg.id} >
                   <TableCell align="left">
                       {medOrg.order}
                   </TableCell>
@@ -195,7 +172,7 @@ const MainTable = (props) => {
                         )
                   })}
                   </React.Fragment>
-                </TableRowStyled>
+                </OmsPlanTableRow>
               );
             })}
             {/* ИТОГО */}

@@ -12,25 +12,25 @@ const tableStyledOptions = {
 const handleKeyDown = (e) => {
     if (e.key === "ArrowLeft" || (e.key === "Tab" && e.shiftKey)) {
         //e.target.parentElement.parentElement.previousElementSibling.firstElementChild.scrollIntoView({block: "nearest", behavior: "smooth"});
-        e.target.parentElement.parentElement.previousElementSibling.firstElementChild.click();
+        e.target.parentElement.previousElementSibling.firstElementChild.click();
         e.preventDefault();
     }
     if (e.key === "ArrowRight" || (e.key === "Tab" && !e.shiftKey)) {
-        e.target.parentElement.parentElement.nextElementSibling.firstElementChild.click();
+        e.target.parentElement.nextElementSibling.firstElementChild.click();
         e.preventDefault();
     }
     if (e.key === "ArrowUp" || (e.key === 'Enter' && e.shiftKey)) {
-        const previousRow = e.target.parentElement.parentElement.parentElement.previousElementSibling;
+        const previousRow = e.target.parentElement.parentElement.previousElementSibling;
         if (previousRow) {
-            const cellIndex = e.target.parentElement.parentElement.cellIndex;
+            const cellIndex = e.target.parentElement.cellIndex;
             previousRow.cells[cellIndex].firstElementChild.click();
         }
         e.preventDefault();
     }
     if (e.key === "ArrowDown" || (e.key === 'Enter' && !e.shiftKey)) {
-        const nextRow = e.target.parentElement.parentElement.parentElement.nextElementSibling;
+        const nextRow = e.target.parentElement.parentElement.nextElementSibling;
         if (nextRow) {
-            const cellIndex = e.target.parentElement.parentElement.cellIndex;
+            const cellIndex = e.target.parentElement.cellIndex;
             nextRow.cells[cellIndex].firstElementChild.click();
         }
         e.preventDefault();

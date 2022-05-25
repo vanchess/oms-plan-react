@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import styled from '@emotion/styled';
 import { css, keyframes }  from '@emotion/react';
 
@@ -71,7 +71,7 @@ const handleKeyDown = (e, prevValue) => {
 const EditableValueField = (props) => {
     const { value, status, onChange } = props;
     const [editing, setEditing] = useState(false);
-    const inputRef = React.createRef();
+    const inputRef = useRef(null);
 
     useEffect(() => {
         if (editing === true) {

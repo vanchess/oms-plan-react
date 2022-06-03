@@ -1,152 +1,179 @@
-import { TableContainer } from "@mui/material";
-import { Table } from '@mui/material';
-import styled from "@emotion/styled";
-import { css } from "@emotion/react";
-import isPropValid from "@emotion/is-prop-valid";
+import React from 'react';
+import clsx from 'clsx';
+import { 
+    Table,
+    TableBody,
+    TableCell,
+    TableHead,
+    TableRow,
+    Checkbox,
+    Tooltip,
+    Typography,
+} from '@mui/material';
 
-const tableStyledOptions = { 
-    shouldForwardProp :  prop  => 
-      isPropValid ( prop ) && prop !==  'leftColWidth' && prop !== 'rightColWidth'
-  }
+import PushPinIcon from '@mui/icons-material/PushPin';
 
-const handleKeyDown = (e) => {
-    if (e.key === "ArrowLeft" || (e.key === "Tab" && e.shiftKey)) {
-        //e.target.parentElement.parentElement.previousElementSibling.firstElementChild.scrollIntoView({block: "nearest", behavior: "smooth"});
-        e.target.parentElement.previousElementSibling.firstElementChild.click();
-        e.preventDefault();
-    }
-    if (e.key === "ArrowRight" || (e.key === "Tab" && !e.shiftKey)) {
-        e.target.parentElement.nextElementSibling.firstElementChild.click();
-        e.preventDefault();
-    }
-    if (e.key === "ArrowUp" || (e.key === 'Enter' && e.shiftKey)) {
-        const previousRow = e.target.parentElement.parentElement.previousElementSibling;
-        if (previousRow) {
-            const cellIndex = e.target.parentElement.cellIndex;
-            previousRow.cells[cellIndex].firstElementChild.click();
+import ValueField from './ValueField';
+import TotalValueField from './TotalValueField';
+import OmsPlanTableRow from "./OmsPlanTableRow";
+import { useState } from 'react';
+
+export default function(props) {
+    const [fixedTotal, setFixedTotal] = useState(true);
+    const { columnDefs, mo, moIds, controlPanel, onKeyDown } = props;
+
+    const indicators = [];
+    columnDefs.map((c) => {
+            c.children.map((ind) => {
+                indicators[ind.id] = ind;
+            });
         }
-        e.preventDefault();
-    }
-    if (e.key === "ArrowDown" || (e.key === 'Enter' && !e.shiftKey)) {
-        const nextRow = e.target.parentElement.parentElement.nextElementSibling;
-        if (nextRow) {
-            const cellIndex = e.target.parentElement.cellIndex;
-            nextRow.cells[cellIndex].firstElementChild.click();
-        }
-        e.preventDefault();
-    }
-    
+    );
+
+    const indicatorLength = indicators.length;
+
+    return (
+      <Table onKeyDown={onKeyDown}>
+          <TableHead>
+            <TableRow>
+              <TableCell />
+              <TableCell>
+                  { controlPanel }
+              </TableCell>
+              {columnDefs.map((profile) => {
+                return (
+                  <TableCell align="center" colSpan={profile.children.length} key={profile.id}>
+                      <span style={ {whiteSpace: 'nowrap', overflow: 'hidden'} }>{profile.name}</span>
+                  </TableCell>
+                  );
+                })}
+              <TableCell colSpan={indicatorLength} className={clsx({'stickyRight':fixedTotal})} align="center" >
+                <Tooltip title={`${fixedTotal?'Открепить':'Закрепить'} столбец`} disableInteractive>
+                    <Checkbox
+                      size="small"
+                      icon={<PushPinIcon />}
+                      checkedIcon={<PushPinIcon />}
+                      checked={fixedTotal}
+                      onChange={(e) => setFixedTotal(e.target.checked)}
+                      color='secondary'
+                    />
+                </Tooltip>    
+                Итого
+              </TableCell>
+            </TableRow>
+            <TableRow>
+              <TableCell />
+              <TableCell>
+                Медицинская организация
+              </TableCell>
+              {columnDefs.map((profile) => {
+                return (
+                    <React.Fragment key={profile.id}>
+                      {profile.children.map((indicator) => {
+                            return (
+                              <TableCell key={indicator.id} align="center" >
+                                  {indicator.name}
+                              </TableCell>
+                            )
+                      })}
+                    </React.Fragment>
+                );
+              })}
+              <React.Fragment>
+                  {indicators.map((indicator, index) => {
+                        return (
+                          <TableCell key={indicator.id} align="center" className={clsx({'stickyRight':fixedTotal})} >
+                              {indicator.name}
+                          </TableCell>
+                        )
+                  })}
+              </React.Fragment>
+            </TableRow>
+          </TableHead>
+          <TableBody>
+            {mo.map((medOrg) => {
+              return (
+                <OmsPlanTableRow key={medOrg.id} >
+                  <TableCell align="left">
+                      {medOrg.order}
+                  </TableCell>
+                  <TableCell align="left">
+                    <Tooltip title={medOrg.name} disableInteractive>
+                      <Typography>
+                        {medOrg.short_name}
+                      </Typography>
+                    </Tooltip>
+                  </TableCell>
+                  {columnDefs.map((profile) => {
+                    return (
+                      <React.Fragment key={profile.id}>
+                      {profile.children.map((indicator) => {
+                            return (
+                              <TableCell key={indicator.id} align="center" >
+                                <ValueField 
+                                    moId={medOrg.id}
+                                    profileId={profile.id}
+                                    indicatorId={indicator.id}
+                                />
+
+                              </TableCell>
+                            );
+                      })}
+                      </React.Fragment>
+                    );
+                  })}
+                  <React.Fragment>
+                  {indicators.map((indicator, index) => {
+                        return (
+                          <TableCell key={indicator.id} align="center" className={clsx({'stickyRight':fixedTotal})} >
+                            <TotalValueField 
+                                moIds={[medOrg.id]}
+                                indicatorId={indicator.id}
+                            />
+                          </TableCell>
+                        )
+                  })}
+                  </React.Fragment>
+                </OmsPlanTableRow>
+              );
+            })}
+            {/* ИТОГО */}
+            <TableRow>
+                  <TableCell align="left" />
+                  <TableCell align="left">
+                      <Typography>ИТОГО:</Typography>
+                  </TableCell>
+                  {columnDefs.map((profile) => {
+                    return (
+                      <React.Fragment key={profile.id}>
+                      {profile.children.map((indicator) => {
+                            return (
+                              <TableCell key={indicator.id} align="center">
+                                <TotalValueField 
+                                    moIds={moIds}
+                                    profileId={profile.id}
+                                    indicatorId={indicator.id}
+                                />
+                              </TableCell>
+                            );
+                      })}
+                      </React.Fragment>
+                    );
+                  })}
+                  <React.Fragment>
+                  {indicators.map((indicator, index) => {
+                        return (
+                          <TableCell key={indicator.id} align="center" className={clsx({'stickyRight':fixedTotal})} >
+                            <TotalValueField
+                                moIds={moIds}
+                                indicatorId={indicator.id}
+                            />
+                          </TableCell>
+                        )
+                  })}
+                  </React.Fragment>
+            </TableRow>
+          </TableBody>
+      </Table>
+    );
 }
-
-export default styled(
-        ({className, ...props}) => (
-            <TableContainer className={className}>
-                <Table {...props} onKeyDown={handleKeyDown}></Table>
-            </TableContainer>
-        )
-    , tableStyledOptions
-  )(
-  props => css`
-    scroll-padding-top: ${props.topRowHeight + 50}px;
-    scroll-padding-left: ${props.leftColWidth + 325}px;;
-    scroll-padding-bottom: 25px;
-    scroll-padding-right: 500px;
-    scroll-behavior: smooth;
-    max-height: calc(100vh - 128px);
-    min-height: 400px;
-    &.FullScreen {
-        background-color: #fff;
-        width: 100%;
-        height: 100%;
-        max-height: 100%;
-        position: absolute;
-        left: 0;
-        top: 0;
-        z-index: ${props.theme.zIndex.appBar + 150};
-    }
-    & th {
-        background-color: #e9e9e9;
-        min-width: 50px;
-        padding: 0 2px 0 2px;
-    }
-    & td {
-        min-width: 50px;
-        white-space: nowrap;
-        padding: 0px 5px 0px 5px;
-    }
-    
-    & tr:nth-of-type(1) th {
-        border: 0;
-        top: 0;
-        height: ${props.topRowHeight}px;
-        min-height: ${props.topRowHeight}px;
-        position: sticky;
-        z-index: ${props.theme.zIndex.appBar + 2};
-    }
-    & tr:nth-of-type(2) th {
-        top: ${props.topRowHeight}px;
-        position: sticky;
-        z-index: ${props.theme.zIndex.appBar + 2};
-    }
-
-    & tr:nth-last-of-type(1) td {
-        background-color: #e9e9e9;
-        border: 0;
-        bottom: 0;
-        position: sticky;
-        z-index: ${props.theme.zIndex.appBar + 2};
-    }
-    & tr:nth-last-of-type(1) td.stickyRight,
-    & tr:nth-last-of-type(1) td:nth-of-type(-n+2) {
-        background-color: #d3d3d3;
-        z-index: ${props.theme.zIndex.appBar + 4};
-    }
-
-    & tr th:nth-of-type(-n+2) {
-        background-color: #d3d3d3;
-        position: sticky;
-        z-index: ${props.theme.zIndex.appBar + 4}
-    }
-    & td:nth-of-type(-n+2) {
-        background-color: #e9e9e9;
-        position: sticky;
-        z-index: ${props.theme.zIndex.appBar + 3}
-    }
-    & th:nth-of-type(1), & td:nth-of-type(1) {
-        left: 0;
-        width: ${props.leftColWidth}px;
-    }
-    & th:nth-of-type(2), & td:nth-of-type(2) {
-        max-width: 300px;
-        overflow: hidden;
-        left: ${props.leftColWidth}px;
-    }
-    & .stickyRight {
-        padding: 0;
-        min-width: ${props.rightColWidth}px;
-        position: sticky;
-    }
-    & tr th.stickyRight {
-        background-color: #d3d3d3;
-        z-index: ${props.theme.zIndex.appBar + 4};
-    }
-    & td.stickyRight {
-        background-color: #e9e9e9;
-        z-index: ${props.theme.zIndex.appBar + 3};
-    }
-    & .stickyRight:nth-last-of-type(1) {
-        right: 0px;
-    }
-    & .stickyRight:nth-last-of-type(2) {
-        right: ${props.rightColWidth}px;
-    }
-    & .stickyRight:nth-last-of-type(3) {
-        right: ${2 * props.rightColWidth}px;
-    }
-    & .stickyRight:nth-last-of-type(4) {
-        right: ${3 * props.rightColWidth}px;
-    }
-    & .stickyRight:nth-last-of-type(5) {
-        right: ${4 * props.rightColWidth}px;
-    }
-    `)

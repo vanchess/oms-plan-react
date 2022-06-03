@@ -21,8 +21,8 @@ import FullscreenExitIcon from '@mui/icons-material/FullscreenExit';
 import Tooltip from '@mui/material/Tooltip';
 import Typography from '@mui/material/Typography';
 
-import ValueField from '../Hospital/ValueField';
-import TotalValueField from '../Hospital/TotalValueField';
+import ValueField from '../ValueField';
+import TotalValueField from '../TotalValueField';
 
 import { 
   indicatorForNodeIsLoadingSelector,

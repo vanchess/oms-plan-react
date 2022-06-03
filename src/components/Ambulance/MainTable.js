@@ -19,8 +19,8 @@ import { makeStyles, withStyles } from '@mui/styles';
 
 import FullscreenIcon from '@mui/icons-material/Fullscreen';
 
-import ValueField from '../Hospital/ValueField';
-import TotalValueField from '../Hospital/TotalValueField';
+import ValueField from '../ValueField';
+import TotalValueField from '../TotalValueField';
 
 import { 
   indicatorForNodeIsLoadingSelector,

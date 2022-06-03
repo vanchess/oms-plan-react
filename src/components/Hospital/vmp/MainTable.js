@@ -24,7 +24,7 @@ import Link from '@mui/material/Link';
 import { Link as RouterLink, useHistory, useLocation } from 'react-router-dom';
 
 import CareProfileDialog from './CareProfileDialog';
-import TotalValueField from '../TotalValueField';
+import TotalValueField from '../../TotalValueField';
 
 import { indicatorsForSelectedNodeSelector, careProfilesArrForSelectedNodeSelector, selectedNodeIdSelector, careProfilesForNodeIsLoadingSelector, indicatorForNodeIsLoadingSelector } from '../../../store/nodeData/nodeDataSelectors';
 import { moArrSelector, moIdsSelector } from "../../../store/mo/moSelectors";

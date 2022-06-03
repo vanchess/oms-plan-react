@@ -22,8 +22,8 @@ import Typography from '@mui/material/Typography';
 import Link from '@mui/material/Link';
 
 import CareProfileDialog from './CareProfileDialog';
-import ValueField from '../ValueField';
-import TotalValueField from '../TotalValueField';
+import ValueField from '../../ValueField';
+import TotalValueField from '../../TotalValueField';
 import {
   useParams
 } from "react-router-dom";

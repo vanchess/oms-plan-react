@@ -1,24 +1,14 @@
-import React, { useState } from "react";
+import React, { useMemo, useState } from "react";
 import { useSelector } from 'react-redux';
 import clsx from 'clsx';
 import {
-  TableBody,
-  TableCell,
-  TableHead,
-  TableRow,
   LinearProgress,
+  Checkbox,
 } from "@mui/material";
 
-import Checkbox from '@mui/material/Checkbox';
 import FullscreenIcon from '@mui/icons-material/Fullscreen';
-import PushPinIcon from '@mui/icons-material/PushPin';
-import Tooltip from '@mui/material/Tooltip';
-import Typography from '@mui/material/Typography';
 
-import ValueField from './ValueField';
-import TotalValueField from './TotalValueField';
-import OmsPlanTable from "../OmsPlanTable";
-import OmsPlanTableRow from "../OmsPlanTableRow";
+import OmsPlanTable from "../OmsPlanTableStyled";
 
 import { 
   indicatorsForSelectedNodeSelector, 
@@ -34,17 +24,30 @@ const firstHeadHeight = 25;
 const leftColWidth = 20;
 const rightColWidth = 120;
 
-const MainTable = (props) => {
+const EmptyArray = [];
 
-  const [fixedTotal, setFixedTotal] = useState(true);
+const MainTable = (props) => {
   const [fullScreen, setFullScreen] = useState(false);
   
-
   const nodeId = useSelector(selectedNodeIdSelector);
   const mo = useSelector(moArrSelector);
   const moIds = useSelector(moIdsSelector);
   const profiles = useSelector(hospitalBedProfilesForSelectedNodeSelector);
   const indicators = useSelector(indicatorsForSelectedNodeSelector);
+
+  const columnDefs = useMemo(() => {
+      if (!indicators || !profiles) {
+        console.log(1);
+          return EmptyArray;
+      }
+      console.log(2);
+      return profiles.map((profile) => {
+        return {
+          ...profile,
+          children: indicators
+        }
+      })
+    },[profiles,indicators]);
 
   const isLoading = useSelector((store) => {
     return (
@@ -61,157 +64,27 @@ const MainTable = (props) => {
   }
   console.log('MИ3');
 
-  const indicatorLength = indicators.length;
-
   return (
     <div>
-        <OmsPlanTable aria-label="sticky table" className={clsx({'FullScreen':fullScreen})} leftColWidth={leftColWidth} rightColWidth={rightColWidth} topRowHeight={firstHeadHeight}>
-          <TableHead>
-            <TableRow>
-              <TableCell />
-              <TableCell>
-                  <Checkbox
-                        size="small"
-                        checked={fullScreen}
-                        icon={<FullscreenIcon />} 
-                        checkedIcon={<FullscreenIcon />}
-                        onChange={(e) => setFullScreen(e.target.checked)}
-                      />
-              </TableCell>
-              {profiles.map((profile) => {
-                return (
-                  <TableCell align="center" colSpan={indicatorLength} key={profile.id}>
-                      <span style={ {whiteSpace: 'nowrap', overflow: 'hidden'} }>{profile.name}</span>
-                  </TableCell>
-                  );
-                })}
-              <TableCell colSpan={indicatorLength} className={clsx({'stickyRight':fixedTotal})} align="center" >
-                <Tooltip title={`${fixedTotal?'Открепить':'Закрепить'} столбец`} disableInteractive>
-                    <Checkbox
-                      size="small"
-                      icon={<PushPinIcon />}
-                      checkedIcon={<PushPinIcon />}
-                      checked={fixedTotal}
-                      onChange={(e) => setFixedTotal(e.target.checked)}
-                      color='secondary'
-                    />
-                </Tooltip>    
-                Итого
-              </TableCell>
-            </TableRow>
-            <TableRow>
-              <TableCell />
-              <TableCell>
-                Медицинская организация
-              </TableCell>
-              {profiles.map((profile) => {
-                return (
-                    <React.Fragment key={profile.id}>
-                      {indicators.map((indicator) => {
-                            return (
-                              <TableCell key={indicator.id} align="center" >
-                                  {indicator.name}
-                              </TableCell>
-                            )
-                      })}
-                    </React.Fragment>
-                );
-              })}
-              <React.Fragment>
-                  {indicators.map((indicator, index) => {
-                        return (
-                          <TableCell key={indicator.id} align="center" className={clsx({'stickyRight':fixedTotal})} >
-                              {indicator.name}
-                          </TableCell>
-                        )
-                  })}
-              </React.Fragment>
-            </TableRow>
-          </TableHead>
-          <TableBody>
-            {mo.map((medOrg) => {
-              return (
-                <OmsPlanTableRow key={medOrg.id} >
-                  <TableCell align="left">
-                      {medOrg.order}
-                  </TableCell>
-                  <TableCell align="left">
-                    <Tooltip title={medOrg.name} disableInteractive>
-                      <Typography>
-                        {medOrg.short_name}
-                      </Typography>
-                    </Tooltip>
-                  </TableCell>
-                  {profiles.map((profile) => {
-                    return (
-                      <React.Fragment key={profile.id}>
-                      {indicators.map((indicator) => {
-                            return (
-                              <TableCell key={indicator.id} align="center" >
-                                <ValueField 
-                                    moId={medOrg.id}
-                                    profileId={profile.id}
-                                    indicatorId={indicator.id}
-                                />
-
-                              </TableCell>
-                            );
-                      })}
-                      </React.Fragment>
-                    );
-                  })}
-                  <React.Fragment>
-                  {indicators.map((indicator, index) => {
-                        return (
-                          <TableCell key={indicator.id} align="center" className={clsx({'stickyRight':fixedTotal})} >
-                            <TotalValueField 
-                                moIds={[medOrg.id]}
-                                indicatorId={indicator.id}
-                            />
-                          </TableCell>
-                        )
-                  })}
-                  </React.Fragment>
-                </OmsPlanTableRow>
-              );
-            })}
-            {/* ИТОГО */}
-            <TableRow>
-                  <TableCell align="left" />
-                  <TableCell align="left">
-                      <Typography>ИТОГО:</Typography>
-                  </TableCell>
-                  {profiles.map((profile) => {
-                    return (
-                      <React.Fragment key={profile.id}>
-                      {indicators.map((indicator) => {
-                            return (
-                              <TableCell key={indicator.id} align="center">
-                                <TotalValueField 
-                                    moIds={moIds}
-                                    profileId={profile.id}
-                                    indicatorId={indicator.id}
-                                />
-                              </TableCell>
-                            );
-                      })}
-                      </React.Fragment>
-                    );
-                  })}
-                  <React.Fragment>
-                  {indicators.map((indicator, index) => {
-                        return (
-                          <TableCell key={indicator.id} align="center" className={clsx({'stickyRight':fixedTotal})} >
-                            <TotalValueField
-                                moIds={moIds}
-                                indicatorId={indicator.id}
-                            />
-                          </TableCell>
-                        )
-                  })}
-                  </React.Fragment>
-            </TableRow>
-          </TableBody>
+        <OmsPlanTable 
+          aria-label="sticky table" 
+          className={clsx({'FullScreen':fullScreen})} 
+          leftColWidth={leftColWidth} 
+          rightColWidth={rightColWidth} 
+          topRowHeight={firstHeadHeight}
+          columnDefs={columnDefs}
+          mo={mo}
+          moIds={moIds}
+          controlPanel={
+            <Checkbox
+                  size="small"
+                  checked={fullScreen}
+                  icon={<FullscreenIcon />} 
+                  checkedIcon={<FullscreenIcon />}
+                  onChange={(e) => setFullScreen(e.target.checked)}
+                />
+          }
+          >
         </OmsPlanTable>
     </div>
   );

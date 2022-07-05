@@ -5,6 +5,7 @@ import { css } from "@emotion/react";
 import isPropValid from "@emotion/is-prop-valid";
 
 import OmsPlanTable from "./OmsPlanTable";
+import React from "react";
 /*
 const tableStyledOptions = { 
     shouldForwardProp :  prop  => 
@@ -40,7 +41,7 @@ const handleKeyDown = (e) => {
     
 }
 
-export default styled(
+const OmsPlanTableStyled = styled(
         ({className, ...props}) => (
             <TableContainer className={className}>
                 <OmsPlanTable {...props} onKeyDown={handleKeyDown}></OmsPlanTable>
@@ -50,11 +51,11 @@ export default styled(
   )(
   props => css`
     scroll-padding-top: ${props.topRowHeight + 50}px;
-    scroll-padding-left: ${props.leftColWidth + 325}px;;
+    scroll-padding-left: ${props.leftColWidth + 325}px;
     scroll-padding-bottom: 25px;
     scroll-padding-right: 500px;
     scroll-behavior: smooth;
-    max-height: calc(100vh - 128px);
+    max-height: calc(100vh - 150px);
     min-height: 400px;
     &.FullScreen {
         background-color: #fff;
@@ -152,3 +153,5 @@ export default styled(
         right: ${4 * props.rightColWidth}px;
     }
     `)
+
+export default OmsPlanTableStyled;

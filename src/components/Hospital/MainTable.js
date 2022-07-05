@@ -44,6 +44,7 @@ const MainTable = (props) => {
       return profiles.map((profile) => {
         return {
           ...profile,
+          profileId: profile.id,
           children: indicators
         }
       })

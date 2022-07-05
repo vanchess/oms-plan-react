@@ -9,6 +9,7 @@ import {
     Checkbox,
     Tooltip,
     Typography,
+    Link
 } from '@mui/material';
 
 import PushPinIcon from '@mui/icons-material/PushPin';
@@ -17,11 +18,12 @@ import ValueField from './ValueField';
 import TotalValueField from './TotalValueField';
 import OmsPlanTableRow from "./OmsPlanTableRow";
 import { useState } from 'react';
+import { Link as RouterLink } from 'react-router-dom';
 
-export default function(props) {
+function OmsPlanTable(props) {
     const [fixedTotal, setFixedTotal] = useState(true);
-    const { columnDefs, mo, moIds, controlPanel, onKeyDown } = props;
-
+    const { columnDefs, mo, moIds, controlPanel, onKeyDown, variant, totalFilter } = props;
+console.log('OmsPlanTable')
     const indicators = [];
     columnDefs.map((c) => {
             c.children.map((ind) => {
@@ -29,6 +31,8 @@ export default function(props) {
             });
         }
     );
+
+    indicators.sort((a,b) => a.order - b.order);
 
     const indicatorLength = indicators.length;
 
@@ -40,10 +44,19 @@ export default function(props) {
               <TableCell>
                   { controlPanel }
               </TableCell>
-              {columnDefs.map((profile) => {
+              {columnDefs.map((colDef) => {
                 return (
-                  <TableCell align="center" colSpan={profile.children.length} key={profile.id}>
-                      <span style={ {whiteSpace: 'nowrap', overflow: 'hidden'} }>{profile.name}</span>
+                  <TableCell align="center" colSpan={colDef.children.length} key={colDef.id}>
+                        { colDef.head || ( colDef.link ? (
+                            <div style={ {whiteSpace: 'nowrap', overflow: 'hidden'} }>
+                              <Link component={RouterLink} to={colDef.link}>
+                                {colDef.name}
+                              </Link>
+                            </div>
+                          ) : 
+                            colDef.name
+                          )
+                        }
                   </TableCell>
                   );
                 })}
@@ -66,10 +79,10 @@ export default function(props) {
               <TableCell>
                 Медицинская организация
               </TableCell>
-              {columnDefs.map((profile) => {
+              {columnDefs.map((colDef) => {
                 return (
-                    <React.Fragment key={profile.id}>
-                      {profile.children.map((indicator) => {
+                    <React.Fragment key={colDef.id}>
+                      {colDef.children.map((indicator) => {
                             return (
                               <TableCell key={indicator.id} align="center" >
                                   {indicator.name}
@@ -104,18 +117,30 @@ export default function(props) {
                       </Typography>
                     </Tooltip>
                   </TableCell>
-                  {columnDefs.map((profile) => {
+                  {columnDefs.map((colDef) => {
                     return (
-                      <React.Fragment key={profile.id}>
-                      {profile.children.map((indicator) => {
+                      <React.Fragment key={colDef.id}>
+                      {colDef.children.map((indicator) => {
                             return (
                               <TableCell key={indicator.id} align="center" >
-                                <ValueField 
-                                    moId={medOrg.id}
-                                    profileId={profile.id}
+                                {(variant==='summary') ?
+                                (
+                                <TotalValueField 
+                                    moIds={[medOrg.id]}
+                                    profileId={colDef.profileId}
+                                    careProfileId={colDef.careProfileId}
                                     indicatorId={indicator.id}
                                 />
-
+                                ) :
+                                (<ValueField 
+                                    moId={medOrg.id}
+                                    profileId={colDef.profileId}
+                                    careProfileId={colDef.careProfileId}
+                                    vmpGroupId={colDef.vmpGroupId}
+                                    vmpTypeId={colDef.vmpTypeId}
+                                    indicatorId={indicator.id}
+                                />)
+                                }
                               </TableCell>
                             );
                       })}
@@ -129,6 +154,7 @@ export default function(props) {
                             <TotalValueField 
                                 moIds={[medOrg.id]}
                                 indicatorId={indicator.id}
+                                careProfileId={totalFilter && totalFilter.careProfileId}
                             />
                           </TableCell>
                         )
@@ -143,15 +169,18 @@ export default function(props) {
                   <TableCell align="left">
                       <Typography>ИТОГО:</Typography>
                   </TableCell>
-                  {columnDefs.map((profile) => {
+                  {columnDefs.map((colDef) => {
                     return (
-                      <React.Fragment key={profile.id}>
-                      {profile.children.map((indicator) => {
+                      <React.Fragment key={colDef.id}>
+                      {colDef.children.map((indicator) => {
                             return (
                               <TableCell key={indicator.id} align="center">
                                 <TotalValueField 
                                     moIds={moIds}
-                                    profileId={profile.id}
+                                    profileId={colDef.profileId}
+                                    careProfileId={colDef.careProfileId}
+                                    vmpGroupId={colDef.vmpGroupId}
+                                    vmpTypeId={colDef.vmpTypeId}
                                     indicatorId={indicator.id}
                                 />
                               </TableCell>
@@ -167,6 +196,7 @@ export default function(props) {
                             <TotalValueField
                                 moIds={moIds}
                                 indicatorId={indicator.id}
+                                careProfileId={totalFilter && totalFilter.careProfileId}
                             />
                           </TableCell>
                         )
@@ -177,3 +207,5 @@ export default function(props) {
       </Table>
     );
 }
+
+export default React.memo(OmsPlanTable);

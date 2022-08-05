@@ -19,10 +19,16 @@ import { vmpGroupsReducer } from './vmpGroups/vmpGroupsStore';
 import { vmpTypesReducer } from './vmpTypes/vmpTypesStore';
 import { plannedIndicatorChangeReducer } from './plannedIndicatorChange/plannedIndicatorChangeStore';
 import { appReducer } from './app/appStore';
+import { categoryReducer } from './category/categoryStore';
+import { categoryTreeReducer } from './category/categoryTreeStore';
+import { categoryTreeNodesReducer } from './category/categoryTreeNodesStore';
 //import { alert } from './alert.reducer';
 
 const rootReducer = combineReducers({
   app: appReducer,
+  category: categoryReducer,
+  categoryTree: categoryTreeReducer,
+  categoryTreeNodes: categoryTreeNodesReducer,
   hospitalBedProfiles: hospitalBedProfilesReducer,
   careProfiles: careProfilesReducer,
   medicalServices: medicalServicesReducer,

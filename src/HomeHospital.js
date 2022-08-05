@@ -41,6 +41,7 @@ class HomeHospital extends React.Component {
             ]}
         ]},
         {'key':2, 'title':'Корректировки', 'to':`#`, 'icon': <LabelImportantIcon />, 'childList':[
+            {'key':1, 'title':'Внести',   'to':`${path}changes`, 'tooltip':'Перераспределение объемов медицинской помощи', 'icon': <MailIcon />},
             {'key':2, 'title':'Дневной',   'to':`#`, 'icon': <MailIcon />, 'childList':[
                 {'key':4, 'title':'при поликлинике',   'to':`${path}changes/4`, 'tooltip':'Перераспределение объемов медицинской помощи', 'icon': <MailIcon />},
                 {'key':5, 'title':'при стационаре',   'to':`${path}changes/5`, 'tooltip':'Перераспределение объемов медицинской помощи', 'icon': <MailIcon />},

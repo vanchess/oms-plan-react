@@ -26,6 +26,10 @@ import { vmpGroupsSelectorIsLoadingSelector } from './store/vmpGroups/vmpGroupsS
 import { vmpTypesIsLoadingSelector } from './store/vmpTypes/vmpTypesSelectors';
 import { periodIsLoadingSelector } from './store/period/periodSelectors';
 import { LinearProgress } from '@mui/material';
+import { categoryFetch } from './store/category/categoryStore';
+import { categoryIsLoadingSelector } from './store/category/categorySelector';
+import { categoryTreeFetch } from './store/category/categoryTreeStore';
+import { categoryTreeNodesFetch } from './store/category/categoryTreeNodesStore';
 
 export default function AppRoot() {
   const dispatch = useDispatch();
@@ -44,6 +48,7 @@ export default function AppRoot() {
       || vmpGroupsSelectorIsLoadingSelector(store)
       || vmpTypesIsLoadingSelector(store)
       || periodIsLoadingSelector(store)
+      || categoryIsLoadingSelector(store)
     )
   });
  
@@ -58,6 +63,11 @@ export default function AppRoot() {
     dispatch(vmpGroupsFetch());
     dispatch(vmpTypesFetch());
     dispatch(periodFetch());
+    dispatch(categoryFetch());
+    dispatch(categoryTreeFetch({nodeId:1}));
+    dispatch(categoryTreeFetch({nodeId:9}));
+    dispatch(categoryTreeFetch({nodeId:17}));
+    dispatch(categoryTreeNodesFetch());
 
     dispatch(appInitBegin());
   }, [dispatch])

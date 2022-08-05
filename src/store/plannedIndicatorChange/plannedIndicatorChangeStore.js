@@ -35,7 +35,7 @@ export const indicatorChangeForNodeAdd = ({periodId, moId, moDepartmentId, plann
         plannedIndicatorChangeService.set({periodId, moId, moDepartmentId, plannedIndicatorId, value}).then(
             data => {
                 // console.log(data.data.id);
-                dispatch(indicatorChangeForNodeAddSuccess({lastId:uId, id:data.data.id, periodId, moId, moDepartmentId, plannedIndicatorId, value:data.data.value}));
+                dispatch(indicatorChangeForNodeAddSuccess({lastId:uId, id:data.data.id, periodId, moId, moDepartmentId, plannedIndicatorId, value:data.data.value, commitId:data.commit_id}));
             },
             data => {
                 // console.log('error',data);
@@ -83,12 +83,12 @@ export function plannedIndicatorChangeReducer(state = initialState, action) {
   }
 }
 
-const nodeUpdate = (state, {id, lastId, periodId, moId, moDepartmentId=null, plannedIndicatorId, value}, status) => {
+const nodeUpdate = (state, {id, lastId, periodId, moId, moDepartmentId=null, plannedIndicatorId, value, commitId=null}, status) => {
     const newState = {...state,
         entities: { ...state.entities }
     }
     if (id) {
-        newState.entities[id] = {id, period_id:periodId, mo_id:moId, planned_indicator_id:plannedIndicatorId, mo_department_id:moDepartmentId, value, status};
+        newState.entities[id] = {id, period_id:periodId, mo_id:moId, planned_indicator_id:plannedIndicatorId, mo_department_id:moDepartmentId, value, status, commit_id:commitId};
     }
     if (lastId && lastId !== id) {
         delete newState.entities[lastId];

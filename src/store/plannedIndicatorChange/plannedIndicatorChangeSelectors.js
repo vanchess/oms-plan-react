@@ -187,3 +187,21 @@ export const totalValueSelector = (store, {plannedIndicatorIds, periodIds, moIds
 export const plannedIndicatorChangeItemsIsLoadingSelector = (store) => {
     return store.plannedIndicatorChange.loading;
 }
+
+const EmptyArray = [];
+export const plannedIndicatorChangeByCommitIdSelector = (store, {plannedIndicatorIds, periodIds, commitId=null}) => {
+    const dataArray = sortedPlannedIndicatorChangeArraySelector(store);
+    if(dataArray.length === 0) {
+        return EmptyArray;
+    }
+    let items = EmptyArray;
+    if(plannedIndicatorIds && periodIds) {
+        items = dataArray.filter(item => {
+            return  commitId === item.commit_id
+                && periodIds.includes(item.period_id)
+                && plannedIndicatorIds.includes(item.planned_indicator_id);
+        });
+    }
+    
+    return items;
+}

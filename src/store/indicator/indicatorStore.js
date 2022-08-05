@@ -36,7 +36,8 @@ export function indicatorReducer(state = initialState, action) {
       return { ...state,
         entities: action.payload.entities.reduce((o, item) => {o[item.id] = item; return o;}, {}),
         ids: action.payload.entities.map(e => e.id),
-        loading: false
+        loading: false,
+        error: false
       };
     case indicatorsGetFailure.type:
       return { ...state,

@@ -116,3 +116,14 @@ export const plannedIndicatorsWhereSelector = createSelector(
         return plannedIndicatorsArrByIds(plannedIndicators, ids);
     }
 )
+
+export const plannedIndicatorsIdsByNodeIds = (store, nodeIds) => {
+    const e = plannedIndicatorsSelector(store);
+    const plannedIndicatorIds = Object.keys(e).filter(id => {
+        if (nodeIds.includes(e[id].node_id)) {
+            return true;
+        }
+        return false;
+    });
+    return plannedIndicatorIds.map(id => Number(id));
+}

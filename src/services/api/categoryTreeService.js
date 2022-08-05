@@ -29,7 +29,7 @@ export class categoryTreeService extends apiService {
     }
 
     static getCareProfilesUsedForNodeId(nodeId) {
-        const path = 'user-care-profiles';
+        const path = 'used-care-profiles';
 
         return this.get(path, {params: {'node':nodeId}}).then((data) => {
             return data;
@@ -68,4 +68,22 @@ export class categoryTreeService extends apiService {
             return data;
         });
     }
+
+    static getTree(rootNodeId) {
+        const path = 'category-tree';
+        
+        return this.get(path + '/' + rootNodeId).then((data) => {
+            return data;
+        });
+    }
+
+    static getTreeNodes() {
+        const path = 'category-tree-nodes';
+
+        return this.get(path).then((data) => {
+            return {entities: data.data}
+        });
+    }
+
+    
 }

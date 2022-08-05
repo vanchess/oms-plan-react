@@ -20,6 +20,13 @@ export const dataForNodeIdSelector = (store, nodeId) => {
     return store.nodeData.entities[nodeId];
 }
 
+export const dataForNodeIdsSelector = (store, nodeIds) => {
+    if (!store.nodeData.entities[nodeId]) {
+        return null;
+    }
+    return store.nodeData.entities[nodeId];
+}
+
 /// indicators
 export const indicatorIdsForNodeIdSelector = (store, nodeId) => {
     const dataForNodeId = dataForNodeIdSelector(store, nodeId);

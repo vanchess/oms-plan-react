@@ -33,7 +33,7 @@ import {
 } from '../../../store/nodeData/nodeDataSelectors';
 import { initialDataIsLoadingSelector } from "../../../store/initialData/initialDataSelectors";
 import { medicalServicesIsLoadingSelector } from "../../../store/medicalServices/medicalServicesSelectors";
-import { medicalAssistanceTypesIsLoadingSelector } from "../../../store/medicalAssistanceType/medicalAssistenceTypeSelectors";
+import { medicalAssistanceTypesIsLoadingSelector } from "../../../store/medicalAssistanceType/medicalAssistanceTypeSelectors";
 import { useParams } from "react-router-dom";
 import { moDepartmentsArrByMoIdSelector } from "../../../store/moDepartment/moDepartmentSelectors";
 

@@ -9,9 +9,12 @@ import MainTable from './MainTable';
 import FapMainTable  from  './fap/MainTable.js'
 import MoList  from  './fap/MoList.js'
 
-import { Route } from 'react-router-dom';
+import { Redirect, Route } from 'react-router-dom';
 import { Switch } from 'react-router-dom';
 import { useRouteMatch } from 'react-router-dom';
+import { useSelector } from 'react-redux';
+import { selectedNodeIdSelector } from '../../store/nodeData/nodeDataSelectors';
+import { moDepartmentRequired } from '../../services/moDepartmentRequired';
 
 const styles = theme => ({
   container: {
@@ -32,6 +35,7 @@ function InitialData(props) {
   const { classes } = props;
   const match = useRouteMatch();
   const path = match.path;
+  const selectedNodeId = useSelector(selectedNodeIdSelector);
 
   return (
     <div>
@@ -42,7 +46,10 @@ function InitialData(props) {
             <Paper className={classes.paper}>
               <Switch>
                 <Route exact path={`${path}`}>
-                  <MainTable />
+                { moDepartmentRequired(selectedNodeId)
+                  ? <Redirect to={`./${selectedNodeId}/fap`} />
+                  : <MainTable />
+                }
                 </Route>
                 <Route path={`${path}/fap/:moId`} >
                   <FapMainTable />

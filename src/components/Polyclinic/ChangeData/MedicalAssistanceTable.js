@@ -33,7 +33,7 @@ import { indicatorForNodeIsLoadingSelector, indicatorsForSelectedNodeSelector, s
 import { useLocation, useHistory } from "react-router-dom";
 import { periodIdsByYearSelector, periodsSelector } from "../../../store/period/periodSelectors";
 import { DateTime } from "../../../_helpers/dateTime";
-import { medicalAssistanceTypeByIdSelector, medicalAssistanceTypesIsLoadingSelector } from "../../../store/medicalAssistanceType/medicalAssistenceTypeSelectors";
+import { medicalAssistanceTypeByIdSelector, medicalAssistanceTypesIsLoadingSelector } from "../../../store/medicalAssistanceType/medicalAssistanceTypeSelectors";
 import { moArrSelector, moIdsSelector } from "../../../store/mo/moSelectors";
 import { plannedIndicatorChangeItemsIsLoadingSelector } from "../../../store/plannedIndicatorChange/plannedIndicatorChangeSelectors";
 
@@ -204,7 +204,7 @@ const ProfileTable = (props) => {
     )
   });
 
-  console.log('Polycl Change MainAssistence 0');
+  console.log('Polycl Change MainAssistance 0');
   if (isLoading || !indicators || mo.length === 0 || periodIds.length === 0 || Object.keys(periods).length === 0 || !profile) {
       return (
         <div>
@@ -213,7 +213,7 @@ const ProfileTable = (props) => {
         </div>
       );
   }
-  console.log('Polycl Change MainAssistence 1');
+  console.log('Polycl Change MainAssistance 1');
 
   const indicatorLength = indicators.length;
 

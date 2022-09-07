@@ -13,6 +13,7 @@ export class apiService {
         const requestOptions = {
             method: 'GET',
             headers: this.createHeaders(config.headers),
+            signal: config.signal,
         };
 
         let url = new URL(path, this.baseUrl);

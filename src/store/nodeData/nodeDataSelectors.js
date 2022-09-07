@@ -3,7 +3,7 @@ import { createSelector } from "@reduxjs/toolkit";
 import { careProfilesSelector } from "../careProfiles/careProfilesSelectors";
 import { hospitalBedProfilesSelector } from "../hospitalBedProfiles/hospitalBedProfilesSelectors";
 import { indicatorsSelector } from "../indicator/indicatorSelectors";
-import { medicalAssistanceTypesSelector } from "../medicalAssistanceType/medicalAssistenceTypeSelectors";
+import { medicalAssistanceTypesSelector } from "../medicalAssistanceType/medicalAssistanceTypeSelectors";
 import { medicalServicesSelector } from "../medicalServices/medicalServicesSelectors";
 
 export const selectedNodeIdSelector = (store) => store.nodeData.selectedId;
@@ -14,13 +14,6 @@ export const selectedYearSelector = (store) => store.nodeData.selectedYear;
  * Данные для узла
  */
 export const dataForNodeIdSelector = (store, nodeId) => {
-    if (!store.nodeData.entities[nodeId]) {
-        return null;
-    }
-    return store.nodeData.entities[nodeId];
-}
-
-export const dataForNodeIdsSelector = (store, nodeIds) => {
     if (!store.nodeData.entities[nodeId]) {
         return null;
     }
@@ -40,6 +33,30 @@ export const indicatorIdsForNodeIdSelector = (store, nodeId) => {
     return indicatorIds;
 }
 
+const EmptyArray = [];
+export const indicatorIdsForNodeIdsSelector = (store, nodeIds) => {
+    let temp = EmptyArray;
+    nodeIds.map(nodeId => {
+        const dataForNodeIds = dataForNodeIdSelector(store, nodeId);
+        if (!dataForNodeIds) {
+            return;
+        }
+        const indicatorIds = dataForNodeIds.indicatorIds;
+        if (!indicatorIds) {
+            return;
+        }
+        temp = [
+            ...temp,
+            ...indicatorIds
+        ]
+    });
+    let o = {};
+    temp.forEach(val => {
+        o[val] = true;
+    });
+    return Object.keys(o);
+}
+
 export const indicatorForNodeIsLoadingSelector = (store, nodeId) => {
     const data = dataForNodeIdSelector(store, nodeId);
     if(!data) {
@@ -50,6 +67,20 @@ export const indicatorForNodeIsLoadingSelector = (store, nodeId) => {
 
 export const indicatorsArrForNodeIdSelector = createSelector(
     [indicatorIdsForNodeIdSelector, indicatorsSelector],
+    (indicatorIds, indicators) => {
+        if (
+            !indicators 
+            || !indicatorIds
+            || Object.keys(indicators).length === 0
+        ) {
+            return null;
+        }
+        return indicatorIds.map(id => { return indicators[id] || {id} });
+    }
+)
+
+export const indicatorsArrForNodeIdsSelector = createSelector(
+    [indicatorIdsForNodeIdsSelector, indicatorsSelector],
     (indicatorIds, indicators) => {
         if (
             !indicators 

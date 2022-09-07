@@ -106,4 +106,14 @@ export const totalValueSelector = (store, {plannedIndicatorIds, year, moIds, moD
     }
     
     return total;
-}    
+}
+
+const EmptyArray = [];
+export const initialDataLoadedNodeIdsByYear = (store, {year}) => {
+    return store.initialData.loaded[year]?.nodeIds ?? EmptyArray;
+}
+
+export const initialDataLoadedSelector = (store, {year, nodeIds}) => {
+    const loadedNodeIds = initialDataLoadedNodeIdsByYear(store, {year});
+    return nodeIds.every(id => loadedNodeIds.includes(id));
+}

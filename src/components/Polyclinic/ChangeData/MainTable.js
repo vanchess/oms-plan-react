@@ -37,7 +37,7 @@ import Link from '@mui/material/Link';
 import { Link as RouterLink } from 'react-router-dom';
 import { moArrSelector, moIdsSelector } from "../../../store/mo/moSelectors";
 import { plannedIndicatorChangeItemsIsLoadingSelector } from "../../../store/plannedIndicatorChange/plannedIndicatorChangeSelectors";
-import { medicalAssistanceTypesIsLoadingSelector } from "../../../store/medicalAssistanceType/medicalAssistenceTypeSelectors";
+import { medicalAssistanceTypesIsLoadingSelector } from "../../../store/medicalAssistanceType/medicalAssistanceTypeSelectors";
 import { medicalServicesIsLoadingSelector } from "../../../store/medicalServices/medicalServicesSelectors";
 
 const firstHeadHeight = 25;

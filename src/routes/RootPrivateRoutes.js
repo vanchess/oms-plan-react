@@ -1,17 +1,17 @@
 import React from 'react';
 import { Route, Switch } from 'react-router-dom';
 
-import HomePolyclinic from './../HomePolyclinic.js'
-import HomeHospital   from './../HomeHospital.js'
-import HomeAmbulance  from './../HomeAmbulance.js'
 import StartPage from './../StartPage.js'
+import AmbulanceRoutes from './AmbulanceRoutes.js';
+import HospitalRoutes from './HospitalRoutes.js';
+import PolyclinicRoutes from './PolyclinicRoutes.js';
 
 export default function Routes() {
   return (
           <Switch>
-            <Route path='/hospital'   component={HomeHospital}/>
-            <Route path='/polyclinic' component={HomePolyclinic}/>
-            <Route path='/ambulance'  component={HomeAmbulance}/>
+            <Route path='/hospital' component={HospitalRoutes}/>
+            <Route path='/ambulance' component={AmbulanceRoutes}/>
+            <Route path='/polyclinic' component={PolyclinicRoutes}/>
             <Route component={StartPage}/>
           </Switch>
   );

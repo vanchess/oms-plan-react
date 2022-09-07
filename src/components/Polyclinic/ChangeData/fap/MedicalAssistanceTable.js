@@ -33,7 +33,7 @@ import { indicatorForNodeIsLoadingSelector, indicatorsForSelectedNodeSelector, s
 import { useLocation, useHistory } from "react-router-dom";
 import { periodIdsByYearSelector, periodsSelector } from "../../../../store/period/periodSelectors";
 import { DateTime } from "../../../../_helpers/dateTime";
-import { medicalAssistanceTypeByIdSelector } from "../../../../store/medicalAssistanceType/medicalAssistenceTypeSelectors";
+import { medicalAssistanceTypeByIdSelector } from "../../../../store/medicalAssistanceType/medicalAssistanceTypeSelectors";
 import { moDepartmentsArrByMoIdSelector } from "../../../../store/moDepartment/moDepartmentSelectors";
 import { plannedIndicatorChangeItemsIsLoadingSelector } from "../../../../store/plannedIndicatorChange/plannedIndicatorChangeSelectors";
 

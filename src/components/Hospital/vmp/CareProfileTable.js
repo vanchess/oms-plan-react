@@ -155,7 +155,7 @@ const MainTable = (props) => {
   console.log('MИ2');
 
   return (
-    <div>
+    <>
       <CareProfileDialog open={isOpenCareProfileDialog} onClose={handleCloseCareProfileDialog} />
       {careProfile.name} <Link component="button" variant="body2" onClick={openCareProfileDialog}>(выбрать профиль)</Link>
       <OmsPlanTable
@@ -171,7 +171,7 @@ const MainTable = (props) => {
           controlPanel={controlPanel}
           >
         </OmsPlanTable>
-    </div>
+    </>
   );
 };
 

@@ -1,7 +1,5 @@
 import React, { useLayoutEffect } from 'react';
 
-import RootPrivateRoutes from './routes/RootPrivateRoutes'
-
 import { useDispatch, useSelector } from 'react-redux';
 import { moFetch } from './store/mo/moAction'
 import { hospitalBedProfilesFetch } from './store/hospitalBedProfiles/hospitalBedProfilesStore'
@@ -20,8 +18,8 @@ import { hospitalBedProfilesIsLoadingSelector } from './store/hospitalBedProfile
 import { indicatorsIsLoadingSelector } from './store/indicator/indicatorSelectors';
 import { plannedIndicatorsIsLoadingSelector } from './store/plannedIndicator/plannedIndicatorSelectors';
 import { medicalServicesIsLoadingSelector } from './store/medicalServices/medicalServicesSelectors';
-import { medicalAssistanceTypesIsLoadingSelector } from './store/medicalAssistanceType/medicalAssistenceTypeSelectors';
-import { careProfilesForNodeIsLoadingSelector } from './store/nodeData/nodeDataSelectors';
+import { medicalAssistanceTypesIsLoadingSelector } from './store/medicalAssistanceType/medicalAssistanceTypeSelectors';
+import { careProfilesForNodeIsLoadingSelector, selectedYearSelector } from './store/nodeData/nodeDataSelectors';
 import { vmpGroupsSelectorIsLoadingSelector } from './store/vmpGroups/vmpGroupsSelectors';
 import { vmpTypesIsLoadingSelector } from './store/vmpTypes/vmpTypesSelectors';
 import { periodIsLoadingSelector } from './store/period/periodSelectors';
@@ -30,12 +28,16 @@ import { categoryFetch } from './store/category/categoryStore';
 import { categoryIsLoadingSelector } from './store/category/categorySelector';
 import { categoryTreeFetch } from './store/category/categoryTreeStore';
 import { categoryTreeNodesFetch } from './store/category/categoryTreeNodesStore';
+import { loadedNodeIdsFetch } from './store/initialData/initialDataStore';
+import { categoryTreeNodesIsLoadingSelector } from './store/category/categoryTreeSelector';
+import Home from './Home';
 
 export default function AppRoot() {
   const dispatch = useDispatch();
 
   const initBegin = useSelector(appInitBeginSelector);
-  
+  const year = useSelector(selectedYearSelector);
+
   const loading = useSelector((store) => {
     return (
       moIsLoadingSelector(store)
@@ -49,6 +51,7 @@ export default function AppRoot() {
       || vmpTypesIsLoadingSelector(store)
       || periodIsLoadingSelector(store)
       || categoryIsLoadingSelector(store)
+      || categoryTreeNodesIsLoadingSelector(store)
     )
   });
  
@@ -72,6 +75,11 @@ export default function AppRoot() {
     dispatch(appInitBegin());
   }, [dispatch])
 
+  useLayoutEffect(() => {
+    dispatch(loadedNodeIdsFetch({year}));
+
+  }, [year, dispatch])
+
   if (!initBegin || loading) {
     return (
       <LinearProgress />
@@ -79,6 +87,6 @@ export default function AppRoot() {
   }
 
   return (
-    <RootPrivateRoutes />
+    <Home />
   );
 }

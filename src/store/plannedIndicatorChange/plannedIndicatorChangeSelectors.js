@@ -105,7 +105,7 @@ function getTotal(sumPeriods, algorithmId, periodId=null) {
             return sumPeriods[periodId];
         }
     }
-    return sumPeriods.pop();
+    return sumPeriods.at(-1);
 }
 
 /*
@@ -155,33 +155,58 @@ export const totalValueSelector = (store, {plannedIndicatorIds, periodIds, moIds
 }
 */
 
-export const totalValueSelector = (store, {plannedIndicatorIds, periodIds, moIds, indicatorId, moDepartmentIds=null, commitId=null}) => {
-    const dataArray = sortedPlannedIndicatorChangeArraySelector(store);
+/**
+ * 
+ * @param {*} dataArray 
+ * @param {*} optionsObj 
+ * @returns 
+ * 
+ * indicatorId НЕ используестся для фильтрации
+ * indicatorId используется для выбора алгоритма сложения показателей
+ */
+export const totalValue = (dataArray, {plannedIndicatorIds, periodIds, moIds, indicatorId, moDepartmentIds=null, maxCommitId=null, onlyCommitIds=null}) => {
     if(dataArray.length === 0) {
         return null;
     }
-    let sumPeriods = [0];
+    let sumPeriods = null;
     const algorithmId = getAlgorithmIdByIndicatorId(indicatorId);
     if(moIds && plannedIndicatorIds && periodIds) {
         const sumPeriodsFunction = createSumPeriodsFunction(algorithmId);
+        let departmentNotUse = true;
+        let onlyCommitIdsNotUse = false;
+        let maxCommitIdNotUse = false;
+        if(moDepartmentIds) {
+            departmentNotUse = false;
+        }
+        if(onlyCommitIds === null){
+            onlyCommitIdsNotUse = true;
+        }
+        if(!onlyCommitIdsNotUse || maxCommitId === null){
+            maxCommitIdNotUse = true;
+        }
         let items = dataArray.filter(item => {
-            let departmentNotUse = true;
-            if(moDepartmentIds) {
-                departmentNotUse = false;
-            }
             return periodIds.includes(item.period_id)
                 && moIds.includes(item.mo_id)
                 && (departmentNotUse || moDepartmentIds.includes(item.mo_department_id))
+                && (onlyCommitIdsNotUse || onlyCommitIds.includes(item.commit_id))
+                && (maxCommitIdNotUse || (item.commit_id <= maxCommitId))
                 && plannedIndicatorIds.includes(item.planned_indicator_id);
         });
-        if (items) {
+        if (items.length > 0) {
             sumPeriods = items.reduce((total,item) => {
                 return sumPeriodsFunction(total, item.value, item.period_id);
-            }, sumPeriods);
+            }, [0]);
         }
     }
-    
+    if (sumPeriods === null) {
+        return null;
+    }
     return getTotal(sumPeriods, algorithmId);
+}
+
+export const totalValueSelector = (store, filterOptionsObj) => {
+    const dataArray = sortedPlannedIndicatorChangeArraySelector(store);
+    return totalValue(dataArray, filterOptionsObj);
 }
 
 export const plannedIndicatorChangeItemsIsLoadingSelector = (store) => {
@@ -204,4 +229,25 @@ export const plannedIndicatorChangeByCommitIdSelector = (store, {plannedIndicato
     }
     
     return items;
+}
+
+export const plannedIndicatorChangeByCommitIdHaveStatusSelector = (store, {plannedIndicatorIds, periodIds, commitId=null}, status) => {
+    const dataArray = sortedPlannedIndicatorChangeArraySelector(store);
+    if(dataArray.length === 0) {
+        return false;
+    }
+    if(plannedIndicatorIds && periodIds) {
+        for (let index = 0; index < dataArray.length; index++) {
+            const item = dataArray[index];
+            if(commitId === item.commit_id
+                && periodIds.includes(item.period_id)
+                && plannedIndicatorIds.includes(item.planned_indicator_id)
+                && item.status === status
+            ) {
+                return true;
+            }
+        }
+    }
+    
+    return false;
 }

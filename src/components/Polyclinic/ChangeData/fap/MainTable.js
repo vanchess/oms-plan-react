@@ -38,7 +38,7 @@ import { Link as RouterLink } from 'react-router-dom';
 import { useParams } from "react-router-dom";
 import { moDepartmentsArrByMoIdSelector } from "../../../../store/moDepartment/moDepartmentSelectors";
 import { plannedIndicatorChangeItemsIsLoadingSelector } from "../../../../store/plannedIndicatorChange/plannedIndicatorChangeSelectors";
-import { medicalAssistanceTypesIsLoadingSelector } from "../../../../store/medicalAssistanceType/medicalAssistenceTypeSelectors";
+import { medicalAssistanceTypesIsLoadingSelector } from "../../../../store/medicalAssistanceType/medicalAssistanceTypeSelectors";
 import { medicalServicesIsLoadingSelector } from "../../../../store/medicalServices/medicalServicesSelectors";
 
 const firstHeadHeight = 25;

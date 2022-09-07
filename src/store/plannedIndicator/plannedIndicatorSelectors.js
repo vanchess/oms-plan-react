@@ -17,9 +17,8 @@ export const plannedIndicatorsArrByIdsSelector = createSelector(
     plannedIndicatorsArrByIds
 )
 
-export const plannedIndicatorIdSelector = (store, {nodeId, indicatorId, profileId=null, assistanceTypeId=null, serviceId=null, careProfileId=null, vmpGroupId=null, vmpTypeId=null}) => {
-    const e = plannedIndicatorsSelector(store);
-
+export const getPlannedIndicator = (plannedIndicators, {nodeId, indicatorId, profileId=null, assistanceTypeId=null, serviceId=null, careProfileId=null, vmpGroupId=null, vmpTypeId=null}) => {
+    const e = plannedIndicators;
     if(Object.keys(e).length === 0) {
         return null;
     }
@@ -42,6 +41,12 @@ export const plannedIndicatorIdSelector = (store, {nodeId, indicatorId, profileI
     }
     
     return Number(plannedIndicatorId);
+}
+
+export const plannedIndicatorIdSelector = (store, params) => {
+    const e = plannedIndicatorsSelector(store);
+
+    return getPlannedIndicator(e, params);
 }
 
 export const plannedIndicatorIdsSelector = (store, params) => {
@@ -117,7 +122,7 @@ export const plannedIndicatorsWhereSelector = createSelector(
     }
 )
 
-export const plannedIndicatorsIdsByNodeIds = (store, nodeIds) => {
+export const plannedIndicatorsIdsByNodeIdsSelector = (store, nodeIds) => {
     const e = plannedIndicatorsSelector(store);
     const plannedIndicatorIds = Object.keys(e).filter(id => {
         if (nodeIds.includes(e[id].node_id)) {

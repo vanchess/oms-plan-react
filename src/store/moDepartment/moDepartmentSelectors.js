@@ -14,15 +14,26 @@ export const moDepartmentsArrSelector = createSelector(
     }
 )
 
-export const moDepartmentsArrByMoIdSelector = createSelector(
-    [moDepartmentsArrSelector, (store, moId) => moId],
-    (departments, moId) => {
-        if (!departments) {
+export const moDepartmentsArrByMoIdFilter = (departmentsArr, moId) => {
+        if (!departmentsArr) {
             return null;
         }
-        return departments.filter(d => d.mo_id === moId);
-    }
+        return departmentsArr.filter(d => d.mo_id === moId);
+}
+
+export const moDepartmentsArrByMoIdSelector = createSelector(
+    [moDepartmentsArrSelector, (store, moId) => moId],
+    moDepartmentsArrByMoIdFilter
 )
+
+const EmptyArray = [];
+export const moDepartmentsIdsByMoIdSelector = (store, moId) => {
+    const departmentsArr = moDepartmentsArrByMoIdSelector(store, moId);
+    if (!departmentsArr) {
+        return EmptyArray;
+    }
+    return departmentsArr.map(d => d.id);
+}
 
 /*
 export const moDepartmentsArrForSelectedMoSelector = (store) => {

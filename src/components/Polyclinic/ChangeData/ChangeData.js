@@ -1,5 +1,5 @@
 import React from 'react';
-import { Route, Switch, useRouteMatch } from "react-router-dom";
+import { Redirect, Route, Switch, useRouteMatch } from "react-router-dom";
 import withStyles from '@mui/styles/withStyles';
 
 import Container from '@mui/material/Container';
@@ -13,6 +13,9 @@ import FapMainTable from './fap/MainTable';
 import FapMedicalAssistanceTable from './fap/MedicalAssistanceTable';
 import FapMedicalServicesTable from './fap/MedicalServicesTable';
 import MoList  from  '../fap/MoList.js'
+import { useSelector } from 'react-redux';
+import { selectedNodeIdSelector } from '../../../store/nodeData/nodeDataSelectors';
+import { moDepartmentRequired } from '../../../services/moDepartmentRequired';
 
 const styles = theme => ({
   container: {
@@ -33,6 +36,7 @@ function ChangeData(props) {
   const { classes } = props;
   const match = useRouteMatch();
   const path = match.path;
+  const selectedNodeId = useSelector(selectedNodeIdSelector);
 
   return (
     <div>
@@ -43,7 +47,10 @@ function ChangeData(props) {
             <Paper className={classes.paper}>
               <Switch>
                 <Route exact path={`${path}`}>
-                  <MainTable />
+                  { moDepartmentRequired(selectedNodeId)
+                    ? <Redirect to={`./${selectedNodeId}/fap`} />
+                    : <MainTable />
+                  }
                 </Route>
                 <Route path={`${path}/assistance/:assistanceId`} >
                   <MedicalAssistanceTable />

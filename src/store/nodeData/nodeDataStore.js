@@ -91,11 +91,17 @@ export const medicalServicesUsedForNodeIdFetch = ({nodeId}) => {
   }
 }
 
+export const createInitialState = ({selectedYear}) => {
+  return {
+    ...initialState,
+    selectedYear: selectedYear ?? new Date().getFullYear(),
+  }
+}
+
 /* Reducer */
 const initialState = {
   entities: {},
   selectedId: null,
-  selectedYear: 2022,
   selectedMo: null,
   //loading: false,
   //error: false,

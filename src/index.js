@@ -16,22 +16,31 @@ import history from './history';
 import { Storage as storage } from './_helpers/localStorage'
 import { createPersistentStorageMiddleware } from './middleware/createPersistentStorageMiddleware'
 import { setToken } from './_helpers/auth-token';
+import { createInitialState as createNodeDataInitialState } from './store/nodeData/nodeDataStore';
 
 const persistentStorageMiddleware = createPersistentStorageMiddleware(storage);
 const composeEnhancers = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose;
 const initialState = () => {
   const auth = storage.getItem('auth');
-  if (auth === undefined) {
-      return undefined;
-  }
-  setToken(auth.token);
-  return {auth: {
-        user: auth.user,
-        token: auth.token,
-        loading: false,
-        error: false,
+  const selectedYear = storage.getItem('selectedYear');
+  const nodeDataStore = { 
+      nodeData: {
+        ...createNodeDataInitialState({selectedYear})
       }
+    }
+  let authStore = undefined;
+  if (auth !== undefined) {
+    setToken(auth.token);
+    authStore = {auth: {
+          user: auth.user,
+          token: auth.token,
+          loading: false,
+          error: false,
+        }
+    }
   }
+
+  return {...authStore, ...nodeDataStore}
 };
 const store = createStore(rootReducer, initialState(), composeEnhancers(applyMiddleware(thunk, persistentStorageMiddleware)));
 

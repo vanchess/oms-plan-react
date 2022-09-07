@@ -66,7 +66,6 @@ const MainTable = (props) => {
   console.log('MИ3');
 
   return (
-    <div>
         <OmsPlanTable 
           aria-label="sticky table" 
           className={clsx({'FullScreen':fullScreen})} 
@@ -87,7 +86,6 @@ const MainTable = (props) => {
           }
           >
         </OmsPlanTable>
-    </div>
   );
 };
 

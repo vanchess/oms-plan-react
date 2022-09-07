@@ -34,7 +34,7 @@ import {
 import { moArrSelector, moIdsSelector } from "../../store/mo/moSelectors";
 import { initialDataIsLoadingSelector } from "../../store/initialData/initialDataSelectors";
 import { medicalServicesIsLoadingSelector } from "../../store/medicalServices/medicalServicesSelectors";
-import { medicalAssistanceTypesIsLoadingSelector } from "../../store/medicalAssistanceType/medicalAssistenceTypeSelectors";
+import { medicalAssistanceTypesIsLoadingSelector } from "../../store/medicalAssistanceType/medicalAssistanceTypeSelectors";
 
 const firstHeadHeight = 25;
 const leftColWidth = 20;

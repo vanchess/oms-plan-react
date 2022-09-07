@@ -17,6 +17,7 @@ export default function InitialDataIndex(props) {
     const dispatch = useDispatch();
     let { nodeId } = useParams();
     nodeId = Number(nodeId);
+    
     const selectedNodeId = useSelector(selectedNodeIdSelector);
     const indicatorIds = useSelector(store => indicatorIdsForNodeIdSelector(store, nodeId));
     const hospitalBedProfilesIds = useSelector(store => hospitalBedProfilesIdsForNodeIdSelector(store, nodeId));
@@ -28,7 +29,7 @@ export default function InitialDataIndex(props) {
     })
 
     useLayoutEffect(() => {
-        if(selectedNodeId !== nodeId) {
+        if(Number.isInteger(nodeId) && selectedNodeId !== nodeId) {
             dispatch(nodeIdSelected({nodeId}))
         }
     }, [nodeId]);

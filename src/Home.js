@@ -1,96 +1,54 @@
 import React from 'react';
-import { connect } from 'react-redux';
 import 'typeface-roboto';
 
 import CssBaseline from '@mui/material/CssBaseline';
 
 import { Header } from './components/Header'; 
-import { Sidebar } from './components/Sidebar'; 
-import { MainListItems, secondaryListItems } from './components/Sidebar/listItems';
 
-import withStyles from '@mui/styles/withStyles';
+import RootPrivateRoutes from './routes/RootPrivateRoutes';
+import styled from '@emotion/styled';
+import { css } from '@emotion/react';
+import { Link, Typography } from '@mui/material';
 
-import { logout } from './store/auth/authAction.js'
-import { setTitle } from './store/curPage/curPageStore'
-
-const styles = theme => ({
-  root: {
-    display: 'flex',
-  },
-  appBarSpacer: theme.mixins.toolbar,
-  content: {
-    flexGrow: 1,
-    height: '100vh',
-    overflow: 'auto',
-  },
-})
-
-class Home extends React.Component {
-  constructor(props) {
-      super(props);
-
-      this.state ={open: true, userName: props.user.name}
-      
-      this.handleDrawerOpen = this.handleDrawerOpen.bind(this);
-      this.handleDrawerClose = this.handleDrawerClose.bind(this);
-  }
-  
-  componentDidMount(){
-      this.props.setTitle({title: this.props.title});
-  }
-  
-  componentDidUpdate(prevProps, prevState) {
-      //this.props.setTitle({title: `${this.props.title} - Объемы и стоимость`});
-  }
-  
-  handleDrawerOpen(){
-      this.setState({open: true});
-  }
-  
-  handleDrawerClose(){
-      this.setState({open: false});
-  }
-  
-
-  
-  render(){
-    const { classes } = this.props;
-
-    return (  
-      <div className={classes.root}>
-          <CssBaseline />
-          <Header title={this.props.title} open={this.state.open} userName={this.state.userName} handleDrawerOpen={() => this.handleDrawerOpen()} logout={this.props.logout} />
-          <Sidebar 
-            open={this.state.open} 
-            handleDrawerClose={() => this.handleDrawerClose()} 
-            actions={this.props.actions}
-          >
-                <MainListItems sidebarMainListItems={this.props.sidebarMainListItems} />
-          </Sidebar>
-          <main className={classes.content}>
-            <div className={classes.appBarSpacer} />
-            {this.props.main}
-          </main>
-            {this.props.snackbar}
-      </div>
-    );
-  }
+function Copyright() {
+  return (
+    <Typography variant="body2" color="textSecondary" align="center">
+      {'Copyright © '}
+      <Link color="inherit" href="http://192.168.12.200/">
+        ТФ ОМС Курганской области
+      </Link>{' '}
+      {new Date().getFullYear()}
+      {'.'}
+    </Typography>
+  );
 }
 
-const mapStateToProps = function(store) {
-  return {
-      user: store.auth.user,
-    };
-}
-const mapDispatchToProps = dispatch => {
-  return {
-    logout: () => {
-        dispatch(logout());
-    },
-    setTitle: (t) => {
-        dispatch(setTitle(t));
-    },
-  }
-}
+const Footer = styled.footer(({theme}) => css`
+  background-color: ${theme.palette.background.paper};
+  padding: ${theme.spacing(6)};
+`);
 
-export default connect(mapStateToProps,mapDispatchToProps)(withStyles(styles)(Home));
+export default function(props) {
+  /*
+  const dispatch = useDispatch();
+  const { slug } = useParams();
+  const categoryTreeNode = useSelector(store => categoryTreeNodeBySlugSelector(store, slug));
+  const title = useSelector(store => categoryNameByIdSelector(store, categoryTreeNode?.category_id)) ?? '';
+
+  useEffect(() => {
+    dispatch(setTitle(title));
+  }, [dispatch, title])
+*/
+  return (
+    <>
+        <CssBaseline />
+        <Header />
+        <main>
+          <RootPrivateRoutes />
+        </main>
+        <Footer>
+          <Copyright />
+        </Footer>
+    </>
+  )
+}

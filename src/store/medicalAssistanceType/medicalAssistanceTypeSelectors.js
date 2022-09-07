@@ -2,6 +2,10 @@ export const medicalAssistanceTypesSelector = (store) => {
     return store.medicalAssistanceTypes.entities;
 }
 
+export const medicalAssistanceTypesIdsSelector = (store) => {
+    return store.medicalAssistanceTypes.ids;
+}
+
 export const medicalAssistanceTypesIsLoadingSelector = (store) => {
     return store.medicalAssistanceTypes.loading;
 }

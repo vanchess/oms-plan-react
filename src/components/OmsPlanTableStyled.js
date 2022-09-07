@@ -55,7 +55,7 @@ const OmsPlanTableStyled = styled(
     scroll-padding-bottom: 25px;
     scroll-padding-right: 500px;
     scroll-behavior: smooth;
-    max-height: calc(100vh - 150px);
+    max-height: 100%;
     min-height: 400px;
     &.FullScreen {
         background-color: #fff;

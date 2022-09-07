@@ -1,60 +1,50 @@
 /** @jsxImportSource @emotion/react */
 import React from 'react';
-import { styled } from '@emotion/styled';
 
-import Container from '@mui/material/Container';
-import Grid from '@mui/material/Grid';
 import Paper from '@mui/material/Paper';
 
 import MainTable from './MainTable';
 import VmpMainTable from './vmp/MainTable';
 import VmpCareProfileTable from './vmp/CareProfileTable';
 
-import { Switch } from 'react-router-dom';
+import { Redirect, Switch } from 'react-router-dom';
 import { Route } from 'react-router-dom';
 import { useRouteMatch } from 'react-router-dom';
+import { useSelector } from 'react-redux';
+import { selectedNodeIdSelector } from '../../store/nodeData/nodeDataSelectors';
+import { isVmpNode } from '../../services/isVmpNode';
 
 const paper = theme => ({
-    padding: theme.spacing(2),
+    padding: theme.spacing(0),
     display: 'flex',
     overflow: 'auto',
     flexDirection: 'column',
+    maxHeight: 'calc(100vh - 48px)',
+    height: 'calc(100vh - 48px)'
   });
-
-const container = theme => ({
-    paddingTop: theme.spacing(4),
-    paddingBottom: theme.spacing(4),
-})
-
-
 
 function InitialData(props) {
   const match = useRouteMatch();
   const path = match.path;
+  const selectedNodeId = useSelector(selectedNodeIdSelector);
 
   return (
-    <div>
-      <Container maxWidth={false} css={container}>
-        <Grid container spacing={3}>
-          {/* Recent Orders */}
-          <Grid item xs={12}>
-            <Paper css={paper}>
-              <Switch>
-                <Route exact path={`${path}`}>
-                  <MainTable />
-                </Route>
-                <Route exact path={`${path}/care-profile`}>
-                  <VmpMainTable />
-                </Route>
-                <Route path={`${path}/care-profile/:careProfileId`} >
-                  <VmpCareProfileTable />
-                </Route>
-              </Switch>
-            </Paper>
-          </Grid>
-        </Grid>
-      </Container>
-    </div>
+      <Paper css={paper}>
+        <Switch>
+          <Route exact path={`${path}`}>
+            { isVmpNode(selectedNodeId)
+              ? <Redirect to={`./${selectedNodeId}/care-profile`} />
+              : <MainTable />
+            }
+          </Route>
+          <Route exact path={`${path}/care-profile`}>
+            <VmpMainTable />
+          </Route>
+          <Route path={`${path}/care-profile/:careProfileId`} >
+            <VmpCareProfileTable />
+          </Route>
+        </Switch>
+      </Paper>
   );
 }
 

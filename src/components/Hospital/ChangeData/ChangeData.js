@@ -1,5 +1,5 @@
 import React from 'react';
-import { Route, Switch,useRouteMatch} from 'react-router-dom';
+import { Redirect, Route, Switch,useRouteMatch} from 'react-router-dom';
 import withStyles from '@mui/styles/withStyles';
 
 import Container from '@mui/material/Container';
@@ -11,6 +11,9 @@ import ProfileTable from './ProfileTable';
 import VmpMainTable from './vmp/MainTable';
 import VmpCareProfileTable from './vmp/CareProfileTable';
 import VmpPeriodTable from './vmp/PeriodTable'
+import { isVmpNode } from '../../../services/isVmpNode';
+import { selectedNodeIdSelector } from '../../../store/nodeData/nodeDataSelectors';
+import { useSelector } from 'react-redux';
 
 const styles = theme => ({
   container: {
@@ -29,6 +32,7 @@ function ChangeData(props) {
   const { classes } = props;
   const match = useRouteMatch();
   const path = match.path;
+  const selectedNodeId = useSelector(selectedNodeIdSelector);
 
   return (
     <div>
@@ -39,7 +43,10 @@ function ChangeData(props) {
             <Paper className={classes.paper}>
               <Switch>
                 <Route exact path={`${path}`}>
-                  <MainTable />
+                  { isVmpNode(selectedNodeId)
+                    ? <Redirect to={`./${selectedNodeId}/care-profile`} />
+                    : <MainTable />
+                  }
                 </Route>
                 <Route path={`${path}/profile/:profileId`} >
                   <ProfileTable />

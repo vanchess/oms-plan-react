@@ -1,4 +1,5 @@
 export const vmpGroupsSelector = store => store.vmpGroups.entities;
+export const vmpGroupsIdsSelector = store => store.vmpGroups.ids;
 
 export const vmpGroupsSelectorIsLoadingSelector = store => store.vmpGroups.loading;
 

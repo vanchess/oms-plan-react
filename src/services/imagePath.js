@@ -1,0 +1,1 @@
+export const sectionImagePath = (sectionSlug) => `/images/${sectionSlug}.jpg`;

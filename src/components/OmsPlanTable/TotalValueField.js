@@ -1,9 +1,9 @@
 import React from 'react';
 import { connect } from 'react-redux';
 //import { useSelector } from 'react-redux'
-import { totalValueSelector } from '../store/initialData/initialDataSelectors';
-import { selectedNodeIdSelector } from '../store/nodeData/nodeDataSelectors';
-import { plannedIndicatorIdsSelector } from '../store/plannedIndicator/plannedIndicatorSelectors';
+import { totalValueSelector } from '../../store/initialData/initialDataSelectors';
+import { selectedNodeIdSelector } from '../../store/nodeData/nodeDataSelectors';
+import { plannedIndicatorIdsSelector } from '../../store/plannedIndicator/plannedIndicatorSelectors';
 
 const TotalValueField = (props) => {
     const { value } = props;

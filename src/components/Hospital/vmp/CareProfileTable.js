@@ -9,7 +9,7 @@ import {
 } from "@mui/material";
 import FullscreenIcon from '@mui/icons-material/Fullscreen';
 
-import OmsPlanTable from "../../OmsPlanTableStyled";
+import OmsPlanTable from "../../OmsPlanTable/OmsPlanTableStyled";
 
 import Link from '@mui/material/Link';
 
@@ -77,7 +77,6 @@ const MainTable = (props) => {
   careProfileId = Number(careProfileId);
   const nodeId = useSelector(selectedNodeIdSelector);
   const mo = useSelector(moArrSelector);
-  const moIds = useSelector(moIdsSelector);
   const careProfile = useSelector((store) => careProfileById(store, careProfileId));
   const indicators = useSelector(indicatorsForSelectedNodeSelector);
   
@@ -110,6 +109,19 @@ const MainTable = (props) => {
       }
     })
   },[plannedIndicatorArr,indicators,vmpGroups,vmpTypes,careProfileId]);
+
+  const rowDefs = useMemo(() => {
+    if (!mo) {
+      console.log('mo array is empty');
+      return EmptyArray;
+    }
+    return mo?.map((m) => {
+      return {
+        ...m,
+        moId: m.id,
+      }
+    }) ?? [];
+  },[mo]);
 
   const totalFilter = {
     careProfileId: careProfileId,
@@ -165,9 +177,8 @@ const MainTable = (props) => {
           rightColWidth={rightColWidth} 
           topRowHeight={firstHeadHeight}
           columnDefs={columnDefs}
+          rowDefs={rowDefs}
           totalFilter={totalFilter}
-          mo={mo}
-          moIds={moIds}
           controlPanel={controlPanel}
           >
         </OmsPlanTable>

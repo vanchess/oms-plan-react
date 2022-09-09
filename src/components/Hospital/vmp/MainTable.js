@@ -18,9 +18,9 @@ import {
   careProfilesForNodeIsLoadingSelector, 
   indicatorForNodeIsLoadingSelector 
 } from '../../../store/nodeData/nodeDataSelectors';
-import { moArrSelector, moIdsSelector } from "../../../store/mo/moSelectors";
+import { moArrSelector } from "../../../store/mo/moSelectors";
 import { initialDataIsLoadingSelector } from "../../../store/initialData/initialDataSelectors";
-import OmsPlanTable from "../../OmsPlanTableStyled";
+import OmsPlanTable from "../../OmsPlanTable/OmsPlanTableStyled";
 
 const firstHeadHeight = 25;
 const leftColWidth = 20;
@@ -45,7 +45,6 @@ const MainTable = (props) => {
 
   const nodeId = useSelector(selectedNodeIdSelector);
   const mo = useSelector(moArrSelector);
-  const moIds = useSelector(moIdsSelector);
   const careProfiles = useSelector(careProfilesArrForSelectedNodeSelector);
   const indicators = useSelector(indicatorsForSelectedNodeSelector);
 
@@ -64,6 +63,19 @@ const MainTable = (props) => {
       }
     })
   },[careProfiles,indicators]);
+
+  const rowDefs = useMemo(() => {
+      if (!mo) {
+        console.log('mo array is empty');
+        return EmptyArray;
+      }
+      return mo?.map((m) => {
+        return {
+          ...m,
+          moId: m.id,
+        }
+      }) ?? [];
+  },[mo]);
 
   const controlPanel = useMemo(() => (
     <Checkbox
@@ -104,8 +116,7 @@ const MainTable = (props) => {
           rightColWidth={rightColWidth} 
           topRowHeight={firstHeadHeight}
           columnDefs={columnDefs}
-          mo={mo}
-          moIds={moIds}
+          rowDefs={rowDefs}
           controlPanel={controlPanel}
         >
       </OmsPlanTable>

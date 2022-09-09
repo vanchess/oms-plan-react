@@ -42,17 +42,17 @@ const savedAnimation = keyframes`
 const Div = styled.div`
     &.loaded {
         
-    },
+    }
     &.saving {
         background-color: orange;
-    },
+    }
     &.saved {
         animation-name: ${savedAnimation};
         animation-duration: 2s;
-    },
+    }
     &.error {
-        background-color: 'red',
-    },
+        background-color: red;
+    }
 `
 
 const twoDecimal = new Intl.NumberFormat('ru', { style: 'decimal', minimumFractionDigits: 0, maximumFractionDigits: 2, useGrouping: true });

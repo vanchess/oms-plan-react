@@ -1,7 +1,4 @@
-/** @jsxImportSource @emotion/react */
 import React from 'react';
-
-import Paper from '@mui/material/Paper';
 
 import MainTable from './MainTable';
 import VmpMainTable from './vmp/MainTable';
@@ -13,15 +10,7 @@ import { useRouteMatch } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import { selectedNodeIdSelector } from '../../store/nodeData/nodeDataSelectors';
 import { isVmpNode } from '../../services/isVmpNode';
-
-const paper = theme => ({
-    padding: theme.spacing(0),
-    display: 'flex',
-    overflow: 'auto',
-    flexDirection: 'column',
-    maxHeight: 'calc(100vh - 48px)',
-    height: 'calc(100vh - 48px)'
-  });
+import { OmsPlanTablePaper } from '../OmsPlanTable/OmsPlanTablePaper';
 
 function InitialData(props) {
   const match = useRouteMatch();
@@ -29,7 +18,7 @@ function InitialData(props) {
   const selectedNodeId = useSelector(selectedNodeIdSelector);
 
   return (
-      <Paper css={paper}>
+      <OmsPlanTablePaper>
         <Switch>
           <Route exact path={`${path}`}>
             { isVmpNode(selectedNodeId)
@@ -44,7 +33,7 @@ function InitialData(props) {
             <VmpCareProfileTable />
           </Route>
         </Switch>
-      </Paper>
+      </OmsPlanTablePaper>
   );
 }
 

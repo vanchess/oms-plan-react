@@ -8,7 +8,7 @@ import {
 
 import FullscreenIcon from '@mui/icons-material/Fullscreen';
 
-import OmsPlanTable from "../OmsPlanTableStyled";
+import OmsPlanTable from '../OmsPlanTable/OmsPlanTableStyled';
 
 import { 
   indicatorsForSelectedNodeSelector, 
@@ -31,7 +31,6 @@ const MainTable = (props) => {
   
   const nodeId = useSelector(selectedNodeIdSelector);
   const mo = useSelector(moArrSelector);
-  const moIds = useSelector(moIdsSelector);
   const profiles = useSelector(hospitalBedProfilesForSelectedNodeSelector);
   const indicators = useSelector(indicatorsForSelectedNodeSelector);
 
@@ -48,7 +47,20 @@ const MainTable = (props) => {
           children: indicators
         }
       })
-    },[profiles,indicators]);
+  },[profiles,indicators]);
+
+  const rowDefs = useMemo(() => {
+    if (!mo) {
+      console.log('mo array is empty');
+      return EmptyArray;
+    }
+    return mo?.map((m) => {
+      return {
+        ...m,
+        moId: m.id,
+      }
+    }) ?? [];
+  },[mo]);
 
   const isLoading = useSelector((store) => {
     return (
@@ -73,8 +85,7 @@ const MainTable = (props) => {
           rightColWidth={rightColWidth} 
           topRowHeight={firstHeadHeight}
           columnDefs={columnDefs}
-          mo={mo}
-          moIds={moIds}
+          rowDefs={rowDefs}
           controlPanel={
             <Checkbox
                   size="small"

@@ -2,11 +2,11 @@ import React from 'react';
 import { connect } from 'react-redux';
 //import { useSelector } from 'react-redux'
 import Typography from '@mui/material/Typography';
-import EditableValueField from '../../EditableValueField';
 import { plannedIndicatorIdSelector } from '../../../store/plannedIndicator/plannedIndicatorSelectors';
 import { valueSelector, statusSelector } from '../../../store/plannedIndicatorChange/plannedIndicatorChangeSelectors';
 import { indicatorChangeForNodeAdd } from '../../../store/plannedIndicatorChange/plannedIndicatorChangeStore';
 import { selectedNodeIdSelector } from '../../../store/nodeData/nodeDataSelectors';
+import EditableValueField from '../../OmsPlanTable/EditableValueField';
 
 const ValueField = (props) => {
     const { value, status, updateData, plannedIndicatorId, periodId, moId, moDepartmentId } = props;

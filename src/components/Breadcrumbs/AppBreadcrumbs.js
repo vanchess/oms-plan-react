@@ -19,7 +19,8 @@ const breadcrumbNameMap = {
   'changes': 'Корректировки',
   'initial': 'Данные на начало года',
   'attached-persons': 'Количество прикрепившихся',
-  'care-profile': 'Профили МП'
+  'care-profile': 'Профили МП',
+  'fap': 'МО'
 };
 
 const sectionTypeItems = [
@@ -87,7 +88,10 @@ export default function AppBreadcrumbs() {
     const rootNodeId = categoryTreeNodeBySlugFunction(treeNodes, rootNodeSlug).id;
     const leafNodeId = Number(pathnames[2]);
 
-    leafNodesNames = getLeafNodesNames(tree[rootNodeId].tree[rootNodeId]);
+    if (!tree) {
+      return null;
+    }
+    leafNodesNames = getLeafNodesNames(tree[rootNodeId]?.tree[rootNodeId]);
 
     subCategoryName = leafNodesNames[leafNodeId]?.label;
   }

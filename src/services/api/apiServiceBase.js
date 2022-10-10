@@ -29,7 +29,7 @@ export class apiService {
             }
         }
         
-        return fetch(url, requestOptions).then(this.handleResponse);
+        return fetch(url, requestOptions).then(this.handleResponse, this.handleReject);
     }
     
     static post(path, data = {}, config = {}) {
@@ -54,14 +54,18 @@ export class apiService {
                     status: response.status,
                     statusText: response.statusText
                 };
-                
-                console.log(err);
-                
                 return Promise.reject({error: err});
             }
 
             return data;
         });
+    }
+
+    static handleReject(error) {
+        let err = {
+            data: {error: error.message},
+        };
+        return Promise.reject({error: err});
     }
     
     /*

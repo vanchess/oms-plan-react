@@ -15,7 +15,6 @@ import { Box } from '@mui/system';
 import { useDispatch, useSelector } from 'react-redux';
 import { logout as lout } from '../../store/auth/authAction.js'
 import { userNameSelector } from '../../store/auth/authSelector.js';
-import YearMenu from '../Breadcrumbs/YearMenu';
 import styled from '@emotion/styled';
 
 const AppBarStyled = styled(AppBar)(({theme}) => ({
@@ -33,7 +32,6 @@ export const Header = () => {
   return (
     <AppBarStyled position={'sticky'}>
       <Toolbar variant="dense">
-        <YearMenu />
         <Box sx={{flexGrow: 1}}>
           <AppBreadcrumbs />
         </Box>

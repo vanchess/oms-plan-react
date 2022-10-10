@@ -20,10 +20,10 @@ export default function YearMenu() {
 
     const handleChange = useCallback(
         (year) => {
-            if (!year) { return; }
+            if (!year || year === currentYear) { return; }
             dispatch(yearSelected({year}));
         }, 
-        [dispatch]
+        [dispatch, currentYear]
     );
 
     return (

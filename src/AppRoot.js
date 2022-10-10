@@ -31,6 +31,8 @@ import { categoryTreeNodesFetch } from './store/category/categoryTreeNodesStore'
 import { loadedNodeIdsFetch } from './store/initialData/initialDataStore';
 import { categoryTreeNodesIsLoadingSelector } from './store/category/categoryTreeSelector';
 import Home from './Home';
+import { commissionDecisionFetch } from './store/commissionDecision/CommissionDecisionStore';
+import { changePackageFetch } from './store/changePackage/changePackageStore';
 
 export default function AppRoot() {
   const dispatch = useDispatch();
@@ -72,12 +74,14 @@ export default function AppRoot() {
     dispatch(categoryTreeFetch({nodeId:17}));
     dispatch(categoryTreeNodesFetch());
 
+    dispatch(changePackageFetch());
+
     dispatch(appInitBegin());
   }, [dispatch])
 
   useLayoutEffect(() => {
     dispatch(loadedNodeIdsFetch({year}));
-
+    dispatch(commissionDecisionFetch({year}));
   }, [year, dispatch])
 
   if (!initBegin || loading) {

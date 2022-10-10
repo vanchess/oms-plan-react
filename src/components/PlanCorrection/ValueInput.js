@@ -6,7 +6,7 @@ import { selectedYearSelector } from '../../store/nodeData/nodeDataSelectors';
 import { periodIdsByYearSelector, periodsSelector } from '../../store/period/periodSelectors';
 import { DateTime } from '../../_helpers/dateTime';
 import SaveIcon from '@mui/icons-material/Save';
-import { plannedIndicatorChangeByCommitIdHaveStatusSelector } from '../../store/plannedIndicatorChange/plannedIndicatorChangeSelectors';
+import { plannedIndicatorChangeByPackageIdHaveStatusSelector } from '../../store/plannedIndicatorChange/plannedIndicatorChangeSelectors';
 
 const twoDecimal = new Intl.NumberFormat('ru', { style: 'decimal', minimumFractionDigits: 0, maximumFractionDigits: 2, useGrouping: true });
 const twoDecimalNoGrouping = new Intl.NumberFormat('en', { style: 'decimal', minimumFractionDigits: 0, maximumFractionDigits: 2, useGrouping: false });
@@ -61,8 +61,8 @@ export default function ValueInput(props) {
     const year = useSelector(selectedYearSelector);
     const periodIds = useSelector(store => periodIdsByYearSelector(store, year));
     const periods = useSelector(periodsSelector);
-    const saving = useSelector(store => plannedIndicatorChangeByCommitIdHaveStatusSelector(store, {plannedIndicatorIds:[plannedIndicatorId], periodIds, commitId:null}, 'saving'));
-    const error = useSelector(store => plannedIndicatorChangeByCommitIdHaveStatusSelector(store, {plannedIndicatorIds:[plannedIndicatorId], periodIds, commitId:null}, 'error'));
+    const saving = useSelector(store => plannedIndicatorChangeByPackageIdHaveStatusSelector(store, {plannedIndicatorIds:[plannedIndicatorId], periodIds, packageId:null}, 'saving'));
+    const error = useSelector(store => plannedIndicatorChangeByPackageIdHaveStatusSelector(store, {plannedIndicatorIds:[plannedIndicatorId], periodIds, packageId:null}, 'error'));
     
     const totalValueIsSet = totalValue && toNumber(totalValue);
     let periodValueIsSet = false;

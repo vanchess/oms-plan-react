@@ -47,7 +47,7 @@ export const indicatorChangeForNodeAdd = ({periodId, moId, moDepartmentId, plann
         plannedIndicatorChangeService.set({periodId, moId, moDepartmentId, plannedIndicatorId, value}).then(
             data => {
                 // console.log(data.data.id);
-                dispatch(indicatorChangeForNodeAddSuccess({lastId:uId, id:data.data.id, periodId, moId, moDepartmentId, plannedIndicatorId, value:data.data.value, commitId:data.commit_id}));
+                dispatch(indicatorChangeForNodeAddSuccess({lastId:uId, id:data.data.id, periodId, moId, moDepartmentId, plannedIndicatorId, value:data.data.value, packageId:data.package_id}));
             },
             data => {
                 // console.log('error',data);
@@ -135,12 +135,12 @@ export function plannedIndicatorChangeReducer(state = initialState, action) {
   }
 }
 
-const nodeUpdate = (state, {id, lastId, periodId, moId, moDepartmentId=null, plannedIndicatorId, value, commitId=null}, status) => {
+const nodeUpdate = (state, {id, lastId, periodId, moId, moDepartmentId=null, plannedIndicatorId, value, packageId=null}, status) => {
     const newState = {...state,
         entities: { ...state.entities }
     }
     if (id) {
-        newState.entities[id] = {id, period_id:periodId, mo_id:moId, planned_indicator_id:plannedIndicatorId, mo_department_id:moDepartmentId, value, status, commit_id:commitId};
+        newState.entities[id] = {id, period_id:periodId, mo_id:moId, planned_indicator_id:plannedIndicatorId, mo_department_id:moDepartmentId, value, status, package_id:pyackageId};
     }
     if (lastId && lastId !== id) {
         delete newState.entities[lastId];
@@ -162,7 +162,7 @@ const addValues = (state, valueArray, status) => {
           mo_department_id:cur.moDepartmentId ?? cur.mo_department_id ?? null, 
           value:cur.value, 
           status: status, 
-          commit_id:cur.commitId ?? cur.commit_id ?? null
+          package_id:cur.packageId ?? cur.package_id ?? null
         };
         return prev;
       }, {})

@@ -1,8 +1,10 @@
 /** @jsxImportSource @emotion/react */
-import { Container, Grid, Paper } from "@mui/material";
+import { Button, Container, Grid, Paper } from "@mui/material";
 import React, { useEffect, useLayoutEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { leafNodesSelector } from "../../store/category/categoryTreeSelector";
+import { commissionDecisionSelector, editableCommissionDecisionIdSelector, selectedCommissionDecisionIdSelector } from "../../store/commissionDecision/CommissionDecisionSelector";
+import { commissionDecisionIdEdit } from "../../store/commissionDecision/CommissionDecisionStore";
 import { setTitle } from "../../store/curPage/curPageStore";
 import { selectedYearSelector } from "../../store/nodeData/nodeDataSelectors";
 import { careProfilesUsedForNodeIdFetch, hospitalBedProfilesUsedForNodeIdFetch, indicatorsUsedForNodeIdFetch } from "../../store/nodeData/nodeDataStore";
@@ -29,6 +31,9 @@ export default function PlanCorrection(props){
     const { rootNodeId } = props;
     const nodeIds = useSelector(store => leafNodesSelector(store, rootNodeId)); //[4,5,6,7];
     const year = useSelector(selectedYearSelector);
+    const seletedCommissionDecisionId = useSelector(selectedCommissionDecisionIdSelector);
+    const editableCommissionDecisionId = useSelector(editableCommissionDecisionIdSelector);
+    const commissions = useSelector(commissionDecisionSelector);
     //const profiles = useSelector(store => hospitalBedProfilesArrForNodeIdSelector(store, nodeId));
     useEffect(() => {
         dispatch(setTitle({title: title}));
@@ -48,6 +53,10 @@ export default function PlanCorrection(props){
             dispatch(careProfilesUsedForNodeIdFetch({nodeId}));
         });
     }, [nodeIds]);
+
+    const setEditableConnissionId = () => {
+        dispatch(commissionDecisionIdEdit(seletedCommissionDecisionId));
+    }
     
     return (
         <div>
@@ -58,7 +67,18 @@ export default function PlanCorrection(props){
             <Grid item xs={12}>
                 <Paper css={paper}>
                     <ChangeDataTable rootNodeId={rootNodeId}/>
-                    <ChangeDataForm rootNodeId={rootNodeId}/>
+                    { (seletedCommissionDecisionId === editableCommissionDecisionId) 
+                       ? <ChangeDataForm rootNodeId={rootNodeId}/>
+                       : <div>Редактируется другой протокол. 
+                            <div>
+                            { seletedCommissionDecisionId ? 
+                            <Button variant="text" onClick={setEditableConnissionId} >
+                                Внести изменения в протокол №{commissions[seletedCommissionDecisionId].number}  от {commissions[seletedCommissionDecisionId].date}
+                            </Button>
+                            : null}
+                            </div>
+                         </div>
+                    }
                 </Paper>
             </Grid>
             </Grid>

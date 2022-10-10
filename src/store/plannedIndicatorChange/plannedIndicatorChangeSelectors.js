@@ -164,7 +164,7 @@ export const totalValueSelector = (store, {plannedIndicatorIds, periodIds, moIds
  * indicatorId НЕ используестся для фильтрации
  * indicatorId используется для выбора алгоритма сложения показателей
  */
-export const totalValue = (dataArray, {plannedIndicatorIds, periodIds, moIds, indicatorId, moDepartmentIds=null, maxCommitId=null, onlyCommitIds=null}) => {
+export const totalValue = (dataArray, {plannedIndicatorIds, periodIds, moIds, indicatorId, moDepartmentIds=null, maxPackageId=null, onlyPackageIds=null}) => {
     if(dataArray.length === 0) {
         return null;
     }
@@ -173,23 +173,23 @@ export const totalValue = (dataArray, {plannedIndicatorIds, periodIds, moIds, in
     if(moIds && plannedIndicatorIds && periodIds) {
         const sumPeriodsFunction = createSumPeriodsFunction(algorithmId);
         let departmentNotUse = true;
-        let onlyCommitIdsNotUse = false;
-        let maxCommitIdNotUse = false;
+        let onlyPackageIdsNotUse = false;
+        let maxPackageIdNotUse = false;
         if(moDepartmentIds) {
             departmentNotUse = false;
         }
-        if(onlyCommitIds === null){
-            onlyCommitIdsNotUse = true;
+        if(onlyPackageIds === null){
+            onlyPackageIdsNotUse = true;
         }
-        if(!onlyCommitIdsNotUse || maxCommitId === null){
-            maxCommitIdNotUse = true;
+        if(!onlyPackageIdsNotUse || maxPackageId === null){
+            maxPackageIdNotUse = true;
         }
         let items = dataArray.filter(item => {
             return periodIds.includes(item.period_id)
                 && moIds.includes(item.mo_id)
                 && (departmentNotUse || moDepartmentIds.includes(item.mo_department_id))
-                && (onlyCommitIdsNotUse || onlyCommitIds.includes(item.commit_id))
-                && (maxCommitIdNotUse || (item.commit_id <= maxCommitId))
+                && (onlyPackageIdsNotUse || onlyPackageIds.includes(item.package_id))
+                && (maxPackageIdNotUse || (item.package_id <= maxPackageId))
                 && plannedIndicatorIds.includes(item.planned_indicator_id);
         });
         if (items.length > 0) {
@@ -214,7 +214,7 @@ export const plannedIndicatorChangeItemsIsLoadingSelector = (store) => {
 }
 
 const EmptyArray = [];
-export const plannedIndicatorChangeByCommitIdSelector = (store, {plannedIndicatorIds, periodIds, commitId=null}) => {
+export const plannedIndicatorChangeByPackageIdsSelector = (store, {plannedIndicatorIds, periodIds, packageIds=[null]}) => {
     const dataArray = sortedPlannedIndicatorChangeArraySelector(store);
     if(dataArray.length === 0) {
         return EmptyArray;
@@ -222,7 +222,7 @@ export const plannedIndicatorChangeByCommitIdSelector = (store, {plannedIndicato
     let items = EmptyArray;
     if(plannedIndicatorIds && periodIds) {
         items = dataArray.filter(item => {
-            return  commitId === item.commit_id
+            return  packageIds.includes(item.package_id)
                 && periodIds.includes(item.period_id)
                 && plannedIndicatorIds.includes(item.planned_indicator_id);
         });
@@ -231,7 +231,11 @@ export const plannedIndicatorChangeByCommitIdSelector = (store, {plannedIndicato
     return items;
 }
 
-export const plannedIndicatorChangeByCommitIdHaveStatusSelector = (store, {plannedIndicatorIds, periodIds, commitId=null}, status) => {
+export const plannedIndicatorChangeByPackageIdSelector = (store, {plannedIndicatorIds, periodIds, packageId=null}) => {
+    return plannedIndicatorChangeByPackageIdsSelector(store, {plannedIndicatorIds, periodIds, packageIds:[packageId]});
+}
+
+export const plannedIndicatorChangeByPackageIdHaveStatusSelector = (store, {plannedIndicatorIds, periodIds, packageId=null}, status) => {
     const dataArray = sortedPlannedIndicatorChangeArraySelector(store);
     if(dataArray.length === 0) {
         return false;
@@ -239,7 +243,7 @@ export const plannedIndicatorChangeByCommitIdHaveStatusSelector = (store, {plann
     if(plannedIndicatorIds && periodIds) {
         for (let index = 0; index < dataArray.length; index++) {
             const item = dataArray[index];
-            if(commitId === item.commit_id
+            if(packageId === item.package_id
                 && periodIds.includes(item.period_id)
                 && plannedIndicatorIds.includes(item.planned_indicator_id)
                 && item.status === status

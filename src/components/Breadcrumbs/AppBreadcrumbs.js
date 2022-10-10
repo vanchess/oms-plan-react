@@ -11,6 +11,9 @@ import SectionMenu from './SectionMenu';
 import { useSelector } from 'react-redux';
 import { categoryTreeNodeBySlugFunction, categoryTreeNodesSelector, categoryTreeRootNodeIdsSelector, categoryTreeSelector, getLeafNode } from '../../store/category/categoryTreeSelector';
 import { categorySelector } from '../../store/category/categorySelector';
+import YearMenu from './YearMenu';
+import { commissionDecisionArrSelector, commissionDecisionSelector, selectedCommissionDecisionIdSelector } from '../../store/commissionDecision/CommissionDecisionSelector';
+import CommissionDecisionMenu from './CommissionDecisionMenu';
 
 const breadcrumbNameMap = {
   'ambulance': 'Скорая',
@@ -40,7 +43,7 @@ export default function AppBreadcrumbs() {
   const tree = useSelector(categoryTreeSelector);
   const treeNodes = useSelector(categoryTreeNodesSelector);
   const categories = useSelector(categorySelector);
-
+  
   const changeSection = (section) => {
     history.push(`/${section}/${pathnames[1]}`);
   }
@@ -101,8 +104,13 @@ export default function AppBreadcrumbs() {
       <IconButton underline="hover" color="inherit" component={RouterLink} to="/">
           <HomeIcon />
       </IconButton>
+      <YearMenu />
       { pathnames[1]
         ? <SectionMenu label={breadcrumbNameMap[pathnames[1]]} items={sectionTypeItems} onChange={changeSectionType} />
+        : null
+      }
+      { (pathnames[1] === 'changes')
+        ? <CommissionDecisionMenu />
         : null
       }
       { pathnames[0]

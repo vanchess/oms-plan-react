@@ -1,11 +1,11 @@
-import { Accordion, AccordionDetails, AccordionSummary, Grid, Typography } from "@mui/material";
+import { Accordion, AccordionDetails, AccordionSummary, Typography } from "@mui/material";
 import React from "react";
 import { useSelector } from "react-redux";
 import { moArrSelector, moIdsSelector } from "../../store/mo/moSelectors";
 import { indicatorsArrForNodeIdsSelector, selectedYearSelector } from "../../store/nodeData/nodeDataSelectors";
 import { periodIdsByYearSelector } from "../../store/period/periodSelectors";
 import { plannedIndicatorsArrByIdsSelector, plannedIndicatorsIdsByNodeIdsSelector } from "../../store/plannedIndicator/plannedIndicatorSelectors";
-import { plannedIndicatorChangeByCommitIdSelector, totalValue } from "../../store/plannedIndicatorChange/plannedIndicatorChangeSelectors";
+import { plannedIndicatorChangeByPackageIdSelector, plannedIndicatorChangeByPackageIdsSelector, totalValue } from "../../store/plannedIndicatorChange/plannedIndicatorChangeSelectors";
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import { categoryTreeByRootNodeIdSelector, categoryTreeNodesSelector, leafNodesSelector } from "../../store/category/categoryTreeSelector";
 import { categorySelector } from "../../store/category/categorySelector";
@@ -15,6 +15,8 @@ import { css } from "@emotion/react";
 import { moDepartmentRequired } from "../../services/moDepartmentRequired";
 import { moDepartmentsArrByMoIdFilter, moDepartmentsArrSelector } from "../../store/moDepartment/moDepartmentSelectors";
 import { upperCaseFirst } from "../../_helpers/strings";
+import { selectedCommissionDecisionIdSelector } from "../../store/commissionDecision/CommissionDecisionSelector";
+import { changePackageIdsByCommissionDecisionIdSelector } from "../../store/changePackage/changePackageSelectors";
 
 function moValues(plannedIndicatorChange, plannedIndicatorIds, periodIds, moIds, indicatorId, departmentsArr=null) {
     let result = {};
@@ -84,11 +86,15 @@ export default function ChangeDataTable(props){
     const { rootNodeId } = props;
     const nodeIds = useSelector(store => leafNodesSelector(store, rootNodeId));
     const year = useSelector(selectedYearSelector);
+    const commissionId = useSelector(selectedCommissionDecisionIdSelector);
+
     const periodIds = useSelector(store => periodIdsByYearSelector(store, year));
-    
+
+    const packageIds = useSelector(store => changePackageIdsByCommissionDecisionIdSelector(store, commissionId));
+
     const plannedIndicatorIds = useSelector(store => plannedIndicatorsIdsByNodeIdsSelector(store, nodeIds));
     const plannedIndicatorArr = useSelector(store => plannedIndicatorsArrByIdsSelector(store, plannedIndicatorIds));
-    const plannedIndicatorChange = useSelector(store => plannedIndicatorChangeByCommitIdSelector(store, {plannedIndicatorIds, periodIds, commitId:null}));
+    const plannedIndicatorChange = useSelector(store => plannedIndicatorChangeByPackageIdsSelector(store, {plannedIndicatorIds, periodIds, packageIds}));
 
     const indicators = useSelector(store => indicatorsArrForNodeIdsSelector(store, nodeIds));
     const tree = useSelector(store => categoryTreeByRootNodeIdSelector(store, rootNodeId));

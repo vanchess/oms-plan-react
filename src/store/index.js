@@ -22,6 +22,8 @@ import { appReducer } from './app/appStore';
 import { categoryReducer } from './category/categoryStore';
 import { categoryTreeReducer } from './category/categoryTreeStore';
 import { categoryTreeNodesReducer } from './category/categoryTreeNodesStore';
+import { commissionDecisionReducer } from './commissionDecision/CommissionDecisionStore';
+import { changePackageReducer } from './changePackage/changePackageStore';
 //import { alert } from './alert.reducer';
 
 const rootReducer = combineReducers({
@@ -29,6 +31,8 @@ const rootReducer = combineReducers({
   category: categoryReducer,
   categoryTree: categoryTreeReducer,
   categoryTreeNodes: categoryTreeNodesReducer,
+  changePackage: changePackageReducer,
+  commissionDecision: commissionDecisionReducer,
   hospitalBedProfiles: hospitalBedProfilesReducer,
   careProfiles: careProfilesReducer,
   medicalServices: medicalServicesReducer,

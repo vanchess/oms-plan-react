@@ -2,6 +2,8 @@ import { Grid, Paper } from "@mui/material";
 import { React, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { moDepartmentRequired } from "../../services/moDepartmentRequired";
+import { changePackageIdByEditableCommissionDecisionIdSelector } from "../../store/changePackage/changePackageSelectors";
+import { editableCommissionDecisionIdSelector } from "../../store/commissionDecision/CommissionDecisionSelector";
 import { moIdsSelector } from "../../store/mo/moSelectors";
 import { indicatorChangeIncrementValues } from "../../store/plannedIndicatorChange/plannedIndicatorChangeStore";
 import CategoryNodeSelect from "./CategoryNodeSelect";
@@ -12,6 +14,8 @@ import ValueInput from "./ValueInput";
 
 export default function ChangeDataForm(props){
     const { rootNodeId } = props;
+    const commissionDecisionId = useSelector(editableCommissionDecisionIdSelector);
+    const packageId = useSelector(store => changePackageIdByEditableCommissionDecisionIdSelector(store, commissionDecisionId));
 
     const dispatch = useDispatch();
     const [nodeId, setNodeId] = useState(rootNodeId);
@@ -29,7 +33,7 @@ export default function ChangeDataForm(props){
         const dataArray = values
             .filter(valObj => valObj.value !== '0')
             .map(valObj => {
-                return {...valObj, plannedIndicatorId, moId, moDepartmentId:(moDepartmentId ?? undefined)};
+                return {...valObj, plannedIndicatorId, moId, moDepartmentId:(moDepartmentId ?? undefined), packageId};
             });
         dispatch(indicatorChangeIncrementValues({total, values:dataArray}))
     }

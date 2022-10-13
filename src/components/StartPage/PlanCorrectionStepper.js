@@ -1,9 +1,10 @@
-import { Step, StepButton, StepContent, Stepper } from '@mui/material';
+import { Link, Step, StepButton, StepContent, Stepper } from '@mui/material';
 import { Box } from '@mui/system';
 import React, { useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux';
 import { commissionDecisionArrSelector, selectedCommissionDecisionIdSelector } from '../../store/commissionDecision/CommissionDecisionSelector';
 import { commissionDecisionIdSelected } from '../../store/commissionDecision/CommissionDecisionStore';
+import { selectedYearSelector } from '../../store/nodeData/nodeDataSelectors';
 import NewCommission from '../Commission/NewCommission';
 import PlanCorrectionMenu from './PlanCorrectionMenu';
 
@@ -12,6 +13,7 @@ export default function PlanCorrectionSteper(props) {
     const [activeStep, setActiveStep] = useState(0);
     const commissionsArr = useSelector(commissionDecisionArrSelector);
     const selectedCommissionDecisionId = useSelector(selectedCommissionDecisionIdSelector);
+    const year = useSelector(selectedYearSelector);
 
     const setActiveStepByCommissionDecisionId = (id) => {
         const step = commissionsArr.findIndex(e => e.id === id);
@@ -42,6 +44,17 @@ export default function PlanCorrectionSteper(props) {
                     
                     <StepContent>
                         <PlanCorrectionMenu />
+                        <Box
+                            sx={{
+                                '& > :not(style) + :not(style)': {
+                                    ml: 2,
+                                },
+                            }}
+                        >
+                            <Link href={new URL(`meeting-minutes/${year}/${comission.id}`, process.env.REACT_APP_DOMAIN)}>протокол xlsx</Link>
+                            <Link href={new URL(`summary-volume/${year}/${comission.id}`, process.env.REACT_APP_DOMAIN)}>свод(объемы) xlsx</Link>
+                            <Link href={new URL(`summary-cost/${year}/${comission.id}`, process.env.REACT_APP_DOMAIN)}>свод(стоимость) xlsx</Link>
+                        </Box>
                     </StepContent>
                 </Step>
                 ))}

@@ -1,4 +1,4 @@
-import { Accordion, AccordionDetails, AccordionSummary, Card, CardContent, Grid, Typography } from '@mui/material'
+import { Accordion, AccordionDetails, AccordionSummary, Box, Card, CardContent, Grid, Link, Typography } from '@mui/material'
 import React, { useLayoutEffect, useState } from 'react'
 import { upperCaseFirst } from '../../_helpers/strings';
 import { selectedYearSelector } from '../../store/nodeData/nodeDataSelectors';
@@ -68,6 +68,16 @@ export default function InitialData(props) {
                     )
                 })}
                 </Grid>
+                <Box
+                    sx={{
+                        '& > :not(style) + :not(style)': {
+                            ml: 2,
+                        },
+                    }}
+                >
+                    <Link href={new URL(`summary-volume/${year}`, process.env.REACT_APP_DOMAIN)}>свод(объемы) xlsx</Link>
+                    <Link href={new URL(`summary-cost/${year}`, process.env.REACT_APP_DOMAIN)}>свод(стоимость) xlsx</Link>
+                </Box>
             </AccordionDetails>
         </Accordion>
     )

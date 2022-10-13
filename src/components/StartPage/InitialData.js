@@ -75,8 +75,8 @@ export default function InitialData(props) {
                         },
                     }}
                 >
-                    <Link href={new URL(`summary-volume/${year}`, process.env.REACT_APP_DOMAIN)}>свод(объемы) xlsx</Link>
-                    <Link href={new URL(`summary-cost/${year}`, process.env.REACT_APP_DOMAIN)}>свод(стоимость) xlsx</Link>
+                    <Link target="_blank" href={new URL(`summary-volume/${year}`, process.env.REACT_APP_DOMAIN)}>свод(объемы) xlsx</Link>
+                    <Link target="_blank" href={new URL(`summary-cost/${year}`, process.env.REACT_APP_DOMAIN)}>свод(стоимость) xlsx</Link>
                 </Box>
             </AccordionDetails>
         </Accordion>

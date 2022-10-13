@@ -55,9 +55,10 @@ const numberToInputElementFormat = str => {
 }
 
 export default function ValueInput(props) {
-    const { plannedIndicatorId, saveValue, disabled } = props;
+    const { plannedIndicatorId, saveValue, disabled, hasСhanges } = props;
     const [periodValue, setPeriodValue] = useState({});
     const [totalValue, setTotalValue] = useState(0);
+    const [valuesСhanged, setValuesСhanged] = useState(true);
     const year = useSelector(selectedYearSelector);
     const periodIds = useSelector(store => periodIdsByYearSelector(store, year));
     const periods = useSelector(periodsSelector);
@@ -96,6 +97,8 @@ export default function ValueInput(props) {
         saveValue(
             {values:v, total}
         );
+
+        setValuesСhanged(false);
     }
 
     const handlePeriodValueChange = (periodId, e) => {
@@ -113,7 +116,7 @@ export default function ValueInput(props) {
             setTotalValue(newTotalValueStr);
             return pValues;
         });
-        
+        setValuesСhanged(true);
     }
 
     const handleYearValueChange = e => {
@@ -147,6 +150,7 @@ console.log(e.target.value);
         //pValues.
         setPeriodValue(pValues);
         setTotalValue(strNewValue);
+        setValuesСhanged(true);
     }
 
     return (
@@ -192,7 +196,7 @@ console.log(e.target.value);
                             <Alert severity="error">Произошла ошибка! Данные не сохранены. Обновите страницу</Alert>
                         </Collapse>
                         <LoadingButton
-                            disabled={disabled || (!totalValueIsSet && !periodValueIsSet) }
+                            disabled={disabled || (!totalValueIsSet && !periodValueIsSet) || (!valuesСhanged && !hasСhanges) }
                             size="small"
                             color={error?"error":"secondary"}
                             onClick={handleSave}

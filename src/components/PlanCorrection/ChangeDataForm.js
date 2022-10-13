@@ -1,5 +1,5 @@
 import { Grid, Paper } from "@mui/material";
-import { React, useState } from "react";
+import { React, useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { moDepartmentRequired } from "../../services/moDepartmentRequired";
 import { changePackageIdByEditableCommissionDecisionIdSelector } from "../../store/changePackage/changePackageSelectors";
@@ -18,6 +18,7 @@ export default function ChangeDataForm(props){
     const packageId = useSelector(store => changePackageIdByEditableCommissionDecisionIdSelector(store, commissionDecisionId));
 
     const dispatch = useDispatch();
+    const [hasСhanges, setHasСhanges] = useState(true);
     const [nodeId, setNodeId] = useState(rootNodeId);
     const [plannedIndicatorId, setPlannedIndicatorId] = useState(null);
     const [moId, setMoId] = useState(null);
@@ -35,8 +36,13 @@ export default function ChangeDataForm(props){
             .map(valObj => {
                 return {...valObj, plannedIndicatorId, moId, moDepartmentId:(moDepartmentId ?? undefined), packageId};
             });
-        dispatch(indicatorChangeIncrementValues({total, values:dataArray}))
+        dispatch(indicatorChangeIncrementValues({total, values:dataArray}));
+        setHasСhanges(false);
     }
+
+    useEffect(() => {
+        setHasСhanges(true);
+    },[plannedIndicatorId, moId, moDepartmentId, packageId]);
 
     return (
         <Paper>
@@ -53,7 +59,12 @@ export default function ChangeDataForm(props){
                     
                 </Grid>
                 <Grid item xs={6}>
-                    <ValueInput saveValue={handleSave} plannedIndicatorId={plannedIndicatorId} disabled={!plannedIndicatorId || !moId || (departmentRequired && !moDepartmentId)} />
+                    <ValueInput 
+                        saveValue={handleSave} 
+                        plannedIndicatorId={plannedIndicatorId}
+                        disabled={!plannedIndicatorId || !moId || (departmentRequired && !moDepartmentId)}
+                        hasСhanges={hasСhanges}
+                    />
                 </Grid>
             </Grid>
         </Paper>

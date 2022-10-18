@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import { useSelector } from 'react-redux';
+import { indicatorsIdsSelector } from '../../store/indicator/indicatorSelectors';
 import { getPlannedIndicator, plannedIndicatorsArrByIdsSelector, plannedIndicatorsIdsByNodeIdsSelector } from '../../store/plannedIndicator/plannedIndicatorSelectors';
 import BedProfileSelect from './BedProfileSelect';
 import CareProfileSelect from './CareProfileSelect';
@@ -21,6 +22,7 @@ export default function PlannedIndicatorSelect(props) {
 
     const plannedIndicatorIds = useSelector(store => plannedIndicatorsIdsByNodeIdsSelector(store, [nodeId]));
     const plannedIndicatorArr = useSelector(store => plannedIndicatorsArrByIdsSelector(store, plannedIndicatorIds));
+    const allIndicatorsIds = useSelector(indicatorsIdsSelector);
 
     useEffect(() => {
         if (!plannedIndicatorArr) {
@@ -74,8 +76,9 @@ export default function PlannedIndicatorSelect(props) {
     const careProfileIds = Object.keys(careProfileIdsObj);
     const vmpGroupIds = Object.keys(vmpGroupIdsObj);
     const vmpTypeIds = Object.keys(vmpTypeIdsObj);
-    const indicatorIds = Object.keys(indicatorIdsObj);
+    let indicatorIds = Object.keys(indicatorIdsObj).map(id => Number(id));
 
+    indicatorIds = allIndicatorsIds.filter((id) => indicatorIds.includes(id));
     return (
         <React.Fragment>
             { serviceIds.length ? 

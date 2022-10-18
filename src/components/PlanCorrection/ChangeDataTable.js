@@ -22,6 +22,7 @@ function moValues(plannedIndicatorChange, plannedIndicatorIds, periodIds, moIds,
     let result = {};
     moIds.forEach(moId => {
         const val = totalValue(plannedIndicatorChange, {plannedIndicatorIds, periodIds, moIds:[moId], indicatorId});
+       // const byPeriods = 
         if (val !== null) {
             if (departmentsArr) {
                 result[moId] = {value: val, department: {}};

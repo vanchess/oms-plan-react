@@ -15,6 +15,16 @@ export const periodIdsByYearSelector = createSelector(
     }
 )
 
+const EmptyArray = [];
+export const periodIdsBetweenSelector = (store, from, to) => {
+    if (!from || !to) {
+        return EmptyArray;
+    }
+    const periods = periodsSelector(store);
+    return periodIdsBetween(periods, from, to);
+}
+
+
 const periodIdsBetween = (periods, from, to) => {
     const interval = Interval.fromDateTimes(from, to);
     

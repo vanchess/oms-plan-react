@@ -76,8 +76,8 @@ export const statusSelector = (store, {moId, periodId, plannedIndicatorId, moDep
     return items[0].status;
 }
 
-function getAlgorithmIdByIndicatorId(indicatorId) {
-    if (indicatorId === 1) {
+export function getAlgorithmIdByIndicatorId(indicatorId) {
+    if (indicatorId === 1 || indicatorId === 10) {
         return 1;
     }
     return 2;
@@ -99,7 +99,7 @@ function createSumPeriodsFunction(algorithmId) {
     }
 }
 
-function getTotal(sumPeriods, algorithmId, periodId=null) {
+export function getTotal(sumPeriods, algorithmId, periodId=null) {
     if (algorithmId === 1) {
         if(periodId) {
             return sumPeriods[periodId];

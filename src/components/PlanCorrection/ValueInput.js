@@ -1,18 +1,20 @@
 import { LoadingButton } from '@mui/lab';
 import { Alert, Box, Collapse, Grid, Stack, TextField } from '@mui/material';
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { selectedYearSelector } from '../../store/nodeData/nodeDataSelectors';
-import { periodIdsByYearSelector, periodsSelector } from '../../store/period/periodSelectors';
+import { periodIdsBetweenSelector, periodIdsByYearSelector, periodsSelector } from '../../store/period/periodSelectors';
 import { DateTime } from '../../_helpers/dateTime';
 import SaveIcon from '@mui/icons-material/Save';
-import { plannedIndicatorChangeByPackageIdHaveStatusSelector } from '../../store/plannedIndicatorChange/plannedIndicatorChangeSelectors';
+import { getAlgorithmIdByIndicatorId, plannedIndicatorChangeByPackageIdHaveStatusSelector } from '../../store/plannedIndicatorChange/plannedIndicatorChangeSelectors';
+import { commissionDecisionByIdSelector, editableCommissionDecisionIdSelector } from '../../store/commissionDecision/CommissionDecisionSelector';
+import { plannedIndicatorByIdSelector } from '../../store/plannedIndicator/plannedIndicatorSelectors';
+import { changePackageIdByEditableCommissionDecisionIdSelector } from '../../store/changePackage/changePackageSelectors';
 
 const twoDecimal = new Intl.NumberFormat('ru', { style: 'decimal', minimumFractionDigits: 0, maximumFractionDigits: 2, useGrouping: true });
 const twoDecimalNoGrouping = new Intl.NumberFormat('en', { style: 'decimal', minimumFractionDigits: 0, maximumFractionDigits: 2, useGrouping: false });
 
 const toCorrectNumberString = str => {
-    console.log(str);
     if (str === '-' || str === '0-' || str === '-.' || str === '.') {
         return '0';
     }
@@ -54,17 +56,26 @@ const numberToInputElementFormat = str => {
     return '';
 }
 
-export default function ValueInput(props) {
+export default function ValueInput(props) { 
     const { plannedIndicatorId, saveValue, disabled, hasСhanges } = props;
+    const plannedIndicator = useSelector(store => plannedIndicatorByIdSelector(store, plannedIndicatorId));
+    const indicatorId = plannedIndicator?.indicator_id;
     const [periodValue, setPeriodValue] = useState({});
     const [totalValue, setTotalValue] = useState(0);
     const [valuesСhanged, setValuesСhanged] = useState(true);
     const year = useSelector(selectedYearSelector);
     const periodIds = useSelector(store => periodIdsByYearSelector(store, year));
     const periods = useSelector(periodsSelector);
-    const saving = useSelector(store => plannedIndicatorChangeByPackageIdHaveStatusSelector(store, {plannedIndicatorIds:[plannedIndicatorId], periodIds, packageId:null}, 'saving'));
-    const error = useSelector(store => plannedIndicatorChangeByPackageIdHaveStatusSelector(store, {plannedIndicatorIds:[plannedIndicatorId], periodIds, packageId:null}, 'error'));
-    
+    const commissionDecisionId = useSelector(editableCommissionDecisionIdSelector);
+    const commissionDecision = useSelector(store => commissionDecisionByIdSelector(store, commissionDecisionId));
+    const commissionDecisionStartOfMonth = useMemo(() => DateTime.fromISO(commissionDecision?.date).startOf('month'), [commissionDecision]);
+    const commissionDecisionEndOfYear = useMemo(() => DateTime.fromISO(commissionDecision?.date).endOf('year'), [commissionDecision]);
+    const packageId = useSelector(store => changePackageIdByEditableCommissionDecisionIdSelector(store, commissionDecisionId));
+    const periodIdsBetween = useSelector(store => periodIdsBetweenSelector(store, commissionDecisionStartOfMonth, commissionDecisionEndOfYear));
+    const saving = useSelector(store => plannedIndicatorChangeByPackageIdHaveStatusSelector(store, {plannedIndicatorIds:[plannedIndicatorId], periodIds, packageId}, 'saving'));
+    const error = useSelector(store => plannedIndicatorChangeByPackageIdHaveStatusSelector(store, {plannedIndicatorIds:[plannedIndicatorId], periodIds, packageId}, 'error'));
+    const algorithmId = getAlgorithmIdByIndicatorId(indicatorId);
+
     const totalValueIsSet = totalValue && toNumber(totalValue);
     let periodValueIsSet = false;
     for (let i = 0; i < periodIds.length; i++) {
@@ -79,7 +90,7 @@ export default function ValueInput(props) {
             periodIds.reduce((prev, cur) => {prev[cur] = null; return prev;}, {})
         );
         setTotalValue(0);
-    }, [periodIds])
+    }, [periodIds, algorithmId])
 
     if (!periodIds.length) {
         return <div>Отсутствуют периоды планирования на {year} год...</div>
@@ -93,7 +104,10 @@ export default function ValueInput(props) {
             prev.push({periodId:Number(periodId), value:toCorrectNumberString(periodValue[periodId])});
             return prev;
         }, []);
-        const total = toCorrectNumberString(totalValue);
+        let total = toCorrectNumberString(totalValue);
+        if (algorithmId === 1) {
+            total = toNumberString(Object.values(v).reduce((total, cur) => total + toNumber(cur.value ?? '0'), 0));
+        }
         saveValue(
             {values:v, total}
         );
@@ -102,6 +116,7 @@ export default function ValueInput(props) {
     }
 
     const handlePeriodValueChange = (periodId, e) => {
+
         const strNewValue = numderFromInputElementFormat(e.target.value);
       
         const newValue = toNumber(strNewValue);
@@ -113,7 +128,11 @@ export default function ValueInput(props) {
             const pValues = {...v, [periodId]:strNewValue};
             const newTotalValue = Object.values(pValues).reduce((total, cur) => total + toNumber(cur ?? '0'), 0);
             const newTotalValueStr = toNumberString(newTotalValue);
-            setTotalValue(newTotalValueStr);
+            if (algorithmId === 1) {
+                setTotalValue('');
+            } else {
+                setTotalValue(newTotalValueStr);
+            }
             return pValues;
         });
         setValuesСhanged(true);
@@ -121,33 +140,40 @@ export default function ValueInput(props) {
 
     const handleYearValueChange = e => {
         const strNewValue = numderFromInputElementFormat(e.target.value);
-console.log(e.target.value);
         const newValue = toNumber(strNewValue);
         if (isNaN(newValue)) {
             return;
         }
 
-        const oneMonthValue = Math.floor(newValue / periodIds.length);
+        let pValues = periodIds.reduce((prev, cur) => {prev[cur] = '0'; return prev;}, {});
+        if (algorithmId === 1) {
+            const oneMonthValue = newValue;
+            for(let i = 0; i < periodIdsBetween.length; i++) {
+                const periodId = periodIdsBetween[i];
+                pValues[periodId] = toNumberString(oneMonthValue);
+            }
+        } else {
+            const oneMonthValue = Math.floor(newValue / periodIds.length);
+            let remainder = newValue - (oneMonthValue * periodIds.length);
 
-        let remainder = newValue - (oneMonthValue * periodIds.length);
+            pValues = periodIds.reduce((prev, cur) => {prev[cur] = toNumberString(oneMonthValue); return prev;}, {});
 
-        const pValues = periodIds.reduce((prev, cur) => {prev[cur] = toNumberString(oneMonthValue); return prev;}, {});
+            const lastPeriodId = periodIds[periodIds.length-1]
+            pValues[lastPeriodId] = toNumberString(toNumber(pValues[lastPeriodId]) + remainder - Math.floor(remainder));
 
-        const lastPeriodId = periodIds[periodIds.length-1]
-        pValues[lastPeriodId] = toNumberString(toNumber(pValues[lastPeriodId]) + remainder - Math.floor(remainder));
-
-        remainder = Math.floor(remainder);
-        if(remainder != 0) {
-            const d = (remainder > 0) ? 1 : -1;
-            const t = Math.abs(remainder);
-            const step = Math.floor(periodIds.length / t);
-            for (let j=0; j < t; j++) {
-                const key = periodIds.length - 1 - (step * j);
-                const periodId = periodIds[key];
-                pValues[periodId] = toNumberString(toNumber(pValues[periodId]) + d);
+            remainder = Math.floor(remainder);
+            if(remainder != 0) {
+                const d = (remainder > 0) ? 1 : -1;
+                const t = Math.abs(remainder);
+                const step = Math.floor(periodIds.length / t);
+                for (let j=0; j < t; j++) {
+                    const key = periodIds.length - 1 - (step * j);
+                    const periodId = periodIds[key];
+                    pValues[periodId] = toNumberString(toNumber(pValues[periodId]) + d);
+                }
             }
         }
-        //pValues.
+        
         setPeriodValue(pValues);
         setTotalValue(strNewValue);
         setValuesСhanged(true);

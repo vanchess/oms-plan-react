@@ -67,7 +67,6 @@ export const indicatorChangeIncrementValues = ({values, total}) => {
       
       plannedIndicatorChangeService.incrementValues({values, total}).then(
           data => {
-            console.log(data);
             dispatch(indicatorChangeDeleteValues({data: valuesWithTempId}));
             dispatch(indicatorChangeIncrementValuesSuccess(data));
           },
@@ -149,7 +148,6 @@ const nodeUpdate = (state, {id, lastId, periodId, moId, moDepartmentId=null, pla
 }
 
 const addValues = (state, valueArray, status) => {
-  console.log('valueArray', valueArray);
   return {
     ...state,
     entities: { ...state.entities,

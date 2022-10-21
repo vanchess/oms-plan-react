@@ -4,6 +4,10 @@ export const plannedIndicatorsSelector = (store) => {
     return store.plannedIndicator.entities;
 }
 
+export const plannedIndicatorByIdSelector = (store, id) => {
+    return plannedIndicatorsSelector(store)[id];
+}
+
 export const plannedIndicatorsIsLoadingSelector = (store) => {
     return store.plannedIndicator.loading;
 }

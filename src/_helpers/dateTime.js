@@ -24,6 +24,14 @@ export class DateTime
         return dt.toLocaleString(f);
     }
 
+    startOf(unit) {
+        return new DateTime(this.#dateTime.startOf(unit));
+    }
+
+    endOf(unit) {
+        return new DateTime(this.#dateTime.endOf(unit));
+    }
+
     toObject() {
         return this.#dateTime.toObject();
     }

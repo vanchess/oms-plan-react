@@ -64,6 +64,8 @@ export default function ChangeDataForm(props){
                         plannedIndicatorId={plannedIndicatorId}
                         disabled={!plannedIndicatorId || !moId || (departmentRequired && !moDepartmentId)}
                         hasСhanges={hasСhanges}
+                        moId={moId}
+                        moDepartmentId={moDepartmentId}
                     />
                 </Grid>
             </Grid>

@@ -1,10 +1,11 @@
-import { ContactSupport } from "@mui/icons-material";
 import { createSelector } from "@reduxjs/toolkit";
 import { careProfilesSelector } from "../careProfiles/careProfilesSelectors";
 import { hospitalBedProfilesSelector } from "../hospitalBedProfiles/hospitalBedProfilesSelectors";
 import { indicatorsSelector } from "../indicator/indicatorSelectors";
 import { medicalAssistanceTypesSelector } from "../medicalAssistanceType/medicalAssistanceTypeSelectors";
 import { medicalServicesSelector } from "../medicalServices/medicalServicesSelectors";
+
+export const nodeDataEntitiesSelector = store => store.nodeData.entities;
 
 export const selectedNodeIdSelector = (store) => store.nodeData.selectedId;
 // export const selectedMoIdSelector = (store) => store.nodeData.selectedMo;
@@ -14,10 +15,10 @@ export const selectedYearSelector = (store) => store.nodeData.selectedYear;
  * Данные для узла
  */
 export const dataForNodeIdSelector = (store, nodeId) => {
-    if (!store.nodeData.entities[nodeId]) {
+    if (!nodeDataEntitiesSelector(store)[nodeId]) {
         return null;
     }
-    return store.nodeData.entities[nodeId];
+    return nodeDataEntitiesSelector(store)[nodeId];
 }
 
 /// indicators
@@ -34,28 +35,31 @@ export const indicatorIdsForNodeIdSelector = (store, nodeId) => {
 }
 
 const EmptyArray = [];
-export const indicatorIdsForNodeIdsSelector = (store, nodeIds) => {
-    let temp = EmptyArray;
-    nodeIds.map(nodeId => {
-        const dataForNodeIds = dataForNodeIdSelector(store, nodeId);
-        if (!dataForNodeIds) {
-            return;
-        }
-        const indicatorIds = dataForNodeIds.indicatorIds;
-        if (!indicatorIds) {
-            return;
-        }
-        temp = [
-            ...temp,
-            ...indicatorIds
-        ]
-    });
-    let o = {};
-    temp.forEach(val => {
-        o[val] = true;
-    });
-    return Object.keys(o);
-}
+export const indicatorIdsForNodeIdsSelector = createSelector(
+    [nodeDataEntitiesSelector, (store, nodeIds) => nodeIds],
+    (nodeDataEntities, nodeIds) => {
+        let temp = EmptyArray;
+        nodeIds.map(nodeId => {
+            const dataForNodeIds = nodeDataEntities[nodeId];
+            if (!dataForNodeIds) {
+                return;
+            }
+            const indicatorIds = dataForNodeIds.indicatorIds;
+            if (!indicatorIds) {
+                return;
+            }
+            temp = [
+                ...temp,
+                ...indicatorIds
+            ]
+        });
+        let o = {};
+        temp.forEach(val => {
+            o[val] = true;
+        });
+        return Object.keys(o);
+    }
+)
 
 export const indicatorForNodeIsLoadingSelector = (store, nodeId) => {
     const data = dataForNodeIdSelector(store, nodeId);

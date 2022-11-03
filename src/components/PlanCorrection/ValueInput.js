@@ -1,15 +1,17 @@
 import { LoadingButton } from '@mui/lab';
 import { Alert, Box, Collapse, Grid, Stack, TextField } from '@mui/material';
 import React, { useEffect, useMemo, useState } from 'react';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { selectedYearSelector } from '../../store/nodeData/nodeDataSelectors';
 import { periodIdsBetweenSelector, periodIdsByYearSelector, periodsSelector } from '../../store/period/periodSelectors';
 import { DateTime } from '../../_helpers/dateTime';
 import SaveIcon from '@mui/icons-material/Save';
-import { getAlgorithmIdByIndicatorId, plannedIndicatorChangeByPackageIdHaveStatusSelector } from '../../store/plannedIndicatorChange/plannedIndicatorChangeSelectors';
+import { createPeriodTotalValueSelector, getAlgorithmIdByIndicatorId, plannedIndicatorChangeByPackageIdHaveStatusSelector, totalValueSelector } from '../../store/plannedIndicatorChange/plannedIndicatorChangeSelectors';
 import { commissionDecisionByIdSelector, editableCommissionDecisionIdSelector } from '../../store/commissionDecision/CommissionDecisionSelector';
 import { plannedIndicatorByIdSelector } from '../../store/plannedIndicator/plannedIndicatorSelectors';
-import { changePackageIdByEditableCommissionDecisionIdSelector } from '../../store/changePackage/changePackageSelectors';
+import { changePackageIdByEditableCommissionDecisionIdSelector, changePackageIdsByLastCommissionDecisionIdSelector } from '../../store/changePackage/changePackageSelectors';
+import { planCorrectionPeriodValueSelector, planCorrectionTotalValueSelector } from '../../store/app/appSelectors';
+import { planCorrectionSetPeriodValue, planCorrectionSetTotalValue } from '../../store/app/appStore';
 
 const twoDecimal = new Intl.NumberFormat('ru', { style: 'decimal', minimumFractionDigits: 0, maximumFractionDigits: 2, useGrouping: true });
 const twoDecimalNoGrouping = new Intl.NumberFormat('en', { style: 'decimal', minimumFractionDigits: 0, maximumFractionDigits: 2, useGrouping: false });
@@ -57,11 +59,18 @@ const numberToInputElementFormat = str => {
 }
 
 export default function ValueInput(props) { 
-    const { plannedIndicatorId, saveValue, disabled, hasСhanges } = props;
+    const dispatch = useDispatch();
+    const { plannedIndicatorId, saveValue, disabled, hasСhanges, moId, moDepartmentId } = props;
     const plannedIndicator = useSelector(store => plannedIndicatorByIdSelector(store, plannedIndicatorId));
     const indicatorId = plannedIndicator?.indicator_id;
-    const [periodValue, setPeriodValue] = useState({});
-    const [totalValue, setTotalValue] = useState(0);
+    const periodValue = useSelector(planCorrectionPeriodValueSelector);
+    const totalValue = useSelector(planCorrectionTotalValueSelector);
+    const setPeriodValue = (val) => {
+        dispatch(planCorrectionSetPeriodValue(val));
+    }
+    const setTotalValue = (val) => {
+        dispatch(planCorrectionSetTotalValue(val));
+    }
     const [valuesСhanged, setValuesСhanged] = useState(true);
     const year = useSelector(selectedYearSelector);
     const periodIds = useSelector(store => periodIdsByYearSelector(store, year));
@@ -76,6 +85,12 @@ export default function ValueInput(props) {
     const error = useSelector(store => plannedIndicatorChangeByPackageIdHaveStatusSelector(store, {plannedIndicatorIds:[plannedIndicatorId], periodIds, packageId}, 'error'));
     const algorithmId = getAlgorithmIdByIndicatorId(indicatorId);
 
+    // Значения показателя на момет комиссии 
+    const periodTotalValueSelector = useMemo(() => createPeriodTotalValueSelector(periodIds), [periodIds]);
+    const packageIdsAtCurrentCommissionTime = useSelector(store => changePackageIdsByLastCommissionDecisionIdSelector(store,commissionDecisionId));
+    const total = useSelector(store => totalValueSelector(store, {plannedIndicatorIds:[plannedIndicatorId], periodIds, moIds:[moId], indicatorId, moDepartmentIds:(moDepartmentId?[moDepartmentId]:null), onlyPackageIds:packageIdsAtCurrentCommissionTime}));
+    const periodTotalValue = useSelector(store => periodTotalValueSelector(store, {plannedIndicatorIds:[plannedIndicatorId], moIds:[moId], indicatorId, moDepartmentIds:(moDepartmentId?[moDepartmentId]:null), onlyPackageIds:packageIdsAtCurrentCommissionTime}));
+
     const totalValueIsSet = totalValue && toNumber(totalValue);
     let periodValueIsSet = false;
     for (let i = 0; i < periodIds.length; i++) {
@@ -89,7 +104,7 @@ export default function ValueInput(props) {
         setPeriodValue(
             periodIds.reduce((prev, cur) => {prev[cur] = null; return prev;}, {})
         );
-        setTotalValue(0);
+        setTotalValue('0');
     }, [periodIds, algorithmId])
 
     if (!periodIds.length) {
@@ -116,25 +131,22 @@ export default function ValueInput(props) {
     }
 
     const handlePeriodValueChange = (periodId, e) => {
-
         const strNewValue = numderFromInputElementFormat(e.target.value);
       
         const newValue = toNumber(strNewValue);
         if (isNaN(newValue)) {
             return;
         }
-      
-        setPeriodValue((v) => {
-            const pValues = {...v, [periodId]:strNewValue};
-            const newTotalValue = Object.values(pValues).reduce((total, cur) => total + toNumber(cur ?? '0'), 0);
-            const newTotalValueStr = toNumberString(newTotalValue);
-            if (algorithmId === 1) {
-                setTotalValue('');
-            } else {
-                setTotalValue(newTotalValueStr);
-            }
-            return pValues;
-        });
+        
+        const pValues = {...periodValue, [periodId]:strNewValue};
+        const newTotalValue = Object.values(pValues).reduce((total, cur) => total + toNumber(cur ?? '0'), 0);
+        const newTotalValueStr = toNumberString(newTotalValue);
+        if (algorithmId === 1) {
+            setTotalValue('');
+        } else {
+            setTotalValue(newTotalValueStr);
+        }
+        setPeriodValue(pValues);
         setValuesСhanged(true);
     }
 
@@ -178,7 +190,7 @@ export default function ValueInput(props) {
         setTotalValue(strNewValue);
         setValuesСhanged(true);
     }
-
+console.log(total);
     return (
         <React.Fragment>
             <TextField
@@ -194,6 +206,8 @@ export default function ValueInput(props) {
                 InputLabelProps={{
                     shrink: true,
                 }}
+                helperText={`${total + toNumber(totalValue ?? '0')}`}
+                error={(total + toNumber(totalValue ?? '0'))< 0}
             />
             <Grid container columns={periodIds.length} >
                 { periodIds.map(periodId => {
@@ -213,6 +227,8 @@ export default function ValueInput(props) {
                             InputLabelProps={{
                                 shrink: true,
                             }}
+                            helperText={`${periodTotalValue[periodId] + toNumber(periodValue[periodId] ?? '0')}`}
+                            error={(periodTotalValue[periodId] + toNumber(periodValue[periodId] ?? '0')) < 0}
                         />
                     </Grid>
             )})}

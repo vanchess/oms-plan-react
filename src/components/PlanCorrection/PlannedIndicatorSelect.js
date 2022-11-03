@@ -1,7 +1,8 @@
 import React, { useEffect, useState } from 'react'
+import { useMemo } from 'react';
 import { useSelector } from 'react-redux';
 import { indicatorsIdsSelector } from '../../store/indicator/indicatorSelectors';
-import { getPlannedIndicator, plannedIndicatorsArrByIdsSelector, plannedIndicatorsIdsByNodeIdsSelector } from '../../store/plannedIndicator/plannedIndicatorSelectors';
+import { getPlannedIndicator, plannedIndicatorsArrByIdsSelector, plannedIndicatorsIdsByNodeIdSelector } from '../../store/plannedIndicator/plannedIndicatorSelectors';
 import BedProfileSelect from './BedProfileSelect';
 import CareProfileSelect from './CareProfileSelect';
 import IndicatorSelect from './IndicatorSelect';
@@ -20,7 +21,7 @@ export default function PlannedIndicatorSelect(props) {
     const [vmpTypeId, setVmpTypeId] = useState(null);
     const [indicatorId, setIndicatorId] = useState(null);
 
-    const plannedIndicatorIds = useSelector(store => plannedIndicatorsIdsByNodeIdsSelector(store, [nodeId]));
+    const plannedIndicatorIds = useSelector(store => plannedIndicatorsIdsByNodeIdSelector(store, nodeId));
     const plannedIndicatorArr = useSelector(store => plannedIndicatorsArrByIdsSelector(store, plannedIndicatorIds));
     const allIndicatorsIds = useSelector(indicatorsIdsSelector);
 

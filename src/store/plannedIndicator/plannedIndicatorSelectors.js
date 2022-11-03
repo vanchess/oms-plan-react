@@ -18,7 +18,12 @@ const plannedIndicatorsArrByIds = (plannedIndicators, ids) => {
 
 export const plannedIndicatorsArrByIdsSelector = createSelector(
     [plannedIndicatorsSelector, (store, ids) => ids],
-    plannedIndicatorsArrByIds
+    plannedIndicatorsArrByIds,
+    {
+        memoizeOptions: {
+          maxSize: 3,
+        }
+    }
 )
 
 export const getPlannedIndicator = (plannedIndicators, {nodeId, indicatorId, profileId=null, assistanceTypeId=null, serviceId=null, careProfileId=null, vmpGroupId=null, vmpTypeId=null}) => {
@@ -126,13 +131,27 @@ export const plannedIndicatorsWhereSelector = createSelector(
     }
 )
 
-export const plannedIndicatorsIdsByNodeIdsSelector = (store, nodeIds) => {
-    const e = plannedIndicatorsSelector(store);
-    const plannedIndicatorIds = Object.keys(e).filter(id => {
-        if (nodeIds.includes(e[id].node_id)) {
+const plannedIndicatorsIdsByNodeIds = (plannedIndicators, nodeIds) => {
+    const plannedIndicatorIds = Object.keys(plannedIndicators).filter(id => {
+        if (nodeIds.includes(plannedIndicators[id].node_id)) {
             return true;
         }
         return false;
     });
     return plannedIndicatorIds.map(id => Number(id));
 }
+
+export const plannedIndicatorsIdsByNodeIdsSelector = createSelector(
+    [plannedIndicatorsSelector, (store, nodeIds) => nodeIds],
+    plannedIndicatorsIdsByNodeIds
+)
+
+const nodeArr = createSelector(
+    [(store, nodeId) => nodeId],
+    nodeId => [nodeId]
+);
+
+export const plannedIndicatorsIdsByNodeIdSelector = createSelector(
+    [plannedIndicatorsSelector, nodeArr],
+    plannedIndicatorsIdsByNodeIds
+)

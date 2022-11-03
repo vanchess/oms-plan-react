@@ -32,14 +32,7 @@ export const sortedPlannedIndicatorChangeArraySelector = createSelector(
         })
     }
 );
-/*
-export const distinctInitialDataArraySelector = createSelector(
-    [sortedInitialDataArray],
-    (array) => {
-        return 
-    }
-);
-*/
+
 export const plannedIndicatorChangeItemsSelector = (store, {moId, periodId, plannedIndicatorId, moDepartmentId = null}) => {
     const dataArray = sortedPlannedIndicatorChangeArraySelector(store);
     
@@ -108,53 +101,6 @@ export function getTotal(sumPeriods, algorithmId, periodId=null) {
     return sumPeriods.at(-1);
 }
 
-/*
-export const totalValueSelector = (store, {plannedIndicatorIds, periodIds, moIds, moDepartmentIds=null, commitId=null}) => {
-    const dataArray = sortedPlannedIndicatorChangeArraySelector(store);
-    if(dataArray.length === 0) {
-        return null;
-    }
-    const plannedIndicators = plannedIndicatorsSelector(store);
-    let total = 0;
-    if(moIds && plannedIndicatorIds && periodIds) {
-        moIds.forEach( (moId) => {
-            plannedIndicatorIds.forEach( (plannedIndicatorId) => {
-                const indicatorId = plannedIndicators[plannedIndicatorId].indicator_id;
-                const algorithmId = getAlgorithmIdByIndicatorId(indicatorId);
-                const sumPeriods = createSumPeriodsFunction(algorithmId);
-                periodIds.forEach( (periodId) => {
-                    if(moDepartmentIds) {
-                        moDepartmentIds.forEach(departmentId => {
-                            let items = dataArray.filter(item => {
-                                return item.mo_id===moId 
-                                    && item.mo_department_id===departmentId
-                                    && item.planned_indicator_id===plannedIndicatorId 
-                                    && item.period_id===periodId;
-                            });
-                            if (items) {
-                                total = items.reduce((total,item) => sumPeriods(total, item.value), total);
-                            }
-                        })
-                    } else {
-                        let items = dataArray.filter(item => {
-                            return item.mo_id===moId 
-                                && item.planned_indicator_id===plannedIndicatorId 
-                                && item.period_id===periodId;
-                        });
-                        if (items) {
-                            total = items.reduce((total,item) => sumPeriods(total, item.value), total);
-                        }
-                    }
-                    
-                });
-            });
-        });
-    }
-    
-    return total;
-}
-*/
-
 /**
  * 
  * @param {*} dataArray 
@@ -209,27 +155,50 @@ export const totalValueSelector = (store, filterOptionsObj) => {
     return totalValue(dataArray, filterOptionsObj);
 }
 
+export const createPeriodTotalValueSelector = (periodIds = []) => {
+    const selectors = periodIds.map((periodId) => {
+        return (store, filterOptionsObj) => totalValueSelector(store, {...filterOptionsObj, periodIds:[periodId]});
+    });
+
+    return createSelector(selectors, (...args) => {
+        console.log(args);
+        return periodIds.reduce((prev, cur, i) => { prev[cur] = args[i] ?? 0; return prev }, {});
+    });
+}
+
 export const plannedIndicatorChangeItemsIsLoadingSelector = (store) => {
     return store.plannedIndicatorChange.loading;
 }
 
 const EmptyArray = [];
-export const plannedIndicatorChangeByPackageIdsSelector = (store, {plannedIndicatorIds, periodIds, packageIds=[null]}) => {
-    const dataArray = sortedPlannedIndicatorChangeArraySelector(store);
-    if(dataArray.length === 0) {
-        return EmptyArray;
+const checkEqualityPlannedIndicatorChangeByPackageIdsObject = createSelector(
+    [
+        (store, obj = {}) => obj.plannedIndicatorIds,
+        (store, obj = {}) => obj.periodIds,
+        (store, obj = {}) => obj.packageIds,
+    ],
+    (plannedIndicatorIds, periodIds, packageIds) => {
+        return {plannedIndicatorIds, periodIds, packageIds};
     }
-    let items = EmptyArray;
-    if(plannedIndicatorIds && periodIds) {
-        items = dataArray.filter(item => {
-            return  packageIds.includes(item.package_id)
-                && periodIds.includes(item.period_id)
-                && plannedIndicatorIds.includes(item.planned_indicator_id);
-        });
+)
+export const plannedIndicatorChangeByPackageIdsSelector = createSelector(
+    [sortedPlannedIndicatorChangeArraySelector, checkEqualityPlannedIndicatorChangeByPackageIdsObject],
+    (dataArray, {plannedIndicatorIds, periodIds, packageIds=[null]}) => {
+        if(dataArray.length === 0) {
+            return EmptyArray;
+        }
+        let items = EmptyArray;
+        if(plannedIndicatorIds && periodIds) {
+            items = dataArray.filter(item => {
+                return  packageIds.includes(item.package_id)
+                    && periodIds.includes(item.period_id)
+                    && plannedIndicatorIds.includes(item.planned_indicator_id);
+            });
+        }
+        
+        return items;
     }
-    
-    return items;
-}
+)
 
 export const plannedIndicatorChangeByPackageIdSelector = (store, {plannedIndicatorIds, periodIds, packageId=null}) => {
     return plannedIndicatorChangeByPackageIdsSelector(store, {plannedIndicatorIds, periodIds, packageIds:[packageId]});

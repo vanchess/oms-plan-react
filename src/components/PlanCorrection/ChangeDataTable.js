@@ -1,17 +1,15 @@
 import { Accordion, AccordionDetails, AccordionSummary, Typography } from "@mui/material";
-import React from "react";
+import React, { useMemo } from "react";
 import { useSelector } from "react-redux";
-import { moArrSelector, moIdsSelector } from "../../store/mo/moSelectors";
+import { moIdsSelector } from "../../store/mo/moSelectors";
 import { indicatorsArrForNodeIdsSelector, selectedYearSelector } from "../../store/nodeData/nodeDataSelectors";
 import { periodIdsByYearSelector } from "../../store/period/periodSelectors";
 import { plannedIndicatorsArrByIdsSelector, plannedIndicatorsIdsByNodeIdsSelector } from "../../store/plannedIndicator/plannedIndicatorSelectors";
-import { plannedIndicatorChangeByPackageIdSelector, plannedIndicatorChangeByPackageIdsSelector, totalValue } from "../../store/plannedIndicatorChange/plannedIndicatorChangeSelectors";
+import { plannedIndicatorChangeByPackageIdsSelector, totalValue } from "../../store/plannedIndicatorChange/plannedIndicatorChangeSelectors";
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import { categoryTreeByRootNodeIdSelector, categoryTreeNodesSelector, leafNodesSelector } from "../../store/category/categoryTreeSelector";
-import { categorySelector } from "../../store/category/categorySelector";
 import ChangeDataTableSection from "./ChangeDataTableSection";
 import styled from "@emotion/styled";
-import { css } from "@emotion/react";
 import { moDepartmentRequired } from "../../services/moDepartmentRequired";
 import { moDepartmentsArrByMoIdFilter, moDepartmentsArrSelector } from "../../store/moDepartment/moDepartmentSelectors";
 import { upperCaseFirst } from "../../_helpers/strings";
@@ -83,14 +81,18 @@ class NodeValues {
 
 const twoDecimal = new Intl.NumberFormat('ru', { style: 'decimal', minimumFractionDigits: 0, maximumFractionDigits: 2, useGrouping: true });
 
+const AccordionSummaryStyled = styled(AccordionSummary)`
+        background-color:rgba(0, 0, 0, .03);
+    `;
+
 export default function ChangeDataTable(props){
+    console.log('ChangeDataTable');
     const { rootNodeId } = props;
     const nodeIds = useSelector(store => leafNodesSelector(store, rootNodeId));
     const year = useSelector(selectedYearSelector);
     const commissionId = useSelector(selectedCommissionDecisionIdSelector);
 
     const periodIds = useSelector(store => periodIdsByYearSelector(store, year));
-
     const packageIds = useSelector(store => changePackageIdsByCommissionDecisionIdSelector(store, commissionId));
 
     const plannedIndicatorIds = useSelector(store => plannedIndicatorsIdsByNodeIdsSelector(store, nodeIds));
@@ -100,14 +102,11 @@ export default function ChangeDataTable(props){
     const indicators = useSelector(store => indicatorsArrForNodeIdsSelector(store, nodeIds));
     const tree = useSelector(store => categoryTreeByRootNodeIdSelector(store, rootNodeId));
     const treeNodes = useSelector(categoryTreeNodesSelector);
-    const category = useSelector(categorySelector);
 
-    let data = {indicator: {}};
-
-    const mo = useSelector(moArrSelector);
     const moIds = useSelector(moIdsSelector);
     const moDepartmentsArr = useSelector(moDepartmentsArrSelector);
 
+    let data = {indicator: {}};
     indicators.forEach(indicator => {
         const piArrByIndicator = plannedIndicatorArr.filter(pi => pi.indicator_id === indicator.id);
         const piIdsByIndicator = piArrByIndicator.map(pi => pi.id);
@@ -221,8 +220,8 @@ export default function ChangeDataTable(props){
                     })
                 }
             });
-        })
-    })
+        });
+    });
 
     let nodeValues = new NodeValues();
     indicators.forEach(indicator => {
@@ -252,10 +251,6 @@ export default function ChangeDataTable(props){
             }
         });
     });
-
-    const AccordionSummaryStyled = styled(AccordionSummary)`
-        background-color:rgba(0, 0, 0, .03);
-    `;
 
     return (
         <div>

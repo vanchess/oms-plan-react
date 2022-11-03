@@ -28,6 +28,8 @@ const toNumber = str => {
 }
 const toNumberString = num => twoDecimalNoGrouping.format(num);
 
+const toHumanReadableNumberString = num => twoDecimal.format(num);
+
 const numderFromInputElementFormat = str => str.replace(/\s/g, '').replace(/([.,]\d{2})\d*/, '$1');
 
 const numberToInputElementFormat = str => {
@@ -206,7 +208,7 @@ console.log(total);
                 InputLabelProps={{
                     shrink: true,
                 }}
-                helperText={`${total + toNumber(totalValue ?? '0')}`}
+                helperText={`${toHumanReadableNumberString(total)} ➔ ${toHumanReadableNumberString(total + toNumber(totalValue ?? '0'))}`}
                 error={(total + toNumber(totalValue ?? '0'))< 0}
             />
             <Grid container columns={periodIds.length} >
@@ -227,7 +229,7 @@ console.log(total);
                             InputLabelProps={{
                                 shrink: true,
                             }}
-                            helperText={`${periodTotalValue[periodId] + toNumber(periodValue[periodId] ?? '0')}`}
+                            helperText={`➔ ${toHumanReadableNumberString(periodTotalValue[periodId] + toNumber(periodValue[periodId] ?? '0'))}`}
                             error={(periodTotalValue[periodId] + toNumber(periodValue[periodId] ?? '0')) < 0}
                         />
                     </Grid>

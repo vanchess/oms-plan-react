@@ -9,11 +9,11 @@ export const moHavingDepartmentsIdsGetRequest = createAction('MEDICAL_INSTITUTIO
 export const moHavingDepartmentsIdsGetSuccess = createAction('MEDICAL_INSTITUTION_HAVING_DEPARTMENTS_IDS_GET_SUCCESS');
 export const moHavingDepartmentsIdsGetFailure = createAction('MEDICAL_INSTITUTION_HAVING_DEPARTMENTS_IDS_GET_FAILURE');
 
-export const moFetch = (page, perPage) => {
+export const moFetch = (date) => {
   return (dispatch) => {
     dispatch(moGetRequest());
     
-    moService.getAll(page, perPage).then(
+    moService.getAll(date).then(
         moCollection => dispatch(moGetSuccess(moCollection)),
         error => {
             dispatch(moGetFailure(error));

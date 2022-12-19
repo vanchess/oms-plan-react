@@ -23,6 +23,7 @@ export const medicalServicesUsedForNodeIdGetFailure = createAction('MEDICAL_SERV
 
 export const nodeIdSelected = createAction('NODE_ID_SELECTED');
 export const yearSelected = createAction('YEAR_SELECTED');
+export const currentlyUsedDateSelected = createAction('CURRENTLY_USED_DATE_SELECTED');
 // export const moSelected = createAction('MO_SELECTED');
 // export const moNotSelected = createAction('MO_NOT_SELECTED');
 
@@ -95,6 +96,7 @@ export const createInitialState = ({selectedYear}) => {
   return {
     ...initialState,
     selectedYear: selectedYear ?? new Date().getFullYear(),
+    currentlyUsedDate: selectedYear ? (selectedYear+"-01-01") : (new Date().getFullYear() +"-01-01"),
   }
 }
 
@@ -250,6 +252,10 @@ export function nodeDataReducer(state = initialState, action) {
     case yearSelected.type:
         return { ...state,
             selectedYear: action.payload.year
+        }
+    case currentlyUsedDateSelected.type:
+        return { ...state,
+          currentlyUsedDate: action.payload.currentlyUsedDate
         }
         /*
     case moSelected.type:

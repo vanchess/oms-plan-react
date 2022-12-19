@@ -22,5 +22,5 @@ export const moArrSelector = createSelector(
 )
 
 export const moHavingDepartmentsSelector = (store) => {
-    return store.mo.idsHavingDepartments.map(id => store.mo.entities[id])
+    return store.mo.idsHavingDepartments.map(id => store.mo.entities[id]).filter(item => item !== undefined);
 }

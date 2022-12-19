@@ -10,6 +10,7 @@ export const nodeDataEntitiesSelector = store => store.nodeData.entities;
 export const selectedNodeIdSelector = (store) => store.nodeData.selectedId;
 // export const selectedMoIdSelector = (store) => store.nodeData.selectedMo;
 export const selectedYearSelector = (store) => store.nodeData.selectedYear;
+export const сurrentlyUsedDateSelector = (store) => store.nodeData.currentlyUsedDate;
 
 /**
  * Данные для узла

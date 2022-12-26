@@ -75,7 +75,7 @@ const MainTable = (props) => {
           moDepartmentId: department.id,
           short_name: department.name.replace('Фельдшерско-акушерский пункт','ФАП').replace('Фельдшерский пункт','ФП'),
         }
-      }) ?? [];
+      }).sort((itemA, itemB)  => {if(itemA.short_name.toUpperCase()>itemB.short_name.toUpperCase()) return 1; if(itemA.short_name.toUpperCase()<itemB.short_name.toUpperCase()) return -1; return 0;}) ?? [];
     },[moDepartments]);
 
   const isLoading = useSelector((store) => {

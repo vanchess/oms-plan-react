@@ -103,11 +103,11 @@ const MainTable = (props) => {
         careProfileId: careProfileId,
         vmpGroupId: el.vmp_group_id,
         vmpTypeId: el.vmp_type_id,
-        
+        vmpTypeName: vmpTypes[el.vmp_type_id].name,
         head: <ColHead typeName={vmpTypes[el.vmp_type_id].name} group={vmpGroups[el.vmp_group_id].code} />,
         children: indicators
       }
-    })
+    }).sort((a,b) => { if (a.vmpGroupId - b.vmpGroupId !== 0) return (a.vmpGroupId - b.vmpGroupId); if (a.vmpTypeName < b.vmpTypeName) return -1; if (a.vmpTypeName > b.vmpTypeName) return 1; return 0; });
   },[plannedIndicatorArr,indicators,vmpGroups,vmpTypes,careProfileId]);
 
   const rowDefs = useMemo(() => {

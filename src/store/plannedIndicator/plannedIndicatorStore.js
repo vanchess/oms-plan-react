@@ -5,16 +5,16 @@ export const plannedIndicatorsGetRequest = createAction('PLANNED_INDICATORS_GET_
 export const plannedIndicatorsGetSuccess = createAction('PLANNED_INDICATORS_GET_SUCCESS');
 export const plannedIndicatorsGetFailure = createAction('PLANNED_INDICATORS_GET_FAILURE');
 
-export const plannedIndicatorsFetch = () => {
-  return (dispatch) => {
+export const plannedIndicatorsFetch = ({year}) => {
+  return async (dispatch) => {
     dispatch(plannedIndicatorsGetRequest());
     
-    plannedIndicatorService.getAll().then(
-        plannedIndicatorCollection => dispatch(plannedIndicatorsGetSuccess(plannedIndicatorCollection)),
-        error => {
-            dispatch(plannedIndicatorsGetFailure(error));
-        }
-      );
+    try {
+      let data = await plannedIndicatorService.getByYear(year);
+      dispatch(plannedIndicatorsGetSuccess(data));
+    } catch (error) {
+      dispatch(plannedIndicatorsGetFailure(error));
+    }
   }
 }
 
@@ -31,14 +31,14 @@ export function plannedIndicatorReducer(state = initialState, action) {
       return { ...state,
         loading: true
       };
-    case plannedIndicatorsGetSuccess.type:  
+    case plannedIndicatorsGetSuccess.type:
       return { ...state,
-        entities: { ...action.payload.entities },
+        entities: action.payload.entities.reduce((arr, item) => {arr[item.id] = item; return arr;}, {}),
         loading: false
       };
     case plannedIndicatorsGetFailure.type:
       return { ...state,
-        error: action.error,
+        error: action.payload.error,
         loading: false
       };
     default:

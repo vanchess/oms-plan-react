@@ -2,11 +2,10 @@ import { apiService } from './apiServiceBase';
 
 export class plannedIndicatorService extends apiService {
 
-    static getAll() {
+    static async getByYear(year) {
         const path = 'planned-indicators';
-        
-        return this.get(path).then((data) => {
-            return {entities: data.data.reduce((arr, item) => {arr[item.id] = item; return arr;}, [])}
-        });
+
+        const data = await this.get(path, { params: { year } });
+        return { entities: data.data };
     }
 }

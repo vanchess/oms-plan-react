@@ -62,7 +62,6 @@ export default function AppRoot() {
     
     dispatch(hospitalBedProfilesFetch());
     dispatch(indicatorsFetch());
-    dispatch(plannedIndicatorsFetch());
     dispatch(medicalServicesFetch());
     dispatch(medicalAssistanceTypeFetch());
     dispatch(careProfilesFetch());
@@ -83,6 +82,7 @@ export default function AppRoot() {
   useLayoutEffect(() => {
     dispatch(loadedNodeIdsFetch({year}));
     dispatch(commissionDecisionFetch({year}));
+    dispatch(plannedIndicatorsFetch({year}));
   }, [year, dispatch])
 
   useLayoutEffect(() => {

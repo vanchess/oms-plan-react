@@ -13,7 +13,7 @@ export class initialDataLoadedService extends apiService {
     static async commitDataByNodes(year, nodes) {
         const path = 'init-data-loaded-nodes';
 
-        const data = await this.post(path, { year, nodes });
+        const data = await this.post(path, { year, nodes }, {headers: {'Content-Type': 'application/json;charset=utf-8'}});
         return data;
     }
 }

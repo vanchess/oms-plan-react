@@ -9,4 +9,11 @@ export class initialDataLoadedService extends apiService {
             return data;
         });
     }
+
+    static async commitDataByNodes(year, nodes) {
+        const path = 'init-data-loaded-nodes';
+
+        const data = await this.post(path, { year, nodes });
+        return data;
+    }
 }

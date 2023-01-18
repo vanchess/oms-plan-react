@@ -1,4 +1,4 @@
-import { Accordion, AccordionDetails, AccordionSummary, Box, Card, CardContent, Grid, Link, Typography } from '@mui/material'
+import { Accordion, AccordionDetails, AccordionSummary, Box, Button, Card, CardContent, Grid, Link, Typography } from '@mui/material'
 import React, { useLayoutEffect, useState } from 'react'
 import { upperCaseFirst } from '../../_helpers/strings';
 import { selectedYearSelector } from '../../store/nodeData/nodeDataSelectors';
@@ -13,6 +13,8 @@ import SectionCardHeader from './SectionCardHeader';
 
 import CategoryTreeView from './renderCategoryTree';
 import { ExpandMore as ExpandMoreIcon } from '@mui/icons-material';
+import AlertDialog from '../Dialog/AlertDialog';
+import { initialDataLoadedService } from '../../services/api/initialDataLoadedService';
 
 export default function InitialData(props) {
     const year = useSelector(selectedYearSelector);
@@ -21,6 +23,7 @@ export default function InitialData(props) {
     const categories = useSelector(categorySelector);
     const initialDataLoaded = useSelector(store => initialDataLoadedSelector(store, {year, nodeIds:Object.keys(tree).map(id => Number(id))}));
     const [initialDataExpanded, setInitialDataExpanded] = useState(true);
+    const [openDialog, setOpenDialog] = useState(false);
 
     const nodeIds = useSelector(categoryTreeNodesIdsSelector);
     const nodeIdsString = nodeIds.map(id => id.toString());
@@ -29,11 +32,31 @@ export default function InitialData(props) {
         setInitialDataExpanded(!initialDataLoaded);
     }, [initialDataLoaded])
 
+    const openCommitInitialDataDialog = (e) => {
+        console.log(e);
+        e.stopPropagation();
+        setOpenDialog(true);
+    }
+
+    const onCloseCommitInitialDataDialog = (isConfirmed) => {
+        if (isConfirmed) {
+            initialDataLoadedService.commitDataByNodes(2023, [1, 9, 17, 39])
+        }
+        setOpenDialog(false);
+    }
+
     return (
+      <>
+        <AlertDialog onClose={onCloseCommitInitialDataDialog} open={openDialog} title={`Зафиксировать данные на начало ${year} года?`} description={"Редактирование начальных данных станет недоступно"} />
         <Accordion disableGutters expanded={initialDataExpanded} onChange={() => setInitialDataExpanded(e => !e)}>
             <AccordionSummaryStyled expandIcon={<ExpandMoreIcon />} >
                 <Typography sx={{ width: '40%', flexShrink: 0 }}>Данные на начало {year} года</Typography>
-                <Typography sx={{ color: 'text.secondary' }}>{initialDataLoaded ? 'Данные зафиксированы' : ''}</Typography>
+                <Typography sx={{ color: 'text.secondary' }}>
+                    {initialDataLoaded 
+                        ? 'Данные зафиксированы' 
+                        : <Button size="small" onClick={openCommitInitialDataDialog}>Зафиксировать данные</Button>
+                    }
+                </Typography>
             </AccordionSummaryStyled>
             <AccordionDetails>
                 <Grid container >
@@ -83,5 +106,6 @@ export default function InitialData(props) {
                 </Box>
             </AccordionDetails>
         </Accordion>
+      </>
     )
 }

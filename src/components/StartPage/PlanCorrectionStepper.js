@@ -95,6 +95,9 @@ export default function PlanCorrectionSteper(props) {
                                 <MenuItem onClick={handleClose} >
                                     <Link target="_blank" href={new URL(`hospital-by-profile/${year}/${comission.id}`, process.env.REACT_APP_DOMAIN)}>стационар по профилям</Link>
                                 </MenuItem>
+                                <MenuItem onClick={handleClose} >
+                                    <Link target="_blank" href={new URL(`miac-hospital-by-bed-profile-periods/${year}/${comission.id}`, process.env.REACT_APP_DOMAIN)}>МИАЦ(справочник планов по профилям коек)</Link>
+                                </MenuItem>
                             </Menu>
                             
                         </Box>

@@ -208,7 +208,7 @@ console.log(total);
                 InputLabelProps={{
                     shrink: true,
                 }}
-                helperText={`${toHumanReadableNumberString(total)} ➔ ${toHumanReadableNumberString(total + toNumber(totalValue ?? '0'))}`}
+                helperText={`${toHumanReadableNumberString(total)}` + ((!valuesСhanged && !hasСhanges)?'':` ➔ ${toHumanReadableNumberString(total + toNumber(totalValue ?? '0'))}`)}
                 error={(total + toNumber(totalValue ?? '0'))< 0}
             />
             <Grid container columns={periodIds.length} >
@@ -229,7 +229,7 @@ console.log(total);
                             InputLabelProps={{
                                 shrink: true,
                             }}
-                            helperText={`➔ ${toHumanReadableNumberString(periodTotalValue[periodId] + toNumber(periodValue[periodId] ?? '0'))}`}
+                            helperText={(!valuesСhanged && !hasСhanges)?`${toHumanReadableNumberString(periodTotalValue[periodId])}`:`➔ ${toHumanReadableNumberString(periodTotalValue[periodId] + toNumber(periodValue[periodId] ?? '0'))}`}
                             error={(periodTotalValue[periodId] + toNumber(periodValue[periodId] ?? '0')) < 0}
                         />
                     </Grid>

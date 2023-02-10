@@ -17,17 +17,24 @@ import { Storage as storage } from './_helpers/localStorage'
 import { createPersistentStorageMiddleware } from './middleware/createPersistentStorageMiddleware'
 import { setToken } from './_helpers/auth-token';
 import { createInitialState as createNodeDataInitialState } from './store/nodeData/nodeDataStore';
+import { createInitialState as commissionDecisionInitialState } from './store/commissionDecision/CommissionDecisionStore'
 
 const persistentStorageMiddleware = createPersistentStorageMiddleware(storage);
 const composeEnhancers = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose;
 const initialState = () => {
   const auth = storage.getItem('auth');
   const selectedYear = storage.getItem('selectedYear');
+  const commissionDecisionSelectedId = storage.getItem('commissionDecisionSelectedId');
   const nodeDataStore = { 
       nodeData: {
         ...createNodeDataInitialState({selectedYear})
       }
     }
+  const commissionDecisionStore = {
+      commissionDecision: {
+        ...commissionDecisionInitialState({selectedId:commissionDecisionSelectedId})
+      }
+  }
   let authStore = undefined;
   if (auth !== undefined) {
     setToken(auth.token);
@@ -40,7 +47,7 @@ const initialState = () => {
     }
   }
 
-  return {...authStore, ...nodeDataStore}
+  return {...authStore, ...nodeDataStore, ...commissionDecisionStore}
 };
 const store = createStore(rootReducer, initialState(), composeEnhancers(applyMiddleware(thunk, persistentStorageMiddleware)));
 

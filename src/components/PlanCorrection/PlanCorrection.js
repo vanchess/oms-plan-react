@@ -54,7 +54,7 @@ export default function PlanCorrection(props){
         });
     }, [nodeIds]);
 
-    const setEditableConnissionId = () => {
+    const setEditableCommissionId = () => {
         dispatch(commissionDecisionIdEdit(seletedCommissionDecisionId));
     }
     
@@ -72,8 +72,8 @@ export default function PlanCorrection(props){
                        : <div>Редактируется другой протокол. 
                             <div>
                             { seletedCommissionDecisionId ? 
-                            <Button variant="text" onClick={setEditableConnissionId} >
-                                Внести изменения в протокол №{commissions[seletedCommissionDecisionId].number}  от {commissions[seletedCommissionDecisionId].date}
+                            <Button variant="text" onClick={setEditableCommissionId} >
+                                Внести изменения в протокол №{commissions[seletedCommissionDecisionId]?.number}  от {commissions[seletedCommissionDecisionId]?.date}
                             </Button>
                             : null}
                             </div>

@@ -43,6 +43,13 @@ export const commissionDecisionAdd = ({number, date, description}) => {
     }
 }
 
+export const createInitialState = ({selectedId}) => {
+    return {
+        ...initialState,
+        selectedId: selectedId,
+    }
+}
+
 const initialState = {
     entities: {},
     ids: [],

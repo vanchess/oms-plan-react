@@ -145,6 +145,9 @@ export default function InitialData(props) {
                         <MenuItem onClick={handleClose} >
                             <Link target="_blank" href={new URL(`miac-hospital-by-bed-profile-periods/${year}`, process.env.REACT_APP_DOMAIN)}>МИАЦ(справочник планов по профилям коек)</Link>
                         </MenuItem>
+                        <MenuItem onClick={handleClose} >
+                            <Link target="_blank" href={new URL(`${year}`, process.env.REACT_APP_DOMAIN)}>Данные для формирования приложений к договору</Link>
+                        </MenuItem>
                     </Menu>
                 </Box>
             </AccordionDetails>

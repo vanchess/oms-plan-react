@@ -17,7 +17,7 @@ function Copyright() {
       <Link color="inherit" href="http://192.168.12.200/">
         ТФ ОМС Курганской области
       </Link>{' '}
-      {new Date().getFullYear()}
+      2022-{new Date().getFullYear()}
       {'.'}
     </Typography>
   );

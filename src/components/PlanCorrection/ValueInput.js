@@ -201,7 +201,7 @@ console.log(total);
                 margin="dense" 
                 fullWidth 
                 size='small'
-                id="outlined-number"
+                id="total-value-input"
                 label="Корректировка"
                 value={numberToInputElementFormat(totalValue)}
                 onChange={handleYearValueChange}
@@ -222,7 +222,7 @@ console.log(total);
                             margin="dense" 
                             fullWidth 
                             size='small'
-                            id="outlined-number"
+                            id={"value-input-" + periodId}
                             label={periodName}
                             value={numberToInputElementFormat(periodValue[periodId])}
                             onChange={(e) => handlePeriodValueChange(periodId,e)}

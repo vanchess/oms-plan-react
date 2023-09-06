@@ -32,7 +32,7 @@ export default function ChangeDataForm(props){
 
     const handleSave = ({total, values}) => {
         const dataArray = values
-            .filter(valObj => valObj.value !== '0')
+            .filter(valObj => valObj.value !== '0' && valObj.value !== '')
             .map(valObj => {
                 return {...valObj, plannedIndicatorId, moId, moDepartmentId:(moDepartmentId ?? undefined), packageId};
             });

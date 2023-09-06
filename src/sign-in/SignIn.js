@@ -127,7 +127,7 @@ class SignIn extends React.Component {
                 autoFocus
               />
               <FormControl fullWidth margin="normal" variant="outlined">
-                <InputLabel htmlFor="outlined-adornment-password">Пароль</InputLabel>
+                <InputLabel htmlFor="password">Пароль</InputLabel>
                   <OutlinedInput
                     required
                     label={"Пароль"}

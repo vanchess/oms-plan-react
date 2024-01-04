@@ -40,7 +40,7 @@ export default function InitialData(props) {
 
     const onCloseCommitInitialDataDialog = (isConfirmed) => {
         if (isConfirmed) {
-            initialDataLoadedService.commitDataByNodes(2023, [1, 9, 17, 39])
+            initialDataLoadedService.commitDataByNodes(year, [1, 9, 17, 39])
         }
         setOpenDialog(false);
     }

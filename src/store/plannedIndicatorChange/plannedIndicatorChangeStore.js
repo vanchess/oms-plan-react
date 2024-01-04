@@ -139,7 +139,7 @@ const nodeUpdate = (state, {id, lastId, periodId, moId, moDepartmentId=null, pla
         entities: { ...state.entities }
     }
     if (id) {
-        newState.entities[id] = {id, period_id:periodId, mo_id:moId, planned_indicator_id:plannedIndicatorId, mo_department_id:moDepartmentId, value, status, package_id:pyackageId};
+        newState.entities[id] = {id, period_id:periodId, mo_id:moId, planned_indicator_id:plannedIndicatorId, mo_department_id:moDepartmentId, value, status, package_id:packageId};
     }
     if (lastId && lastId !== id) {
         delete newState.entities[lastId];

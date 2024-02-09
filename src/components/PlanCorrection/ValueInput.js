@@ -20,7 +20,7 @@ const toCorrectNumberString = str => {
     if (str === '-' || str === '0-' || str === '-.' || str === '.') {
         return '0';
     }
-    return str.replace(',','.').replace(/^(-?)([.,]\d+)/, (m, p1, p2) => `${p1}0${p2}`)
+    return str.replace(',','.').replace(/^(-?)([.,]\d+)/, (m, p1, p2) => `${p1}0${p2}`);
 }
 
 const toNumber = str => {
@@ -62,7 +62,7 @@ const numberToInputElementFormat = str => {
 
 export default function ValueInput(props) { 
     const dispatch = useDispatch();
-    const { plannedIndicatorId, saveValue, disabled, hasСhanges, moId, moDepartmentId } = props;
+    const { plannedIndicatorId, saveValue, disabled, hasChanges: hasChanges, moId, moDepartmentId } = props;
     const plannedIndicator = useSelector(store => plannedIndicatorByIdSelector(store, plannedIndicatorId));
     const indicatorId = plannedIndicator?.indicator_id;
     const periodValue = useSelector(planCorrectionPeriodValueSelector);
@@ -73,7 +73,7 @@ export default function ValueInput(props) {
     const setTotalValue = (val) => {
         dispatch(planCorrectionSetTotalValue(val));
     }
-    const [valuesСhanged, setValuesСhanged] = useState(true);
+    const [valuesChanged, setValuesChanged] = useState(true);
     const year = useSelector(selectedYearSelector);
     const periodIds = useSelector(store => periodIdsByYearSelector(store, year));
     const periods = useSelector(periodsSelector);
@@ -129,7 +129,7 @@ export default function ValueInput(props) {
             {values:v, total}
         );
 
-        setValuesСhanged(false);
+        setValuesChanged(false);
     }
 
     const handlePeriodValueChange = (periodId, e) => {
@@ -149,7 +149,7 @@ export default function ValueInput(props) {
             setTotalValue(newTotalValueStr);
         }
         setPeriodValue(pValues);
-        setValuesСhanged(true);
+        setValuesChanged(true);
     }
 
     const handleYearValueChange = e => {
@@ -190,7 +190,7 @@ export default function ValueInput(props) {
         
         setPeriodValue(pValues);
         setTotalValue(strNewValue);
-        setValuesСhanged(true);
+        setValuesChanged(true);
     }
 console.log(total);
     return (
@@ -208,7 +208,7 @@ console.log(total);
                 InputLabelProps={{
                     shrink: true,
                 }}
-                helperText={`${toHumanReadableNumberString(total)}` + ((!valuesСhanged && !hasСhanges)?'':` ➔ ${toHumanReadableNumberString(total + toNumber(totalValue ?? '0'))}`)}
+                helperText={`${toHumanReadableNumberString(total)}` + ((!valuesChanged && !hasChanges)?'':` ➔ ${toHumanReadableNumberString(total + toNumber(totalValue ?? '0'))}`)}
                 error={(total + toNumber(totalValue ?? '0'))< 0}
             />
             <Grid container columns={periodIds.length} >
@@ -229,7 +229,7 @@ console.log(total);
                             InputLabelProps={{
                                 shrink: true,
                             }}
-                            helperText={(!valuesСhanged && !hasСhanges)?`${toHumanReadableNumberString(periodTotalValue[periodId])}`:`➔ ${toHumanReadableNumberString(periodTotalValue[periodId] + toNumber(periodValue[periodId] ?? '0'))}`}
+                            helperText={(!valuesChanged && !hasChanges)?`${toHumanReadableNumberString(periodTotalValue[periodId])}`:`➔ ${toHumanReadableNumberString(periodTotalValue[periodId] + toNumber(periodValue[periodId] ?? '0'))}`}
                             error={(periodTotalValue[periodId] + toNumber(periodValue[periodId] ?? '0')) < 0}
                         />
                     </Grid>
@@ -240,7 +240,7 @@ console.log(total);
                             <Alert severity="error">Произошла ошибка! Данные не сохранены. Обновите страницу</Alert>
                         </Collapse>
                         <LoadingButton
-                            disabled={disabled || (!totalValueIsSet && !periodValueIsSet) || (!valuesСhanged && !hasСhanges) }
+                            disabled={disabled || (!totalValueIsSet && !periodValueIsSet) || (!valuesChanged && !hasChanges) }
                             size="small"
                             color={error?"error":"secondary"}
                             onClick={handleSave}

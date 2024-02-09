@@ -18,7 +18,7 @@ export default function ChangeDataForm(props){
     const packageId = useSelector(store => changePackageIdByEditableCommissionDecisionIdSelector(store, commissionDecisionId));
 
     const dispatch = useDispatch();
-    const [hasСhanges, setHasСhanges] = useState(true);
+    const [hasChanges, setHasChanges] = useState(true);
     const [nodeId, setNodeId] = useState(rootNodeId);
     const [plannedIndicatorId, setPlannedIndicatorId] = useState(null);
     const [moId, setMoId] = useState(null);
@@ -37,11 +37,11 @@ export default function ChangeDataForm(props){
                 return {...valObj, plannedIndicatorId, moId, moDepartmentId:(moDepartmentId ?? undefined), packageId};
             });
         dispatch(indicatorChangeIncrementValues({total, values:dataArray}));
-        setHasСhanges(false);
+        setHasChanges(false);
     }
 
     useEffect(() => {
-        setHasСhanges(true);
+        setHasChanges(true);
     },[plannedIndicatorId, moId, moDepartmentId, packageId]);
 
     return (
@@ -63,7 +63,7 @@ export default function ChangeDataForm(props){
                         saveValue={handleSave} 
                         plannedIndicatorId={plannedIndicatorId}
                         disabled={!plannedIndicatorId || !moId || (departmentRequired && !moDepartmentId)}
-                        hasСhanges={hasСhanges}
+                        hasChanges={hasChanges}
                         moId={moId}
                         moDepartmentId={moDepartmentId}
                     />

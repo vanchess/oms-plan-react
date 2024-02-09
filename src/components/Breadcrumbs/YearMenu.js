@@ -1,13 +1,13 @@
 import React, { useCallback, useMemo } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import { сurrentlyUsedDateSelector, selectedYearSelector } from '../../store/nodeData/nodeDataSelectors'
+import { currentlyUsedDateSelector, selectedYearSelector } from '../../store/nodeData/nodeDataSelectors'
 import { yearSelected, currentlyUsedDateSelected } from '../../store/nodeData/nodeDataStore';
 import SectionMenu from './SectionMenu';
 
 export default function YearMenu() {
     const dispatch = useDispatch();
     const currentYear = useSelector(selectedYearSelector);
-    const currentlyUsedDate = useSelector(сurrentlyUsedDateSelector);
+    const currentlyUsedDate = useSelector(currentlyUsedDateSelector);
 
     const years = useMemo(
         () => (

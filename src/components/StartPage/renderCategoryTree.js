@@ -1,4 +1,4 @@
-import { TreeItem, TreeView } from "@mui/lab";
+import { TreeItem, TreeView } from "@mui/x-tree-view"
 import { useSelector } from "react-redux";
 import { useHistory } from "react-router-dom";
 import { categorySelector } from "../../store/category/categorySelector";

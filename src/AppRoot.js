@@ -19,7 +19,7 @@ import { indicatorsIsLoadingSelector } from './store/indicator/indicatorSelector
 import { plannedIndicatorsIsLoadingSelector } from './store/plannedIndicator/plannedIndicatorSelectors';
 import { medicalServicesIsLoadingSelector } from './store/medicalServices/medicalServicesSelectors';
 import { medicalAssistanceTypesIsLoadingSelector } from './store/medicalAssistanceType/medicalAssistanceTypeSelectors';
-import { careProfilesForNodeIsLoadingSelector, selectedYearSelector, сurrentlyUsedDateSelector } from './store/nodeData/nodeDataSelectors';
+import { careProfilesForNodeIsLoadingSelector, selectedYearSelector, currentlyUsedDateSelector } from './store/nodeData/nodeDataSelectors';
 import { vmpGroupsSelectorIsLoadingSelector } from './store/vmpGroups/vmpGroupsSelectors';
 import { vmpTypesIsLoadingSelector } from './store/vmpTypes/vmpTypesSelectors';
 import { periodIsLoadingSelector } from './store/period/periodSelectors';
@@ -39,7 +39,7 @@ export default function AppRoot() {
 
   const initBegin = useSelector(appInitBeginSelector);
   const year = useSelector(selectedYearSelector);
-  const currentlyUsedDate = useSelector(сurrentlyUsedDateSelector);
+  const currentlyUsedDate = useSelector(currentlyUsedDateSelector);
 
   const loading = useSelector((store) => {
     return (

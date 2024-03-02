@@ -148,6 +148,9 @@ export default function InitialData(props) {
                         <MenuItem onClick={handleClose} >
                             <Link target="_blank" href={new URL(`${year}`, process.env.REACT_APP_DOMAIN)}>Данные для формирования приложений к договору</Link>
                         </MenuItem>
+                        <MenuItem onClick={handleClose} >
+                            <Link target="_blank" href={new URL(`pump-pgg/${year}`, process.env.REACT_APP_DOMAIN)}>ПУМП Приложение №2.11 Плановые объёмы</Link>
+                        </MenuItem>
                     </Menu>
                 </Box>
             </AccordionDetails>

@@ -3,6 +3,7 @@ import React from "react";
 
 import 'dayjs/locale/ru';
 
+import * as dayjs from 'dayjs';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
@@ -39,19 +40,16 @@ export default function NewCommission(props) {
             <LocalizationProvider dateAdapter={ AdapterDayjs } adapterLocale={'ru'}>
                 <DatePicker
                     label="Дата"
-                    
-                    value={dateValue}
+                    value={dayjs(dateValue)}
                     onChange={(newValue) => {
-                        console.log(newValue);
                         const date = new Date( Date.UTC(
                             newValue.get('year'),
                             newValue.get('month'),
                             newValue.get('date')
                         ));
-                        console.log(date.toString());
                         setDateValue(date);
                     }}
-                    renderInput={(params) => <TextField required size="small" {...params} />}
+                    slotProps={{ textField: { required: true, size:'small' } }}
                 />
             </LocalizationProvider>
             <TextField

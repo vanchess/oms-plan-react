@@ -48,7 +48,7 @@ export default function PlanCorrectionSteper(props) {
                 {commissionsArr.map((comission, index) => (
                 <Step key={comission.id}>
                     <StepButton color="inherit" onClick={handleStepById(comission.id)}>
-                        протокол №{comission.number} от {comission.date}
+                        протокол №{comission.number} от {comission.date} {comission.description ? ` [${comission.description}]` : ''}
                     </StepButton>
                     
                     <StepContent>

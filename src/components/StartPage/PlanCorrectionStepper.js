@@ -104,6 +104,9 @@ export default function PlanCorrectionSteper(props) {
                                 <MenuItem onClick={handleClose} >
                                     <Link target="_blank" href={new URL(`pump-pgg/${year}/${comission.id}`, process.env.REACT_APP_DOMAIN)}>ПУМП Приложение №2.11 Плановые объёмы</Link>
                                 </MenuItem>
+                                <MenuItem onClick={handleClose} >
+                                    <Link target="_blank" href={new URL(`hospitalization-portal/${year}/${comission.id}`, process.env.REACT_APP_DOMAIN)}>Портал госпитализации(Количество коек)</Link>
+                                </MenuItem>
                             </Menu>
                         </Box>
                     </StepContent>

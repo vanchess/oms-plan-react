@@ -63,7 +63,7 @@ export default function PlanCorrectionSteper(props) {
                             <Link target="_blank" href={new URL(`meeting-minutes/${year}/${comission.id}`, process.env.REACT_APP_DOMAIN)}>протокол</Link>
                             <Link target="_blank" href={new URL(`summary-volume/${year}/${comission.id}`, process.env.REACT_APP_DOMAIN)}>свод(объемы)</Link>
                             <Link target="_blank" href={new URL(`summary-cost/${year}/${comission.id}`, process.env.REACT_APP_DOMAIN)}>свод(стоимость)</Link>
-                            <Link target="_blank" href={new URL(`vitacore-v2/${year}/${comission.id}`, process.env.REACT_APP_DOMAIN)}>vitacore(план)</Link>
+                            <Link target="_blank" href={new URL(`vitacore-v3/${year}/${comission.id}`, process.env.REACT_APP_DOMAIN)}>vitacore(план)</Link>
                             <Button
                                 id="basic-button"
                                 size="small"

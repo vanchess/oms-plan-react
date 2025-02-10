@@ -109,7 +109,7 @@ export default function InitialData(props) {
                 >
                     <Link target="_blank" href={new URL(`summary-volume/${year}`, process.env.REACT_APP_DOMAIN)}>свод(объемы)</Link>
                     <Link target="_blank" href={new URL(`summary-cost/${year}`, process.env.REACT_APP_DOMAIN)}>свод(стоимость)</Link>
-                    <Link target="_blank" href={new URL(`vitacore-v2/${year}`, process.env.REACT_APP_DOMAIN)}>vitacore(план)</Link>
+                    <Link target="_blank" href={new URL(`vitacore-v3/${year}`, process.env.REACT_APP_DOMAIN)}>vitacore(план)</Link>
 
                     <Button
                         id="basic-button"

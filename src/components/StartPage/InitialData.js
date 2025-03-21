@@ -154,6 +154,9 @@ export default function InitialData(props) {
                         <MenuItem onClick={handleClose} >
                             <Link target="_blank" href={new URL(`hospitalization-portal/${year}`, process.env.REACT_APP_DOMAIN)}>Портал госпитализации(Количество коек)</Link>
                         </MenuItem>
+                        <MenuItem onClick={handleClose} >
+                            <Link target="_blank" href={new URL(`decree-n17-vmp/${year}`, process.env.REACT_APP_DOMAIN)}>Приказ №17 план по ВМП (для vitacore)</Link>
+                        </MenuItem>
                     </Menu>
                 </Box>
             </AccordionDetails>

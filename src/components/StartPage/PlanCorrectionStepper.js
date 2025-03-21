@@ -107,6 +107,9 @@ export default function PlanCorrectionSteper(props) {
                                 <MenuItem onClick={handleClose} >
                                     <Link target="_blank" href={new URL(`hospitalization-portal/${year}/${comission.id}`, process.env.REACT_APP_DOMAIN)}>Портал госпитализации(Количество коек)</Link>
                                 </MenuItem>
+                                <MenuItem onClick={handleClose} >
+                                    <Link target="_blank" href={new URL(`decree-n17-vmp/${year}/${comission.id}`, process.env.REACT_APP_DOMAIN)}>Приказ №17 план по ВМП (для vitacore)</Link>
+                                </MenuItem>
                             </Menu>
                         </Box>
                     </StepContent>

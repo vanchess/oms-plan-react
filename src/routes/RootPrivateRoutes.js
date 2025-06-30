@@ -5,6 +5,7 @@ import StartPage from './../StartPage.js'
 import AmbulanceRoutes from './AmbulanceRoutes.js';
 import HospitalRoutes from './HospitalRoutes.js';
 import PolyclinicRoutes from './PolyclinicRoutes.js';
+import ReportsRoutes from './ReportsRoutes.js';
 
 export default function Routes() {
   return (
@@ -12,6 +13,7 @@ export default function Routes() {
             <Route path='/hospital' component={HospitalRoutes}/>
             <Route path='/ambulance' component={AmbulanceRoutes}/>
             <Route path='/polyclinic' component={PolyclinicRoutes}/>
+            <Route path='/reports' component={ReportsRoutes}/>
             <Route component={StartPage}/>
           </Switch>
   );

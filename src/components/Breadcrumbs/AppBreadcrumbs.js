@@ -88,7 +88,7 @@ export default function AppBreadcrumbs() {
   let subCategoryName = null;
   if (pathnames[2]) {
     const rootNodeSlug = pathnames[0];
-    const rootNodeId = categoryTreeNodeBySlugFunction(treeNodes, rootNodeSlug).id;
+    const rootNodeId = categoryTreeNodeBySlugFunction(treeNodes, rootNodeSlug)?.id;
     const leafNodeId = Number(pathnames[2]);
 
     if (!tree) {

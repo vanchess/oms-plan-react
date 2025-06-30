@@ -31,6 +31,17 @@ export class apiService {
         
         return fetch(url, requestOptions).then(this.handleResponse, this.handleReject);
     }
+
+    static put(path, data = {}, config = {}) {
+        const requestOptions = {
+            method: 'PUT',
+            headers: this.createHeaders(config.headers),
+            body: JSON.stringify(data)
+        };
+        
+        let url = new URL(path, this.baseUrl);
+        return fetch(url, requestOptions).then(this.handleResponse);
+    }
     
     static post(path, data = {}, config = {}) {
         const requestOptions = {
@@ -40,6 +51,17 @@ export class apiService {
         };
         
         //console.log(requestOptions);
+        
+        let url = new URL(path, this.baseUrl);
+        return fetch(url, requestOptions).then(this.handleResponse);
+    }
+
+    static delete(path, config = {}) {
+        const requestOptions = {
+            method: 'DELETE',
+            headers: this.createHeaders(config.headers),
+            body: JSON.stringify(config.data)
+        };
         
         let url = new URL(path, this.baseUrl);
         return fetch(url, requestOptions).then(this.handleResponse);

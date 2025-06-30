@@ -24,6 +24,8 @@ import { categoryTreeReducer } from './category/categoryTreeStore';
 import { categoryTreeNodesReducer } from './category/categoryTreeNodesStore';
 import { commissionDecisionReducer } from './commissionDecision/CommissionDecisionStore';
 import { changePackageReducer } from './changePackage/changePackageStore';
+import customReports from './customReport/customReportSlice';
+import customReportsProfileReducer from './customReport/customReportProfileSlice';
 //import { alert } from './alert.reducer';
 
 const rootReducer = combineReducers({
@@ -50,6 +52,8 @@ const rootReducer = combineReducers({
   initialData:  initialDataReducer,
   plannedIndicatorChange: plannedIndicatorChangeReducer,
   error:        errorReducer,
+  customReports: customReports,
+  customReportsProfile: customReportsProfileReducer,
 });
 
 export default rootReducer;

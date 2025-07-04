@@ -57,8 +57,6 @@ const customReportSlice = createSlice({
         state.loading = false;
       })
       .addCase(createCustomReport.fulfilled, (state, action) => {
-        console.log(action);
-        
         state.items.push(action.payload);
       })
       .addCase(updateCustomReport.fulfilled, (state, action) => {

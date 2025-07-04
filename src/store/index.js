@@ -26,6 +26,7 @@ import { commissionDecisionReducer } from './commissionDecision/CommissionDecisi
 import { changePackageReducer } from './changePackage/changePackageStore';
 import customReports from './customReport/customReportSlice';
 import customReportsProfileReducer from './customReport/customReportProfileSlice';
+import customReportsProfileRelationTypeReducer from './customReport/relationTypeSlice';
 //import { alert } from './alert.reducer';
 
 const rootReducer = combineReducers({
@@ -54,6 +55,7 @@ const rootReducer = combineReducers({
   error:        errorReducer,
   customReports: customReports,
   customReportsProfile: customReportsProfileReducer,
+  customReportsProfileRelationType: customReportsProfileRelationTypeReducer,
 });
 
 export default rootReducer;

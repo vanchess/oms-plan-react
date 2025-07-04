@@ -1,0 +1,1 @@
+export const INFINITE_DATE = '9999-12-01T00:00:00.000000Z'; // ISO format for infinite date in the database

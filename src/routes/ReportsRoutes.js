@@ -3,6 +3,7 @@ import { Route, Switch, withRouter, Redirect } from 'react-router-dom';
 import Dashboard  from '../dashboard/Dashboard.js'
 import CustomReportsStartPage from '../components/CustomReports/CustomReportsStartPage.js';
 import CustomReportEditPage from '../components/CustomReports/CustomReportEditPage.js';
+import ProfileEditPage from '../components/CustomReports/ProfileEditPage.js';
 
 class Routes extends React.Component {
 
@@ -15,6 +16,7 @@ class Routes extends React.Component {
               </Route>
               <Route path={`${path}/home`} component={CustomReportsStartPage} />
               <Route path={`${path}/:reportId/edit`} component={CustomReportEditPage} />
+              <Route path={`${path}/profiles/:id`} component={ProfileEditPage} />
               <Route component={Dashboard} />
             </Switch>
       );

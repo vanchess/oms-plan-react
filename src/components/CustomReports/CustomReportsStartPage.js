@@ -1,40 +1,58 @@
 import React, { useEffect, useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
+import { useHistory } from 'react-router-dom';
 import {
   fetchCustomReports,
-  createCustomReport,
-  updateCustomReport,
   deleteCustomReport,
 } from '../../store/customReport/customReportSlice';
 import CustomReportForm from './CustomReportForm';
 import {
-  List, ListItem, ListItemText, IconButton, TextField, Button,
+  List,
+  ListItem,
+  ListItemText,
+  IconButton,
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  DialogContentText,
+  DialogActions,
+  Button,
 } from '@mui/material';
-import { Delete, Edit, Save } from '@mui/icons-material';
+import { Delete, Edit } from '@mui/icons-material';
 
 const CustomReportsStartPage = () => {
   const dispatch = useDispatch();
-  const { items, loading, error } = useSelector(state => state.customReports);
+  const history = useHistory();
 
-  const [editingId, setEditingId] = useState(null);
-  const [editData, setEditData] = useState({ name: '', short_name: '' });
+  const { items, loading, error } = useSelector(state => state.customReports);
 
   useEffect(() => {
     dispatch(fetchCustomReports());
   }, [dispatch]);
 
-  const handleDelete = (id) => {
-    dispatch(deleteCustomReport(id));
+  const [confirmDeleteOpen, setConfirmDeleteOpen] = useState(false);
+  const [reportToDelete, setReportToDelete] = useState(null);
+
+  const requestDelete = (report) => {
+    setReportToDelete(report);
+    setConfirmDeleteOpen(true);
   };
 
-  const startEdit = (report) => {
-    setEditingId(report.id);
-    setEditData({ name: report.name, short_name: report.short_name || '' });
+  const confirmDelete = () => {
+    if (reportToDelete) {
+      dispatch(deleteCustomReport(reportToDelete.id));
+      setReportToDelete(null);
+      setConfirmDeleteOpen(false);
+    }
   };
 
-  const saveEdit = () => {
-    dispatch(updateCustomReport({ id: editingId, data: editData }));
-    setEditingId(null);
+  const cancelDelete = () => {
+    setReportToDelete(null);
+    setConfirmDeleteOpen(false);
+  };
+
+  const handleEditNavigate = (report) => {
+    history.push(`/reports/${report.id}/edit`);
   };
 
   return (
@@ -46,43 +64,34 @@ const CustomReportsStartPage = () => {
       <List>
         {items?.map((report) => (
           <ListItem key={report.id} divider>
-            {editingId === report.id ? (
-              <>
-                <TextField
-                  label="Название"
-                  value={editData.name}
-                  onChange={(e) => setEditData({ ...editData, name: e.target.value })}
-                  size="small"
-                  sx={{ mr: 1 }}
-                />
-                <TextField
-                  label="Краткое имя"
-                  value={editData.short_name}
-                  onChange={(e) => setEditData({ ...editData, short_name: e.target.value })}
-                  size="small"
-                  sx={{ mr: 1 }}
-                />
-                <IconButton onClick={saveEdit} color="primary">
-                  <Save />
-                </IconButton>
-              </>
-            ) : (
-              <>
-                <ListItemText primary={report.name} secondary={report.short_name} />
-                <IconButton onClick={() => startEdit(report)}>
-                  <Edit />
-                </IconButton>
-                <IconButton onClick={() => handleDelete(report.id)} color="error">
-                  <Delete />
-                </IconButton>
-              </>
-            )}
+            <ListItemText
+              primary={report.name}
+              secondary={report.short_name}
+            />
+            <IconButton onClick={() => handleEditNavigate(report)} color="primary">
+              <Edit />
+            </IconButton>
+            <IconButton onClick={() => requestDelete(report)} color="error">
+              <Delete />
+            </IconButton>
           </ListItem>
         ))}
       </List>
 
       <h1>Создание пользовательского отчета</h1>
       <CustomReportForm />
+      <Dialog open={confirmDeleteOpen} onClose={cancelDelete}>
+        <DialogTitle>Удалить отчет?</DialogTitle>
+        <DialogContent>
+          <DialogContentText>
+            Вы уверены, что хотите удалить отчет "{reportToDelete?.name}"?
+          </DialogContentText>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={cancelDelete}>Отмена</Button>
+          <Button onClick={confirmDelete} color="error">Удалить</Button>
+        </DialogActions>
+      </Dialog>
     </div>
   );
 };

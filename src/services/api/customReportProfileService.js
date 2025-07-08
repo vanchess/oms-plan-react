@@ -2,6 +2,11 @@ import { apiService } from './apiServiceBase';
 
 export class customReportProfileService extends apiService {
     
+    static getById(id) {
+        const path = `custom-report-profiles/${id}`;
+        return this.get(path).then((data) => ({ entity: data }));
+    }
+
     static getByReportId(reportId) {
         const path = `custom-reports/${reportId}/profiles`;
         return this.get(path).then((data) => {

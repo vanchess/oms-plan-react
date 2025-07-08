@@ -37,9 +37,28 @@ import { DatePicker, LocalizationProvider } from '@mui/x-date-pickers';
 import { AdapterLuxon } from '@mui/x-date-pickers/AdapterLuxon';
 import { DateTime } from 'luxon';
 import { INFINITE_DATE } from '../../constants/dateTimeConstants';
+import ProfileTreeView from './ProfileTreeView';
+import ProfileEditForm from './ProfileEditForm';
 
 const toEffectiveToDb = (date) =>
   date ? date.toISO() : INFINITE_DATE;
+
+const buildProfileTree = (profiles) => {
+  const map = {};
+  const roots = [];
+
+  profiles.forEach(p => (map[p.id] = { ...p, children: [] }));
+
+  profiles.forEach(p => {
+    if (p.parent_id && map[p.parent_id]) {
+      map[p.parent_id].children.push(map[p.id]);
+    } else {
+      roots.push(map[p.id]);
+    }
+  });
+
+  return roots;
+};
 
 const CustomReportEditPage = () => {
   const { reportId } = useParams();
@@ -81,6 +100,8 @@ const CustomReportEditPage = () => {
   const [confirmDeleteOpen, setConfirmDeleteOpen] = useState(false);
 
   const [editedRelationTypeError, setEditedRelationTypeError] = useState('');
+
+  const tree = useMemo(() => buildProfileTree(profiles), [profiles]);
 
   const handleEditClick = () => {
     setIsEditing(true);
@@ -245,150 +266,50 @@ const CustomReportEditPage = () => {
 
       <Box sx={{ mt: 4 }}>
         <Typography variant="h5">Профили отчета</Typography>
-        <List>
-          {profiles
-            .filter(p => p.custom_report_id === Number(reportIdNumber))
-            .map((profile) => (
-              <ListItem key={profile.id} alignItems="flex-start">
-                {editingProfileId === profile.id ? (
-                  <Box sx={{ width: '100%' }}>
-                    <TextField
-                      label="Название"
-                      value={editedName}
-                      onChange={(e) => setEditedName(e.target.value)}
-                      fullWidth
-                      sx={{ mb: 1 }}
-                    />
-                    <TextField
-                      label="Краткое наименование"
-                      value={editedShortName}
-                      onChange={(e) => setEditedShortName(e.target.value)}
-                      fullWidth
-                      sx={{ mb: 1 }}
-                    />
-                    <TextField
-                      label="Код"
-                      value={editedCode}
-                      onChange={(e) => setEditedCode(e.target.value)}
-                      fullWidth
-                      sx={{ mb: 1 }}
-                    />
-                    <FormControl fullWidth sx={{ mb: 1 }}>
-                      <InputLabel id="edit-parent-label">Родитель</InputLabel>
-                      <Select
-                        labelId="edit-parent-label"
-                        value={editedParentId}
-                        onChange={(e) => {
-                          const parent = e.target.value;
-                          setEditedParentId(parent);
-                          if (!parent) {
-                            setEditedRelationType('');
-                          }
-                        }}
-                        label="Родитель"
-                        displayEmpty
-                      >
-                        <MenuItem value="">Родитель не указан (корневой)</MenuItem>
-                        {profiles
-                          .filter(p => p.id !== editingProfileId)
-                          .map(p => (
-                            <MenuItem key={p.id} value={p.id}>
-                              {p.name}
-                            </MenuItem>
-                          ))}
-                      </Select>
-                    </FormControl>
-                    <FormControl fullWidth sx={{ mb: 1 }} disabled={!editedParentId} error={!!editedRelationTypeError}>
-                    <InputLabel id="edit-relation-type-label">Тип связи с родителем</InputLabel>
-                      <Select
-                        labelId="edit-relation-type-label"
-                        value={editedRelationType}
-                        onChange={(e) => {
-                          setEditedRelationType(e.target.value);
-                          setEditedRelationTypeError('');
-                        }}
-                        label="Тип связи с родителем"
-                        displayEmpty
-                      >
-                        <MenuItem value="">Тип связи с родителем не выбран</MenuItem>
-                        {relationTypes?.map(type => (
-                          <MenuItem key={type.id} value={type.id}>{type.name}</MenuItem>
-                        ))}
-                      </Select>
-                      {editedRelationTypeError && (
-                        <Typography variant="caption" color="error">{editedRelationTypeError}</Typography>
-                      )}
-                    </FormControl>
-                    <LocalizationProvider dateAdapter={AdapterLuxon} adapterLocale="de">
-                      <DatePicker
-                        label="Действует с"
-                        value={editedEffectiveFrom}
-                        onChange={(date) => setEditedEffectiveFrom(date)}
-                        sx={{ mb: 1, mr: 1 }}
-                      />
-                      <DatePicker
-                        label="Действует до"
-                        value={editedEffectiveTo}
-                        onChange={(date) => setEditedEffectiveTo(date)}
-                        slotProps={{
-                          textField: {
-                            helperText: !editedEffectiveTo ? 'Бессрочно' : '',
-                          }
-                        }}
-                        sx={{ mb: 1, ml: 2 }}
-                      />
-                      <Button
-                        onClick={() => setEditedEffectiveTo(null)}
-                        size="small"
-                        variant="text"
-                        sx={{ mb: 1 }}
-                      >
-                        Очистить дату окончания
-                      </Button>
-                    </LocalizationProvider>
-                    <TextField
-                      label="Порядок"
-                      value={editedOrder}
-                      type="number"
-                      onChange={(e) => setEditedOrder(e.target.value)}
-                      fullWidth
-                      sx={{ mb: 2 }}
-                    />
-                    <Box sx={{ display: 'flex', gap: 1 }}>
-                      <Button size="small" variant="contained" onClick={handleSaveProfile}>
-                        Сохранить
-                      </Button>
-                      <Button size="small" variant="outlined" onClick={handleCancelEditProfile}>
-                        Отмена
-                      </Button>
-                    </Box>
-                  </Box>
-                ) : (
-                  <>
-                    <ListItemText
-                      primary={profile.name}
-                      secondary={profile.short_name}
-                    />
-                    <ListItemSecondaryAction>
-                      <IconButton edge="end" onClick={() => {
-                        setNewProfileParentId(profile.id);
-                        window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' });
-                      }}>
-                        <Add />
-                      </IconButton>
-                      <IconButton edge="end" onClick={() => handleStartEditProfile(profile)}>
-                        <Edit />
-                      </IconButton>
-                      <IconButton edge="end" onClick={() => handleRequestDeleteProfile(profile.id)}>
-                        <Delete />
-                      </IconButton>
-                    </ListItemSecondaryAction>
-                  </>
-                )}
-              </ListItem>
-            ))}
-        </List>
+        <ProfileTreeView
+          profiles={profiles.filter(p => p.custom_report_id === Number(reportIdNumber))}
+          editingProfileId={editingProfileId}
+          editedProfileState={{
+            name: editedName,
+            shortName: editedShortName,
+            code: editedCode,
+            relationType: editedRelationType,
+            effectiveFrom: editedEffectiveFrom,
+            effectiveTo: editedEffectiveTo,
+            order: editedOrder,
+          }}
+          relationTypes={relationTypes}
+          onEdit={handleStartEditProfile}
+          onDelete={handleRequestDeleteProfile}
+          onAddChild={(parent) => {
+            setNewProfileParentId(parent.id);
+            window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' });
+          }}
+          onChange={(updater) => {
+            if (typeof updater === 'function') {
+              const newState = updater({
+                name: editedName,
+                shortName: editedShortName,
+                code: editedCode,
+                relationType: editedRelationType,
+                effectiveFrom: editedEffectiveFrom,
+                effectiveTo: editedEffectiveTo,
+                order: editedOrder,
+              });
 
+              setEditedName(newState.name);
+              setEditedShortName(newState.shortName);
+              setEditedCode(newState.code);
+              setEditedRelationType(newState.relationType);
+              setEditedEffectiveFrom(newState.effectiveFrom);
+              setEditedEffectiveTo(newState.effectiveTo);
+              setEditedOrder(newState.order);
+            }
+          }}
+          onCancel={handleCancelEditProfile}
+          onSave={handleSaveProfile}
+        />
+        
         <Box sx={{ mt: 3 }}>
           <Typography variant="h6">Добавить профиль</Typography>
           <TextField

@@ -4,6 +4,7 @@ import Dashboard  from '../dashboard/Dashboard.js'
 import CustomReportsStartPage from '../components/CustomReports/CustomReportsStartPage.js';
 import CustomReportEditPage from '../components/CustomReports/CustomReportEditPage.js';
 import ProfileEditPage from '../components/CustomReports/ProfileEditPage.js';
+import ProfileUnitPlannedIndicatorsPage from '../components/CustomReports/ProfileUnitPlannedIndicatorsPage.js';
 
 class Routes extends React.Component {
 
@@ -15,8 +16,10 @@ class Routes extends React.Component {
                 <Redirect to={`${path}/home`} />
               </Route>
               <Route path={`${path}/home`} component={CustomReportsStartPage} />
-              <Route path={`${path}/:reportId/edit`} component={CustomReportEditPage} />
+              
               <Route path={`${path}/profiles/:id`} component={ProfileEditPage} />
+              <Route path={`${path}/profile-unit/:id/edit`} component={ProfileUnitPlannedIndicatorsPage} />
+              <Route path={`${path}/:reportId/edit`} component={CustomReportEditPage} />
               <Route component={Dashboard} />
             </Switch>
       );

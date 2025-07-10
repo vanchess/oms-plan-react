@@ -27,6 +27,7 @@ import { changePackageReducer } from './changePackage/changePackageStore';
 import customReports from './customReport/customReportSlice';
 import customReportsProfileReducer from './customReport/customReportProfileSlice';
 import customReportsProfileRelationTypeReducer from './customReport/relationTypeSlice';
+import customReportAvailableUnitReducer from './customReport/customReportAvailableUnitSlice';
 //import { alert } from './alert.reducer';
 
 const rootReducer = combineReducers({
@@ -56,6 +57,7 @@ const rootReducer = combineReducers({
   customReports: customReports,
   customReportsProfile: customReportsProfileReducer,
   customReportsProfileRelationType: customReportsProfileRelationTypeReducer,
+  customReportAvailableUnits: customReportAvailableUnitReducer,
 });
 
 export default rootReducer;

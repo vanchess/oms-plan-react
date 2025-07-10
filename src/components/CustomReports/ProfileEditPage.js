@@ -6,6 +6,8 @@ import { fetchRelationTypes } from '../../store/customReport/relationTypeSlice';
 import { DateTime } from 'luxon';
 import { INFINITE_DATE } from '../../constants/dateTimeConstants';
 import ProfileEditForm from './ProfileEditForm';
+import { fetchUnits } from '../../store/customReport/customReportAvailableUnitSlice';
+import ProfileUnitManager from './ProfileUnitManager.js';
 
 const ProfileEditPage = () => {
   const { id } = useParams();
@@ -15,9 +17,11 @@ const ProfileEditPage = () => {
   const [profile, setProfile] = useState(null);
   const [state, setState] = useState(null);
   const relationTypes = useSelector((state) => state.customReportsProfileRelationType.items);
+  const availableUnits = useSelector((state) => state.customReportAvailableUnits.items);
 
   useEffect(() => {
     dispatch(fetchRelationTypes());
+    dispatch(fetchUnits());
   }, [dispatch]);
 
   useEffect(() => {
@@ -69,6 +73,7 @@ const ProfileEditPage = () => {
         onSave={handleSave}
         onCancel={handleCancel}
       />
+      <ProfileUnitManager profileId={profile.id} availableUnits={availableUnits} />
     </div>
   );
 };

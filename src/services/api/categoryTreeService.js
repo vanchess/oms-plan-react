@@ -85,5 +85,8 @@ export class categoryTreeService extends apiService {
         });
     }
 
-    
+    static async getSubtreeNodeIds(nodeId) {
+        const res = await this.get(`node/${nodeId}/children`);
+        return res; // массив id
+    }
 }

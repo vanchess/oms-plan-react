@@ -25,16 +25,15 @@ export class customReportProfileUnitService extends apiService {
 
   // Привязать plannedIndicator к unit профиля
   static attachPlannedIndicator(profileUnitId, plannedIndicatorId) {
-    const path = `profile-units/${profileUnitId}/attach-planned-indicator`;
+    const path = `profile-units/${profileUnitId}/planned-indicators`;
     const payload = { planned_indicator_id: plannedIndicatorId };
     return this.post(path, payload, this.defaultHeaders).then(data => ({ entity: data }));
   }
 
   // Отвязать plannedIndicator от unit профиля
   static detachPlannedIndicator(profileUnitId, plannedIndicatorId) {
-    const path = `profile-units/${profileUnitId}/detach-planned-indicator`;
-    const payload = { planned_indicator_id: plannedIndicatorId };
-    return this.post(path, payload, this.defaultHeaders).then(data => ({ entity: data }));
+    const path = `profile-units/${profileUnitId}/planned-indicators/${plannedIndicatorId}`;
+    return this.delete(path, this.defaultHeaders).then(data => ({ entity: data }));
   }
 
   // (Опционально) Получить все связанные plannedIndicators по unit профиля

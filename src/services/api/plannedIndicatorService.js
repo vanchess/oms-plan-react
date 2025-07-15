@@ -8,4 +8,10 @@ export class plannedIndicatorService extends apiService {
         const data = await this.get(path, { params: { year } });
         return { entities: data.data };
     }
+
+    static async getByProfileUnitAndYear(profileUnitId, year) {
+        const path = `planned-indicators/by-unit/${profileUnitId}`;
+        const data = await this.get(path, { params: { year } });
+        return { entities: data.data };
+    }
 }

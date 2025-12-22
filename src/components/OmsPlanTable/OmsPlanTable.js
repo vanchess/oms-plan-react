@@ -60,11 +60,11 @@ console.log('OmsPlanTable')
                         { colDef.head || ( colDef.link ? (
                             <div style={ {whiteSpace: 'nowrap', overflow: 'hidden'} }>
                               <Link component={RouterLink} to={colDef.link}>
-                                {colDef.name}
+                                {colDef.short_name ?? colDef.name}
                               </Link>
                             </div>
                           ) : 
-                            <span style={ {whiteSpace: 'nowrap', overflow: 'hidden'} }>{colDef.name}</span>
+                            <span style={ {whiteSpace: 'nowrap', overflow: 'hidden'} }>{colDef.short_name ?? colDef.name}</span>
                           )
                         }
                   </TableCell>
